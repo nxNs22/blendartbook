@@ -16,6 +16,7 @@ export interface CartItem {
   quantity: number;
   cover?: string;
   author?: string;
+  image_url?: string;
 }
 
 interface CartContextType {

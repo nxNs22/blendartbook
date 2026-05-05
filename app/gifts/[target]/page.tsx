@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { supabase, getErrorMessage } from "../../lib/supabaseClient"; 
 import { useCart } from "../../context/CartContext"; 
+import ProductCard from "../../components/ProductCard";
 
 export default function GiftsTargetPage() {
   const params = useParams();
@@ -156,39 +157,7 @@ export default function GiftsTargetPage() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-12 gap-x-6">
               {filteredProducts.map((product) => (
-                <div key={product.id} className="group relative">
-                  <div className="relative aspect-[2/3] bg-white rounded-sm shadow-[0_10px_20px_rgba(0,0,0,0.05)] overflow-hidden mb-4 border-b-2 border-gray-100">
-                    <img 
-                      src={product.image_url || "https://via.placeholder.com/150x220?text=Gift"} 
-                      alt={product.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                    />
-                    {product.stock < 10 && (
-                      <div className="absolute top-0 left-2 bg-red-500 text-white p-1 rounded-b-sm shadow-md text-[10px] font-bold">
-                        Limited
-                      </div>
-                    )}
-                    <div className="absolute bottom-0 left-0 w-full p-2 translate-y-full group-hover:translate-y-0 transition-transform flex gap-1">
-                      <button 
-                        onClick={(e) => handleAddToCart(product, e)}
-                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-md flex justify-center items-center shadow-lg transition-colors"
-                      >
-                        <ShoppingCart size={14} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <h4 className="text-[13px] font-bold text-[#2CB391] line-clamp-2 leading-tight mb-1 hover:underline cursor-pointer">
-                    {product.title}
-                  </h4>
-                  <p className="text-[11px] text-gray-400 mb-2 italic">
-                    {product.details?.brand || product.details?.author || "Gift Collection"}
-                  </p>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-[14px] font-black text-[#1A2E35]">{product.price} €</span>
-                  </div>
-                </div>
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           )}
