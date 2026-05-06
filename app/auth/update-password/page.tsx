@@ -114,8 +114,8 @@ export default function UpdatePasswordPage() {
             </div>
           </div>
         ) : success ? (
-          <div className="bg-emerald-50 text-emerald-800 p-6 rounded-xl border border-emerald-100 text-center">
-            <CheckCircle2 size={48} className="text-emerald-500 mx-auto mb-4" />
+          <div className="bg-teal-50 text-teal-800 p-6 rounded-xl border border-teal-100 text-center">
+            <CheckCircle2 size={48} className="text-teal-500 mx-auto mb-4" />
             <h3 className="font-bold text-lg mb-2">Password updated</h3>
             <p className="text-sm opacity-90">You can now sign in with your new password.</p>
             <Link

@@ -179,7 +179,7 @@ export default function CartPage() {
                 Example codes: <strong>GIFT10</strong>, <strong>WELCOME50</strong>, <strong>VOUCHER20</strong>
               </div>
               {promoMessage && (
-                <div className={`w-full text-xs font-semibold ${appliedPromo ? "text-emerald-700" : "text-red-600"}`}>
+                <div className={`w-full text-xs font-semibold ${appliedPromo ? "text-teal-700" : "text-red-600"}`}>
                   {promoMessage}
                 </div>
               )}
@@ -189,7 +189,7 @@ export default function CartPage() {
             <p className="text-gray-500 text-sm">Subtotal:</p>
             <p className="text-xl font-extrabold text-[#1A2E35]">{subtotal.toFixed(2)} TL</p>
             {safeDiscountAmount > 0 && (
-              <p className="text-sm font-bold text-emerald-600">- {safeDiscountAmount.toFixed(2)} TL discount</p>
+              <p className="text-sm font-bold text-teal-600">- {safeDiscountAmount.toFixed(2)} TL discount</p>
             )}
             <p className="text-gray-500 text-sm mt-1">Total price:</p>
             <p className="text-4xl font-black text-[#1A2E35]">{totalPrice.toFixed(2)} TL</p>

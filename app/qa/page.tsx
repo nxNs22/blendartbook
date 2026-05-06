@@ -61,14 +61,14 @@ export default function QAPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-50">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-teal-950 via-emerald-900 to-teal-950 text-white py-16 px-4">
+      <div className="bg-gradient-to-r from-teal-950 via-teal-900 to-teal-950 text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-wide">Q&A</h1>
           <p className="text-lg text-teal-100 max-w-2xl mx-auto">
             Find answers to frequently asked questions about blendartbook. Can't find what you're looking for? 
-            <span className="block mt-2 text-emerald-300">Contact our customer service team.</span>
+            <span className="block mt-2 text-teal-300">Contact our customer service team.</span>
           </p>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function QAPage() {
                 </h3>
                 <ChevronDown
                   size={24}
-                  className={`text-emerald-600 flex-shrink-0 transition-transform duration-300 ${
+                  className={`text-teal-600 flex-shrink-0 transition-transform duration-300 ${
                     expandedId === item.id ? "rotate-180" : ""
                   }`}
                 />
@@ -108,14 +108,14 @@ export default function QAPage() {
         </div>
 
         {/* Contact Section */}
-        <div className="mt-16 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg border-2 border-emerald-300 p-8 text-center">
+        <div className="mt-16 bg-gradient-to-r from-teal-50 to-teal-50 rounded-lg border-2 border-teal-300 p-8 text-center">
           <h2 className="text-2xl font-bold text-teal-950 mb-3">Still have questions?</h2>
           <p className="text-gray-700 mb-6">
             Our customer service team is here to help you.
           </p>
           <button 
             onClick={() => setShowContactModal(true)}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-200"
+            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-200"
           >
             Contact Us
           </button>
@@ -141,14 +141,14 @@ export default function QAPage() {
               {/* Email Section */}
               <div className="mb-8 pb-8 border-b border-gray-200">
                 <div className="flex items-start gap-4">
-                  <div className="bg-emerald-100 p-3 rounded-lg">
-                    <Mail size={24} className="text-emerald-600" />
+                  <div className="bg-teal-100 p-3 rounded-lg">
+                    <Mail size={24} className="text-teal-600" />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-800 mb-1">Email</h3>
                     <a 
                       href="mailto:support@blendartbook.com"
-                      className="text-emerald-600 hover:text-emerald-700 font-semibold break-all"
+                      className="text-teal-600 hover:text-teal-700 font-semibold break-all"
                     >
                       support@blendartbook.com
                     </a>

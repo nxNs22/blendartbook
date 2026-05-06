@@ -31,7 +31,7 @@ export default function ProductCard({ product }: { product: any }) {
         />
         <button 
           onClick={handleAddToCart}
-          className="absolute bottom-3 right-3 bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-full shadow-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
+          className="absolute bottom-3 right-3 bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-full shadow-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
         >
           <ShoppingCart size={20} />
         </button>
@@ -45,7 +45,7 @@ export default function ProductCard({ product }: { product: any }) {
         </p>
         
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
-          <span className="text-lg font-extrabold text-emerald-600">${product.price?.toFixed(2)}</span>
+          <span className="text-lg font-extrabold text-teal-600">${product.price?.toFixed(2)}</span>
         </div>
       </div>
     </Link>

@@ -10,7 +10,7 @@ const characters = [
     image: "/images/hero-katniss.png",
     description: "The main character of the book Hunger Games. Popular book series for young people.",
     book: "The Hunger Games",
-    bgColor: "from-green-950 via-emerald-900 to-teal-900",
+    bgColor: "from-green-950 via-teal-900 to-teal-900",
   },
   {
     name: "Cosette",
@@ -114,7 +114,7 @@ export default function HeroSection() {
           <h1 className="text-center">
             <span className="block text-white text-3xl sm:text-4xl md:text-6xl font-black tracking-wide drop-shadow-2xl mb-2">
               BE{" "}
-              <span className="text-emerald-400 italic text-4xl sm:text-5xl md:text-7xl font-black">
+              <span className="text-teal-400 italic text-4xl sm:text-5xl md:text-7xl font-black">
                 {active.title}
               </span>
             </span>
@@ -128,7 +128,7 @@ export default function HeroSection() {
         <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-30"
              style={{ position: 'absolute', right: '2rem', top: '50%', transform: 'translateY(-50%)' }}>
           <button
-            className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-white hover:bg-emerald-600 transition-all duration-300 group"
+            className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-white hover:bg-teal-600 transition-all duration-300 group"
           >
             <svg
               className="w-6 h-6 group-hover:scale-110 transition-transform"
@@ -166,7 +166,7 @@ export default function HeroSection() {
             onClick={() => handleTabChange(i)}
             className={`flex-1 min-w-[130px] py-4 px-6 text-xs font-black tracking-widest uppercase transition-all duration-300 relative border-r border-white/5 ${
               i === activeIndex
-                ? "bg-emerald-600 text-white"
+                ? "bg-teal-600 text-white"
                 : "text-white/40 hover:text-white hover:bg-white/5"
             }`}
           >

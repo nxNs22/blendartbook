@@ -8,11 +8,10 @@ import {
   Calendar, Headphones, Gamepad2, Video, 
   Image as ImageIcon, PenTool, Monitor,
   VenetianMask, UserRound, Baby, Sparkles,
-  BookOpen, Mic, Tablet
+  BookOpen, Mic, Tablet, Palette, Paintbrush, Box, Music, Scissors
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-// Supabase'i import ediyoruz
 import { supabase, getErrorMessage } from "../lib/supabaseClient"; 
 
 // --- VERİ YAPILARI ---
@@ -49,31 +48,18 @@ const otherProducts = [
 ];
 
 const giftCategories = [
-  { 
-    name: "Gifts for women", 
-    icon: <VenetianMask size={32} />, 
-    href: "/gifts/women"
-  },
-  { 
-    name: "Gifts for men", 
-    icon: <UserRound size={32} />, 
-    href: "/gifts/men" 
-  },
-  { 
-    name: "Gifts for girls", 
-    icon: <Sparkles size={32} />, 
-    href: "/gifts/girls" 
-  },
-  { 
-    name: "Gifts for boys", 
-    icon: <Gamepad2 size={32} />, 
-    href: "/gifts/boys" 
-  },
-  { 
-    name: "Gifts for children", 
-    icon: <Baby size={32} />, 
-    href: "/gifts/children" 
-  },
+  { name: "Gifts for women", icon: <VenetianMask size={32} />, href: "/gifts/women" },
+  { name: "Gifts for men", icon: <UserRound size={32} />, href: "/gifts/men" },
+  { name: "Gifts for girls", icon: <Sparkles size={32} />, href: "/gifts/girls" },
+  { name: "Gifts for boys", icon: <Gamepad2 size={32} />, href: "/gifts/boys" },
+  { name: "Gifts for children", icon: <Baby size={32} />, href: "/gifts/children" },
+];
+
+const artCategories = [
+  { name: "Painting", href: "/art/painting", icon: <Paintbrush size={24} /> },
+  { name: "Sculpture", href: "/art/sculpture", icon: <Box size={24} /> },
+  { name: "Music", href: "/art/music", icon: <Music size={24} /> },
+  { name: "Crafts", href: "/art/crafts", icon: <Scissors size={24} /> },
 ];
 
 type LanguageItem = {
@@ -93,13 +79,12 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
 
   const content = getContent();
 
-
   return (
     <div className="absolute left-0 z-50 w-full pt-2 duration-200 top-full animate-in fade-in">
-      <div className="bg-teal-900 border-t-2 border-red-500 shadow-2xl rounded-b-xl">
+      {/* 🌟 MEGA MENÜ ÜST ÇİZGİSİ TURKUAZ OLDU */}
+      <div className="bg-teal-900 border-t-2 border-teal-400 shadow-2xl rounded-b-xl">
         <div className="px-6 py-10 mx-auto max-w-7xl">
           
-          {/* 1. DİL TABANLI PANELLER (Books, E-books, Audiobooks) */}
           {content && content.data && (
             <>
               <h2 className="mb-10 text-3xl font-bold text-center text-white md:text-5xl">{content.title}</h2>
@@ -123,7 +108,6 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
             </>
           )}
 
-          {/* 2. OTHER PRODUCTS PANELİ */}
           {type === "Other products" && (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-7">
               {otherProducts.map((product) => (
@@ -143,12 +127,11 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
             </div>
           )}
 
-          {/* 3. GIFT TIPS PANELİ */}
           {type === "Gift tips" && (
             <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-start">
               <div className="grid flex-1 grid-cols-2 gap-6 md:grid-cols-5">
                 {giftCategories.map((item) => (
-                  <Link key={item.name} href={item.href} onClick={onClose} className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group">
+                  <Link key={item.name} href={item.href} onClick={onClose} className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all">
                     <div className="flex items-center justify-center w-20 h-20 mb-4 text-teal-400 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-teal-500 group-hover:text-white group-hover:scale-110">
                       {item.icon}
                     </div>
@@ -167,8 +150,31 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
             </div>
           )}
 
+          {type === "Art" && (
+             <div className="flex flex-col items-center">
+               <h2 className="mb-8 text-3xl font-bold text-center text-white md:text-4xl">Explore Unique Art Pieces</h2>
+               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-3xl">
+                 {artCategories.map((sub) => (
+                   <Link 
+                     key={sub.name} 
+                     href={sub.href} 
+                     onClick={onClose}
+                     className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all"
+                   >
+                     <div className="flex items-center justify-center w-20 h-20 mb-4 text-teal-400 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-teal-500 group-hover:text-white group-hover:scale-110">
+                       {sub.icon}
+                     </div>
+                     <span className="text-sm font-bold leading-tight text-center text-white">
+                       {sub.name}
+                     </span>
+                   </Link>
+                 ))}
+               </div>
+             </div>
+          )}
+
           <div className="flex justify-center pt-6 mt-10 text-sm italic border-t border-white/10 text-white/80">
-            <Sparkles className="mr-2 text-emerald-400" size={18} />
+            <Sparkles className="mr-2 text-teal-400" size={18} />
             Don&apos;t know what to choose? We are here to help!
           </div>
         </div>
@@ -177,8 +183,6 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
   );
 }
 
-// --- ANA HEADER ---
-
 export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -186,10 +190,8 @@ export default function Header() {
   const { user } = useAuth();
   const { cartCount } = useCart();
 
-  // İsmi saklamak için yeni state
   const [userName, setUserName] = useState<string | null>(null);
 
-  // Veritabanından ismin çekilmesi
   useEffect(() => {
     const fetchUserName = async () => {
       if (!user) {
@@ -201,11 +203,10 @@ export default function Header() {
           .from("profiles")
           .select("full_name")
           .eq("id", user.id)
-          .maybeSingle(); // <--- BU SATIR DEĞİŞTİRİLDİ: .single() yerine .maybeSingle() kullanıldı
+          .maybeSingle(); 
 
         if (error) throw error;
 
-        // Sadece isim girilmişse göster
         if (data && data.full_name && data.full_name.trim() !== "") {
           setUserName(data.full_name.split(" ")[0]); 
         } else {
@@ -221,6 +222,8 @@ export default function Header() {
 
   const navItems = [
     { label: "Books", hasDropdown: true, icon: <BookOpen size={16} /> },
+    { label: "Art", hasDropdown: true, icon: <Palette size={16} /> }, 
+    { label: "Handmade", hasDropdown: false, href: "/handmade", icon: <PenTool size={16} /> }, 
     { label: "E-books", hasDropdown: true, icon: <Tablet size={16} /> },
     { label: "Audiobooks", hasDropdown: true, icon: <Mic size={16} /> },
     { label: "Other products", hasDropdown: true, icon: <Gamepad2 size={16} /> },
@@ -241,7 +244,6 @@ export default function Header() {
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      // Search sayfasına yönlendir
       window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
     }
   };
@@ -253,9 +255,10 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 flex flex-col items-center w-full bg-red-700 shadow-md">
-      {/* 1. TOP BAR */}
-      <div className="w-full bg-red-800 text-white/80 text-[11px] py-1.5 flex justify-center">
+    // 🌟 HEADER ARKA PLANI TURKUAZ (bg-teal-600) YAPILDI
+    <header className="sticky top-0 z-50 flex flex-col items-center w-full bg-teal-600 shadow-md">
+      {/* 1. TOP BAR (bg-teal-700) */}
+      <div className="w-full bg-teal-700 text-white/80 text-[11px] py-1.5 flex justify-center">
         <div className="flex items-center justify-between w-full px-4 max-w-7xl">
           <span className="transition-colors cursor-pointer hover:text-white">Check order status</span>
           <div className="flex gap-4">
@@ -268,7 +271,8 @@ export default function Header() {
       {/* 2. MAIN HEADER */}
       <div className="flex items-center justify-between w-full gap-6 px-4 py-4 max-w-7xl lg:gap-12">
         <Link href="/" className="flex flex-col items-center flex-shrink-0 group">
-          <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:text-red-100">blendartbook</span>          <span className="text-red-300 text-[9px] tracking-[0.2em] uppercase font-bold">Be Whoever</span>
+          <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:text-teal-100">blendartbook</span>          
+          <span className="text-teal-200 text-[9px] tracking-[0.2em] uppercase font-bold">Be Whoever</span>
         </Link>
 
         <div className="relative flex items-center flex-1 max-w-2xl overflow-hidden bg-white rounded-lg shadow-inner">
@@ -281,9 +285,10 @@ export default function Header() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleSearchKeyPress}
           />
+          {/* 🌟 ARAMA BUTONU RENGİ GÜNCELLENDİ */}
           <button 
             onClick={handleSearch}
-            className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-emerald-600 hover:bg-emerald-700"
+            className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-teal-700 hover:bg-teal-800"
           >
             Search
           </button>
@@ -294,30 +299,29 @@ export default function Header() {
             <HelpCircle size={22} />
           </Link>
           
-          {/* Akıllı Kullanıcı İkonu / İsim */}
           <Link href={user ? "/account" : "/auth"} className="flex items-center gap-2 group">
             {user && userName ? (
-              <span className="text-sm font-bold capitalize transition-colors text-emerald-300 group-hover:text-white">
+              <span className="text-sm font-bold capitalize transition-colors text-teal-200 group-hover:text-white">
                 Hi, {userName}
               </span>
             ) : (
               <User 
                 size={22} 
-                className={`cursor-pointer transition-opacity ${user ? "opacity-100 text-teal-300" : "opacity-80 group-hover:opacity-100"}`} 
+                className={`cursor-pointer transition-opacity ${user ? "opacity-100 text-teal-200" : "opacity-80 group-hover:opacity-100"}`} 
               />
             )}
           </Link>
           
-          {/* Güncellenmiş Sepet Butonu */}
+          {/* 🌟 SEPET BUTONU RENGİ GÜNCELLENDİ (bg-teal-700) */}
           <Link 
             href="/cart" 
-            className="relative flex items-center bg-emerald-600 px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-emerald-700 transition-all shadow-md"
+            className="relative flex items-center bg-teal-700 px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-teal-800 transition-all shadow-md"
           >
             <ShoppingCart size={18} />
             <span className="hidden ml-2 text-white md:inline-block">Cart</span>
             
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white border-2 border-emerald-600">
+              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-teal-700">
                 {cartCount}
               </span>
             )}
@@ -327,12 +331,12 @@ export default function Header() {
       </div>
 
       {/* 3. NAVIGATION */}
-      <nav className="relative flex justify-center w-full border-t bg-red-900/30 border-white/5">
+      <nav className="relative flex justify-center w-full border-t bg-teal-800/30 border-white/5">
         <div className="relative flex items-center w-full px-4 max-w-7xl" onMouseLeave={handleMouseLeave}>
           <ul className="flex items-center">
             <li className="px-4 py-3 text-white cursor-pointer hover:bg-white/10">
-  <Link href="/"><Home size={18} /></Link>
-</li>
+              <Link href="/"><Home size={18} /></Link>
+            </li>
             {navItems.map((item) => (
               <li 
                 key={item.label} 
@@ -350,7 +354,7 @@ export default function Header() {
                   </button>
                 ) : (
                   <Link href={item.href || "#"} className="px-5 py-3 text-[13px] font-bold text-white hover:bg-white/10 flex items-center gap-2">
-                    {item.label}
+                    {item.icon} {item.label}
                   </Link>
                 )}
               </li>

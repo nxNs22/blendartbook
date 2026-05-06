@@ -1,11 +1,14 @@
+"use client";
+
 export default function Footer() {
   return (
-    <footer className="bg-teal-900 text-white" id="footer">
+    // 🌟 ARKA PLAN RENGİ teal-700 OLARAK GÜNCELLENDİ
+    <footer className="bg-teal-700 text-white" id="footer">
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 pt-16 pb-10">
         {/* Tagline */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold gradient-text inline-block">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-white inline-block">
             All the books in the world
           </h2>
         </div>
@@ -21,7 +24,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   All about shopping
                 </a>
@@ -29,7 +32,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   Delivery and payment
                 </a>
@@ -37,7 +40,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   Terms and conditions
                 </a>
@@ -54,7 +57,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   Who we are
                 </a>
@@ -62,7 +65,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   Contacts
                 </a>
@@ -70,7 +73,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   Books sustainability
                 </a>
@@ -87,7 +90,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   Loyalty programme
                 </a>
@@ -95,7 +98,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   Order status
                 </a>
@@ -103,7 +106,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-teal-300 hover:text-white text-sm transition-colors duration-200"
+                  className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   Returns / Complaints
                 </a>
@@ -115,7 +118,7 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-heading font-bold text-white mb-4">
               Let&apos;s stay together
-              <span className="text-coral ml-1">♥</span>
+              <span className="text-red-400 ml-1">♥</span>
             </h3>
 
             {/* Social icons */}
@@ -123,7 +126,7 @@ export default function Footer() {
               {/* Instagram */}
               <a
                 href="#"
-                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all duration-200 hover:scale-110"
+                className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-110"
                 aria-label="Instagram"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -134,7 +137,7 @@ export default function Footer() {
               {/* Facebook */}
               <a
                 href="#"
-                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all duration-200 hover:scale-110"
+                className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-110"
                 aria-label="Facebook"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -145,7 +148,7 @@ export default function Footer() {
               {/* YouTube */}
               <a
                 href="#"
-                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all duration-200 hover:scale-110"
+                className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-110"
                 aria-label="YouTube"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -156,7 +159,7 @@ export default function Footer() {
               {/* TikTok */}
               <a
                 href="#"
-                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all duration-200 hover:scale-110"
+                className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-all duration-200 hover:scale-110"
                 aria-label="TikTok"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -165,13 +168,13 @@ export default function Footer() {
               </a>
             </div>
 
-            <p className="text-teal-400 font-heading font-bold text-lg">
+            <p className="text-teal-200 font-heading font-bold text-lg">
               #blendartbook
             </p>
 
             {/* Logo */}
             <div className="mt-6">
-              <span className="text-2xl font-heading font-bold tracking-wider text-white/30">
+              <span className="text-2xl font-heading font-bold tracking-wider text-white/50">
                 blendartbook
               </span>
             </div>
@@ -180,36 +183,36 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-white/10">
+      <div className="border-t border-white/20">
         <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-white/40 text-xs">
+          <p className="text-white/60 text-xs">
             © 2008-2026 blendartbook
           </p>
 
           {/* Payment methods */}
           <div className="flex items-center gap-4">
-            <span className="text-white/50 text-xl font-bold tracking-wider">VISA</span>
-            <span className="text-white/50 text-xl font-bold">
+            <span className="text-white/60 text-xl font-bold tracking-wider">VISA</span>
+            <span className="text-white/60 text-xl font-bold">
               <svg className="w-8 h-5 inline" viewBox="0 0 32 20" fill="currentColor">
-                <circle cx="11" cy="10" r="8" opacity="0.5" />
-                <circle cx="21" cy="10" r="8" opacity="0.5" />
+                <circle cx="11" cy="10" r="8" opacity="0.6" />
+                <circle cx="21" cy="10" r="8" opacity="0.6" />
               </svg>
             </span>
-            <span className="text-white/50 text-lg font-bold">G</span>
-            <svg className="w-5 h-5 text-white/50" fill="currentColor" viewBox="0 0 24 24">
+            <span className="text-white/60 text-lg font-bold">G</span>
+            <svg className="w-5 h-5 text-white/60" fill="currentColor" viewBox="0 0 24 24">
               <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
             </svg>
           </div>
 
           {/* Legal links */}
-          <div className="flex items-center gap-4 text-xs text-white/40">
-            <a href="#" className="hover:text-white/70 transition-colors">
+          <div className="flex items-center gap-4 text-xs text-white/60">
+            <a href="#" className="hover:text-white transition-colors">
               Cookies
             </a>
-            <a href="#" className="hover:text-white/70 transition-colors">
+            <a href="#" className="hover:text-white transition-colors">
               Privacy
             </a>
-            <a href="#" className="hover:text-white/70 transition-colors">
+            <a href="#" className="hover:text-white transition-colors">
               Accessibility
             </a>
           </div>

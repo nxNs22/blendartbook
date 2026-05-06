@@ -82,7 +82,7 @@ export default function BooksByLanguage() {
               max="250" 
               value={priceRange}
               onChange={(e) => setPriceRange(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
             />
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function BooksByLanguage() {
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-emerald-600" size={40} />
+            <Loader2 className="animate-spin text-teal-600" size={40} />
           </div>
         ) : error ? (
           <div className="text-red-500 p-4 border border-red-100 rounded-lg bg-red-50">

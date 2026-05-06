@@ -76,7 +76,7 @@ export default function AudiobookCategoryPage() {
           <input 
             type="range" min="0" max="300" value={priceRange} 
             onChange={(e) => setPriceRange(Number(e.target.value))} 
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600" 
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600" 
           />
         </div>
       </aside>
@@ -85,7 +85,7 @@ export default function AudiobookCategoryPage() {
       <main className="flex-1">
         <div className="flex justify-between items-center mb-8 border-b pb-6">
           <h1 className="text-2xl font-black uppercase italic text-gray-900">
-            Audio Library: <span className="text-emerald-600 capitalize">{currentLang}</span>
+            Audio Library: <span className="text-teal-600 capitalize">{currentLang}</span>
           </h1>
           <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">
             {loading ? "Syncing..." : `${filteredProducts.length} Audiobooks`}
@@ -94,7 +94,7 @@ export default function AudiobookCategoryPage() {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <Loader2 className="animate-spin text-emerald-600" size={48} />
+            <Loader2 className="animate-spin text-teal-600" size={48} />
             <p className="text-sm text-gray-400 animate-pulse">Tuning frequencies...</p>
           </div>
         ) : error ? (

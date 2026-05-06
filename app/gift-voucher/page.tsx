@@ -155,7 +155,7 @@ export default function GiftVoucherPage() {
           </div>
 
           {successMessage && (
-            <div className="mt-5 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-700 text-sm font-semibold flex items-center gap-2">
+            <div className="mt-5 rounded-lg border border-teal-200 bg-teal-50 p-3 text-teal-700 text-sm font-semibold flex items-center gap-2">
               <CheckCircle2 size={16} />
               {successMessage}
             </div>

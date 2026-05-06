@@ -86,7 +86,7 @@ export default function OtherProductsPage() {
             max="500" 
             value={priceRange}
             onChange={(e) => setPriceRange(Number(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
           />
         </div>
       </aside>
@@ -95,15 +95,15 @@ export default function OtherProductsPage() {
       <main className="flex-1">
         <header className="flex justify-between items-center mb-8 border-b pb-4">
           <h1 className="text-2xl font-black uppercase italic flex items-center gap-2">
-            <Package size={24} className="text-emerald-600" /> 
-            Browsing: <span className="text-emerald-600 capitalize">{displayCategory}</span>
+            <Package size={24} className="text-teal-600" /> 
+            Browsing: <span className="text-teal-600 capitalize">{displayCategory}</span>
           </h1>
           <p className="text-xs text-gray-500 font-medium">{filteredProducts.length} items found</p>
         </header>
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-emerald-600" size={40} />
+            <Loader2 className="animate-spin text-teal-600" size={40} />
           </div>
         ) : error ? (
           <div className="text-red-500 p-4 border border-red-100 rounded-lg bg-red-50 text-center">

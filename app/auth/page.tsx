@@ -189,8 +189,8 @@ export default function AuthPage() {
         )}
 
         {resetEmailSent && isForgotPassword ? (
-          <div className="bg-emerald-50 text-emerald-800 p-6 rounded-xl border border-emerald-100 text-center animate-in zoom-in-95">
-            <CheckCircle2 size={48} className="text-emerald-500 mx-auto mb-4" />
+          <div className="bg-teal-50 text-teal-800 p-6 rounded-xl border border-teal-100 text-center animate-in zoom-in-95">
+            <CheckCircle2 size={48} className="text-teal-500 mx-auto mb-4" />
             <h3 className="font-bold text-lg mb-2">Check your email!</h3>
             <p className="text-sm opacity-90">
               If an account exists for <strong>{email.trim()}</strong>, you&apos;ll receive a reset link shortly.
@@ -205,8 +205,8 @@ export default function AuthPage() {
             </button>
           </div>
         ) : success && !isLogin ? (
-          <div className="bg-emerald-50 text-emerald-800 p-6 rounded-xl border border-emerald-100 text-center animate-in zoom-in-95">
-            <CheckCircle2 size={48} className="text-emerald-500 mx-auto mb-4" />
+          <div className="bg-teal-50 text-teal-800 p-6 rounded-xl border border-teal-100 text-center animate-in zoom-in-95">
+            <CheckCircle2 size={48} className="text-teal-500 mx-auto mb-4" />
             <h3 className="font-bold text-lg mb-2">Check your email!</h3>
             <p className="text-sm opacity-90">
               We&apos;ve sent a confirmation link to <strong>{email}</strong>. Please click it to verify your account.
