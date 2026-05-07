@@ -14,6 +14,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 // Supabase'i import ediyoruz
 import { supabase, getErrorMessage } from "../lib/supabaseClient"; 
+import { useLanguage } from "../context/LanguageContext";
 
 // --- VERİ YAPILARI ---
 
@@ -219,18 +220,46 @@ export default function Header() {
     fetchUserName();
   }, [user]);
 
-  const navItems = [
-    { label: "Books", hasDropdown: true, icon: <BookOpen size={16} /> },
-    { label: "E-books", hasDropdown: true, icon: <Tablet size={16} /> },
-    { label: "Audiobooks", hasDropdown: true, icon: <Mic size={16} /> },
-    { label: "Other products", hasDropdown: true, icon: <Gamepad2 size={16} /> },
-    { label: "Gift tips", hasDropdown: true, icon: <Gift size={16} /> },
-    { label: "Gift voucher", hasDropdown: false, href: "/gift-voucher" },
+  // --- DİL ÇEVİRİSİ (TRANSLATOR) ---
+  const supportedLanguages = [
+    { code: 'EN', name: 'English', flag: '🇬🇧' },
+    { code: 'TR', name: 'Türkçe', flag: '🇹🇷' },
+    { code: 'RO', name: 'Română', flag: '🇷🇴' },
+    { code: 'BG', name: 'Български', flag: '🇧🇬' },
   ];
 
-  const handleMouseEnter = (label: string) => {
+  const { language, setLanguage, t } = useLanguage();
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const langDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Effect to handle clicks outside the language dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        langDropdownRef.current &&
+        !langDropdownRef.current.contains(event.target as Node)
+      ) {
+        setLangDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const navItems = [
+    { id: "Books", label: t("books"), hasDropdown: true, icon: <BookOpen size={16} /> },
+    { id: "E-books", label: t("ebooks"), hasDropdown: true, icon: <Tablet size={16} /> },
+    { id: "Audiobooks", label: t("audiobooks"), hasDropdown: true, icon: <Mic size={16} /> },
+    { id: "Other products", label: t("otherProducts"), hasDropdown: true, icon: <Gamepad2 size={16} /> },
+    { id: "Gift tips", label: t("giftTips"), hasDropdown: true, icon: <Gift size={16} /> },
+    { id: "Gift voucher", label: t("giftVoucher"), hasDropdown: false, href: "/gift-voucher" },
+  ];
+
+  const handleMouseEnter = (id: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setOpenDropdown(label);
+    setOpenDropdown(id);
   };
 
   const handleMouseLeave = () => {
@@ -257,10 +286,40 @@ export default function Header() {
       {/* 1. TOP BAR */}
       <div className="w-full bg-red-800 text-white/80 text-[11px] py-1.5 flex justify-center">
         <div className="flex items-center justify-between w-full px-4 max-w-7xl">
-          <span className="transition-colors cursor-pointer hover:text-white">Check order status</span>
-          <div className="flex gap-4">
-            <span className="hidden md:inline">Free delivery over €30</span>
-            <span className="font-bold tracking-widest underline uppercase cursor-pointer hover:text-white underline-offset-4">EN</span>
+          <span className="transition-colors cursor-pointer hover:text-white">{t('checkOrderStatus')}</span>
+          <div className="flex items-center gap-4">
+            <span className="hidden md:inline">{t('freeDelivery')}</span>
+            {/* Language Selector */}
+            <div className="relative" ref={langDropdownRef}>
+              <button
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="flex items-center gap-1 font-bold tracking-widest uppercase transition-colors cursor-pointer hover:text-white"
+              >
+                <span className="text-base">{supportedLanguages.find(l => l.code === language)?.flag}</span>
+                {language}
+                <ChevronDown size={14} className={`transition-transform duration-200 ${langDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {langDropdownOpen && (
+                <div className="absolute right-0 z-20 w-40 mt-2 text-black bg-white rounded-md shadow-lg">
+                  <ul className="py-1">
+                    {supportedLanguages.map(lang => (
+                      <li key={lang.code}>
+                        <button
+                          onClick={() => {
+                            setLanguage(lang.code as 'EN' | 'TR' | 'RO' | 'BG');
+                            setLangDropdownOpen(false);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
+                        >
+                          <span className="mr-3 text-xl">{lang.flag}</span>
+                          <span>{lang.name}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -275,7 +334,7 @@ export default function Header() {
           <Search size={18} className="ml-4 text-gray-400" />
           <input 
             type="text" 
-            placeholder="Search books, authors, categories..." 
+            placeholder={t("searchPlaceholder")}
             className="w-full pl-3 pr-24 text-sm text-gray-800 h-11 focus:outline-none" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -285,7 +344,7 @@ export default function Header() {
             onClick={handleSearch}
             className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-emerald-600 hover:bg-emerald-700"
           >
-            Search
+            {t("search")}
           </button>
         </div>
 
@@ -298,7 +357,7 @@ export default function Header() {
           <Link href={user ? "/account" : "/auth"} className="flex items-center gap-2 group">
             {user && userName ? (
               <span className="text-sm font-bold capitalize transition-colors text-emerald-300 group-hover:text-white">
-                Hi, {userName}
+                  {t("hi")}, {userName}
               </span>
             ) : (
               <User 
@@ -335,18 +394,18 @@ export default function Header() {
 </li>
             {navItems.map((item) => (
               <li 
-                key={item.label} 
+                key={item.id} 
                 className="relative"
-                onMouseEnter={() => item.hasDropdown && handleMouseEnter(item.label)}
+                onMouseEnter={() => item.hasDropdown && handleMouseEnter(item.id)}
               >
                 {item.hasDropdown ? (
                   <button
                     className={`px-5 py-3 text-[13px] font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      openDropdown === item.label ? "bg-teal-900 text-white shadow-inner" : "text-white hover:bg-white/10"
+                      openDropdown === item.id ? "bg-teal-900 text-white shadow-inner" : "text-white hover:bg-white/10"
                     }`}
                   >
                     {item.icon} {item.label}
-                    <ChevronDown size={14} className={`transition-transform duration-300 ${openDropdown === item.label ? "rotate-180" : ""}`} />
+                    <ChevronDown size={14} className={`transition-transform duration-300 ${openDropdown === item.id ? "rotate-180" : ""}`} />
                   </button>
                 ) : (
                   <Link href={item.href || "#"} className="px-5 py-3 text-[13px] font-bold text-white hover:bg-white/10 flex items-center gap-2">
