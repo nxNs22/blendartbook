@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Loader2, CalendarHeart } from "lucide-react";
-import { supabase } from "../lib/supabaseClient"; 
+import { supabase, getErrorMessage } from "../lib/supabaseClient"; 
 import ProductCard from "./ProductCard";
 
 export default function MonthlySet() {
@@ -18,16 +18,16 @@ export default function MonthlySet() {
     const fetchMonthlySet = async () => {
       setLoading(true);
       try {
-        // İleride Supabase'e "is_monthly_set" diye bir boolean sütun açıp .eq("is_monthly_set", true) yazabilirsin.
-        // Şimdilik rastgele 12 kitap getiriyoruz.
         const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq('category_id', 1) 
-          .limit(12);
+          .from("collection_products")
+          .select("products ( * )")
+          .eq('collection_id', 3) 
+          .order('created_at', { ascending: false });
 
         if (error) throw error;
-        setProducts(data || []);
+        
+        const cleanProducts = data?.map((item: any) => item.products).filter(Boolean) || [];
+        setProducts(cleanProducts);
       } catch (err) {
         console.error("Monthly Set Error:", err);
       } finally {
@@ -59,6 +59,10 @@ export default function MonthlySet() {
     carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
+  if (!loading && products.length === 0) return null;
+
+  const gridAlignment = products.length < 5 ? "justify-center" : "justify-start";
+
   return (
     <section className="py-16 bg-teal-50/30 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -72,11 +76,11 @@ export default function MonthlySet() {
               <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">
                 Book Set of the Month
               </h2>
-              <p className="text-teal-600/80 mt-1 text-sm font-medium">Carefully selected 12 books for this month</p>
+              <p className="text-teal-600/80 mt-1 text-sm font-medium">Carefully selected books for this month</p>
             </div>
           </div>
 
-          {!loading && products.length > 0 && (
+          {!loading && products.length > 4 && (
             <div className="flex items-center gap-2">
               <button onClick={() => scroll('left')} className="p-2 rounded-full bg-white shadow-sm text-gray-600 hover:bg-teal-600 hover:text-white transition-colors">
                 <ChevronLeft size={24} />
@@ -95,7 +99,7 @@ export default function MonthlySet() {
             <div 
               ref={carouselRef}
               onMouseDown={handleMouseDown} onMouseLeave={handleMouseLeave} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}
-              className={`flex gap-6 overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden pb-8 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
+              className={`flex gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden pb-8 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
             >
               {products.map((product) => (
                 <div key={product.id} className="flex-none w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-20px)] snap-start select-none">
