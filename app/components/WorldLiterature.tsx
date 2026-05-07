@@ -11,6 +11,7 @@ export default function WorldLiterature() {
   
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
@@ -26,7 +27,11 @@ export default function WorldLiterature() {
 
         if (error) throw error;
 
-        const cleanProducts = data?.map((item: any) => item.products).filter(Boolean) || [];
+        const cleanProducts = data?.map((item: any) => {
+          const p = Array.isArray(item.products) ? item.products[0] : item.products;
+          return p;
+        }).filter(Boolean) || [];
+
         setProducts(cleanProducts);
       } catch (err: unknown) {
         console.error("World Lit Error:", err);
@@ -46,48 +51,53 @@ export default function WorldLiterature() {
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!carouselRef.current) return;
-    setIsDragging(true);
+    setIsMouseDown(true);
+    setIsDragging(false);
     setStartX(e.pageX - carouselRef.current.offsetLeft);
     setScrollLeft(carouselRef.current.scrollLeft);
   };
-  const handleMouseLeave = () => setIsDragging(false);
-  const handleMouseUp = () => setIsDragging(false);
+
+  const handleMouseLeave = () => {
+    setIsMouseDown(false);
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+    setTimeout(() => setIsDragging(false), 50);
+  };
+
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !carouselRef.current) return;
+    if (!isMouseDown || !carouselRef.current) return;
     e.preventDefault();
-    const walk = (e.pageX - carouselRef.current.offsetLeft - startX) * 2;
+    const x = e.pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    if (Math.abs(walk) > 5) {
+      setIsDragging(true);
+    }
     carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
   if (!loading && products.length === 0) return null;
-
   const gridAlignment = products.length < 5 ? "justify-center" : "justify-start";
 
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-teal-50 text-emerald-600 rounded-lg">
               <Globe size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">
-                World Literature
-              </h2>
+              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">World Literature</h2>
               <p className="text-gray-500 mt-1 text-sm">Timeless classics from around the globe</p>
             </div>
           </div>
-
           {!loading && products.length > 4 && (
             <div className="flex items-center gap-2">
-              <button onClick={() => scroll('left')} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-teal-600 hover:text-white transition-colors">
-                <ChevronLeft size={24} />
-              </button>
-              <button onClick={() => scroll('right')} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-teal-600 hover:text-white transition-colors">
-                <ChevronRight size={24} />
-              </button>
+              <button onClick={() => scroll('left')} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronLeft size={24} /></button>
+              <button onClick={() => scroll('right')} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronRight size={24} /></button>
             </div>
           )}
         </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Loader2, TrendingUp, ShoppingCart } from "lucide-react";
-import Link from "next/link"; // 🌟 YENİ: Link eklendi
+import Link from "next/link";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import { useCart } from "../context/CartContext"; 
 
@@ -27,12 +27,12 @@ export default function BestsellersSection() {
 
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
   const { addToCart } = useCart(); 
 
-  // 🌟 YENİ: Sepete ekleme ve tıklama olayını durdurma
   const handleAddToCart = (book: any, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation(); 
@@ -55,7 +55,12 @@ export default function BestsellersSection() {
           .order('created_at', { ascending: false });
 
         if (dbError) throw dbError;
-        const cleanBooks = data?.map((item: any) => item.products).filter(Boolean) || [];
+        
+        const cleanBooks = data?.map((item: any) => {
+          const p = Array.isArray(item.products) ? item.products[0] : item.products;
+          return p;
+        }).filter(Boolean) || [];
+
         setBooks(cleanBooks);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Bir hata oluştu");
@@ -74,14 +79,33 @@ export default function BestsellersSection() {
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!carouselRef.current) return;
-    setIsDragging(true); setStartX(e.pageX - carouselRef.current.offsetLeft); setScrollLeft(carouselRef.current.scrollLeft);
+    setIsMouseDown(true); 
+    setIsDragging(false); 
+    setStartX(e.pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
   };
-  const handleMouseLeave = () => setIsDragging(false);
-  const handleMouseUp = () => setIsDragging(false);
+
+  const handleMouseLeave = () => {
+    setIsMouseDown(false);
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+    setTimeout(() => setIsDragging(false), 50); 
+  };
+
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !carouselRef.current) return;
+    if (!isMouseDown || !carouselRef.current) return;
+    
     e.preventDefault();
-    const walk = (e.pageX - carouselRef.current.offsetLeft - startX) * 2;
+    const x = e.pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+
+    if (Math.abs(walk) > 5) {
+      setIsDragging(true);
+    }
+    
     carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
@@ -118,11 +142,15 @@ export default function BestsellersSection() {
           <div className="relative overflow-hidden group">
             <div 
               ref={carouselRef}
-              onMouseDown={handleMouseDown} onMouseLeave={handleMouseLeave} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}
+              onMouseDown={handleMouseDown} 
+              onMouseLeave={handleMouseLeave} 
+              onMouseUp={handleMouseUp} 
+              onMouseMove={handleMouseMove}
               className={`flex gap-4 md:gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-4 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
             >
               {books.map((book) => (
                 <div key={book.id} className="flex-none w-[calc(50%-8px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-20px)] snap-start select-none">
+                  {/* Tıklamaların linkleri tetiklemesi için isDragging kontrolü burada da yapılıyor */}
                   <div
                     className={`group relative hover:-translate-y-1 transition-transform duration-300 rounded-xl bg-white border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl ${isDragging ? "pointer-events-none" : ""}`}
                     onMouseEnter={() => setHoveredBook(book.id)}
@@ -134,13 +162,13 @@ export default function BestsellersSection() {
                       </div>
                     )}
 
-                    {/* 🌟 RESİM VE SEPET BUTONU */}
-                    <div className="relative aspect-[3/4] bg-gray-50 flex items-center justify-center overflow-hidden">
-                      <Link href={`/product/${book.id}`} className="absolute inset-0 z-0 flex items-center justify-center">
+                    <div className="relative aspect-[3/4] bg-gray-50 overflow-hidden">
+                      {/* LİNK: Artık kartın içini doğrudan kapsıyor */}
+                      <Link href={`/product/${book.id}`} className="block w-full h-full">
                         {book.image_url ? (
                           <img src={book.image_url} alt={book.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" draggable="false" />
                         ) : (
-                          <span className="text-6xl group-hover:scale-110 transition-transform duration-300">📚</span>
+                          <div className="w-full h-full flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300">📚</div>
                         )}
                       </Link>
 
@@ -151,7 +179,6 @@ export default function BestsellersSection() {
                       </div>
                     </div>
 
-                    {/* 🌟 ALT KISIM: BAŞLIK LİNKİ VE DETAYLAR */}
                     <div className="p-3">
                       <Link href={`/product/${book.id}`}>
                         <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-tight group-hover:text-teal-600 transition-colors">

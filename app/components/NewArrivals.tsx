@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Loader2, Sparkles, ShoppingCart } from "lucide-react";
-import Link from "next/link"; // 🌟 YENİ: Link eklendi
+import Link from "next/link";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import { useCart } from "../context/CartContext";
 
@@ -28,6 +28,7 @@ export default function NewArrivals() {
   
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
@@ -45,9 +46,13 @@ export default function NewArrivals() {
 
         if (error) throw error;
         
-        const cleanProducts = data?.map((item: any) => item.products).filter(Boolean) || [];
+        const cleanProducts = data?.map((item: any) => {
+          const p = Array.isArray(item.products) ? item.products[0] : item.products;
+          return p;
+        }).filter(Boolean) || [];
+
         setProducts(cleanProducts);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("New Arrivals Error:", err);
       } finally {
         setLoading(false);
@@ -57,10 +62,9 @@ export default function NewArrivals() {
     fetchNewProducts();
   }, []);
 
-  // 🌟 YENİ: Sepete ekleme ve tıklama olayını durdurma
   const handleAddToCart = (product: any, e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // Link'e tıklanmasını engeller
+    e.stopPropagation(); 
     addToCart({
       id: product.id,
       title: product.title,
@@ -77,15 +81,30 @@ export default function NewArrivals() {
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!carouselRef.current) return;
-    setIsDragging(true); setStartX(e.pageX - carouselRef.current.offsetLeft); setScrollLeft(carouselRef.current.scrollLeft);
+    setIsMouseDown(true);
+    setIsDragging(false);
+    setStartX(e.pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
   };
-  const handleMouseLeave = () => setIsDragging(false);
-  const handleMouseUp = () => setIsDragging(false);
+
+  const handleMouseLeave = () => {
+    setIsMouseDown(false);
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+    setTimeout(() => setIsDragging(false), 50);
+  };
+
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !carouselRef.current) return;
+    if (!isMouseDown || !carouselRef.current) return;
     e.preventDefault();
     const x = e.pageX - carouselRef.current.offsetLeft;
     const walk = (x - startX) * 2;
+    if (Math.abs(walk) > 5) {
+      setIsDragging(true);
+    }
     carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
@@ -95,7 +114,6 @@ export default function NewArrivals() {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-teal-50 text-teal-600 rounded-lg">
@@ -131,9 +149,9 @@ export default function NewArrivals() {
                     onMouseLeave={() => setHoveredProduct(null)}
                   >
                     
-                    {/* 🌟 RESİM VE SEPET BUTONU */}
-                    <div className="relative aspect-[4/5] bg-[#F8F9FA] flex items-center justify-center p-6 overflow-hidden">
-                      <Link href={`/product/${product.id}`} className="absolute inset-0 z-0 flex items-center justify-center p-6">
+                    <div className="relative aspect-[4/5] bg-[#F8F9FA] overflow-hidden">
+                      {/* LİNK: Artık kartın içini doğrudan kapsıyor */}
+                      <Link href={`/product/${product.id}`} className="flex items-center justify-center w-full h-full p-6">
                         {product.image_url ? (
                           <img src={product.image_url} alt={product.title} className="object-contain w-full h-full drop-shadow-md group-hover/card:scale-105 transition-transform duration-500" draggable="false" />
                         ) : (
@@ -141,7 +159,6 @@ export default function NewArrivals() {
                         )}
                       </Link>
 
-                      {/* overlay pointer-events-none, buton pointer-events-auto yapıldı */}
                       <div className={`absolute inset-0 z-10 bg-black/5 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${hoveredProduct === product.id ? "opacity-100" : "opacity-0"}`}>
                          <button 
                            onClick={(e) => handleAddToCart(product, e)} 
@@ -153,7 +170,6 @@ export default function NewArrivals() {
                       </div>
                     </div>
 
-                    {/* 🌟 ALT KISIM: BAŞLIK LİNKİ VE DETAYLAR */}
                     <div className="p-5 flex flex-col flex-1 bg-white">
                       <Link href={`/product/${product.id}`}>
                         <h3 className="text-[17px] font-bold text-[#1A2E35] line-clamp-2 leading-snug mb-1 hover:text-teal-600 transition-colors">

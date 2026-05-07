@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link"; // 🌟 YENİ
+import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
@@ -24,9 +24,11 @@ export default function ProductCard({ product }: { product: any }) {
   const [hovered, setHovered] = useState(false);
   const { addToCart } = useCart();
 
+  const productId = product?.id;
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation(); // 🌟 YENİ: Link tıklamasını durdurur
+    e.stopPropagation(); 
     addToCart({
       id: product.id,
       title: product.title,
@@ -35,22 +37,28 @@ export default function ProductCard({ product }: { product: any }) {
     });
   };
 
+  if (!productId) return null; 
+
   return (
     <div 
       className="group/card relative flex flex-col h-full bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="relative aspect-[4/5] bg-[#F8F9FA] flex items-center justify-center p-6 overflow-hidden">
-        {/* LİNK BAŞLANGICI */}
-        <Link href={`/product/${product.id}`} className="absolute inset-0 z-0 flex items-center justify-center p-6">
+      <div className="relative aspect-[4/5] bg-[#F8F9FA] overflow-hidden">
+        {/* LİNK: Artık kartın içini doğrudan kapsıyor */}
+        <Link href={`/product/${productId}`} className="flex items-center justify-center w-full h-full p-6">
           {product.image_url ? (
-            <img src={product.image_url} alt={product.title} className="object-contain w-full h-full drop-shadow-md group-hover/card:scale-105 transition-transform duration-500" draggable="false" />
+            <img 
+              src={product.image_url} 
+              alt={product.title} 
+              className="object-contain w-full h-full drop-shadow-md group-hover/card:scale-105 transition-transform duration-500" 
+              draggable="false"
+            />
           ) : (
             <span className="text-6xl group-hover/card:scale-105 transition-transform duration-300">📚</span>
           )}
         </Link>
-        {/* LİNK BİTİŞİ */}
 
         <div className={`absolute inset-0 z-10 bg-black/5 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${hovered ? "opacity-100" : "opacity-0"}`}>
            <button 
@@ -64,7 +72,7 @@ export default function ProductCard({ product }: { product: any }) {
       </div>
 
       <div className="p-5 flex flex-col flex-1 bg-white">
-        <Link href={`/product/${product.id}`}>
+        <Link href={`/product/${productId}`}>
           <h3 className="text-[17px] font-bold text-[#1A2E35] line-clamp-2 leading-snug mb-1 hover:text-teal-600 transition-colors">
             {product.title}
           </h3>
@@ -72,7 +80,9 @@ export default function ProductCard({ product }: { product: any }) {
         <p className="text-[15px] text-[#8A9A9D] truncate mb-2">{product.details?.author || 'Unknown Author'}</p>
         <StarRating rating={5} />
         <div className="mt-auto pt-4">
-          <span className="text-[22px] font-black text-teal-700 tracking-tight">{Number(product.price || 0).toFixed(2)} €</span>
+          <span className="text-[22px] font-black text-teal-700 tracking-tight">
+            {Number(product.price || 0).toFixed(2)} €
+          </span>
         </div>
       </div>
     </div>
