@@ -46,13 +46,13 @@ export default function ProductCard({ product }: { product: any }) {
       onMouseLeave={() => setHovered(false)}
     >
       <div className="relative aspect-[4/5] bg-[#F8F9FA] overflow-hidden">
-        {/* LİNK: Artık kartın içini doğrudan kapsıyor */}
-        <Link href={`/product/${productId}`} className="flex items-center justify-center w-full h-full p-6">
+        <Link href={`/product/${productId}`} className="flex items-center justify-center w-full h-full">
           {product.image_url ? (
+            // 🌟 DÜZELTME BURADA: object-contain yerine object-cover eklendi (resim alanı tam dolduracak)
             <img 
               src={product.image_url} 
               alt={product.title} 
-              className="object-contain w-full h-full drop-shadow-md group-hover/card:scale-105 transition-transform duration-500" 
+              className="object-cover w-full h-full group-hover/card:scale-105 transition-transform duration-500" 
               draggable="false"
             />
           ) : (

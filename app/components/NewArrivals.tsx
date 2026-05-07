@@ -139,21 +139,24 @@ export default function NewArrivals() {
             <div 
               ref={carouselRef}
               onMouseDown={handleMouseDown} onMouseLeave={handleMouseLeave} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}
-              className={`flex gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
+              /* 🌟 items-stretch eklendi: Bu sayede tüm kartlar en uzun karta göre hizalanır */
+              className={`flex items-stretch gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
             >
               {products.map((product) => (
-                <div key={product.id} className="flex-none w-[calc(60%-12px)] sm:w-[calc(40%-16px)] md:w-[calc(33.333%-16px)] lg:w-[calc(20%-20px)] snap-start select-none">
+                /* 🌟 flex eklendi: Kartın içini tam olarak doldurmasını sağlar */
+                <div key={product.id} className="flex-none flex w-[calc(60%-12px)] sm:w-[calc(40%-16px)] md:w-[calc(33.333%-16px)] lg:w-[calc(20%-20px)] snap-start select-none">
                   <div 
-                    className={`group/card relative flex flex-col h-full bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden ${isDragging ? "pointer-events-none" : ""}`}
+                    /* 🌟 w-full eklendi: Kart kapsayıcıya tam oturur */
+                    className={`group/card w-full relative flex flex-col bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden ${isDragging ? "pointer-events-none" : ""}`}
                     onMouseEnter={() => setHoveredProduct(product.id)}
                     onMouseLeave={() => setHoveredProduct(null)}
                   >
                     
                     <div className="relative aspect-[4/5] bg-[#F8F9FA] overflow-hidden">
-                      {/* LİNK: Artık kartın içini doğrudan kapsıyor */}
-                      <Link href={`/product/${product.id}`} className="flex items-center justify-center w-full h-full p-6">
+                      <Link href={`/product/${product.id}`} className="flex items-center justify-center w-full h-full p-4">
                         {product.image_url ? (
-                          <img src={product.image_url} alt={product.title} className="object-contain w-full h-full drop-shadow-md group-hover/card:scale-105 transition-transform duration-500" draggable="false" />
+                          /* 🌟 object-cover yapıldı: Kapak resimleri boşluk kalmadan şıkça oturacak */
+                          <img src={product.image_url} alt={product.title} className="object-cover w-full h-full group-hover/card:scale-105 transition-transform duration-500" draggable="false" />
                         ) : (
                           <span className="text-6xl group-hover/card:scale-105 transition-transform duration-300">📚</span>
                         )}

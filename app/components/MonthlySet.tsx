@@ -113,7 +113,8 @@ export default function MonthlySet() {
             >
               {products.map((product) => (
                 <div key={product.id} className="flex-none w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-20px)] snap-start select-none">
-                  <div className={isDragging ? "pointer-events-none" : ""}>
+                  {/* 🌟 DÜZELTME BURADA: h-full eklendi, böylece kartlar her zaman aynı boyda uzar */}
+                  <div className={`h-full ${isDragging ? "pointer-events-none" : ""}`}>
                     <ProductCard product={product} />
                   </div>
                 </div>
