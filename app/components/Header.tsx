@@ -5,7 +5,7 @@ import Link from "next/link";
 import { 
   Search, User, HelpCircle, ShoppingCart, 
   Home, ChevronDown, Gift, Ticket,
-  Calendar, Headphones, Gamepad2, Video, 
+  Calendar, Headphones, Gamepad2, Video, ShoppingBag, Briefcase,
   Image as ImageIcon, PenTool, Monitor,
   VenetianMask, UserRound, Baby, Sparkles,
   BookOpen, Mic, Tablet, Palette, Paintbrush, Box, Music, Scissors
@@ -48,8 +48,8 @@ const otherProducts = [
 ];
 
 const giftCategories = [
-  { name: "Gifts for women", icon: <VenetianMask size={32} />, href: "/gifts/women" },
-  { name: "Gifts for men", icon: <UserRound size={32} />, href: "/gifts/men" },
+  { name: "Gifts for women", icon: <ShoppingBag size={32} />, href: "/gifts/women" },
+  { name: "Gifts for men", icon: <Briefcase size={32} />, href: "/gifts/men" },
   { name: "Gifts for girls", icon: <Sparkles size={32} />, href: "/gifts/girls" },
   { name: "Gifts for boys", icon: <Gamepad2 size={32} />, href: "/gifts/boys" },
   { name: "Gifts for children", icon: <Baby size={32} />, href: "/gifts/children" },
@@ -81,8 +81,8 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
 
   return (
     <div className="absolute left-0 z-50 w-full pt-2 duration-200 top-full animate-in fade-in">
-      {/* 🌟 MEGA MENÜ ÜST ÇİZGİSİ TURKUAZ OLDU */}
-      <div className="bg-teal-900 border-t-2 border-teal-400 shadow-2xl rounded-b-xl">
+      {/* 🌟 MEGA MENÜ ÜST ÇİZGİSİ KIRMIZI OLDU */}
+      <div className="bg-[#7F0A1A] border-t-2 border-[#E62E4D] shadow-2xl rounded-b-xl">
         <div className="px-6 py-10 mx-auto max-w-7xl">
           
           {content && content.data && (
@@ -99,7 +99,7 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
                       className="flex flex-col items-center gap-3 transition-opacity group hover:opacity-80"
                     >
                       <div className="text-5xl transition-transform md:text-6xl drop-shadow-lg group-hover:scale-110">{lang.flag}</div>
-                      <span className="text-sm font-semibold text-teal-400 group-hover:text-white">{lang.name}</span>
+                      <span className="text-sm font-semibold text-white/80 group-hover:text-white">{lang.name}</span>
                       <span className="text-sm text-white/50">{lang.count}</span>
                     </Link>
                   );
@@ -132,7 +132,7 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
               <div className="grid flex-1 grid-cols-2 gap-6 md:grid-cols-5">
                 {giftCategories.map((item) => (
                   <Link key={item.name} href={item.href} onClick={onClose} className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all">
-                    <div className="flex items-center justify-center w-20 h-20 mb-4 text-teal-400 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-teal-500 group-hover:text-white group-hover:scale-110">
+                    <div className="flex items-center justify-center w-20 h-20 mb-4 text-white/80 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-[#E62E4D] group-hover:text-white group-hover:scale-110">
                       {item.icon}
                     </div>
                     <span className="text-sm font-bold leading-tight text-center text-white">{item.name}</span>
@@ -161,7 +161,7 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
                      onClick={onClose}
                      className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all"
                    >
-                     <div className="flex items-center justify-center w-20 h-20 mb-4 text-teal-400 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-teal-500 group-hover:text-white group-hover:scale-110">
+                     <div className="flex items-center justify-center w-20 h-20 mb-4 text-white/80 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-[#E62E4D] group-hover:text-white group-hover:scale-110">
                        {sub.icon}
                      </div>
                      <span className="text-sm font-bold leading-tight text-center text-white">
@@ -174,7 +174,7 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
           )}
 
           <div className="flex justify-center pt-6 mt-10 text-sm italic border-t border-white/10 text-white/80">
-            <Sparkles className="mr-2 text-teal-400" size={18} />
+            <Sparkles className="mr-2 text-[#E62E4D]" size={18} />
             Don&apos;t know what to choose? We are here to help!
           </div>
         </div>
@@ -255,10 +255,10 @@ export default function Header() {
   };
 
   return (
-    // 🌟 HEADER ARKA PLANI TURKUAZ (bg-teal-600) YAPILDI
-    <header className="sticky top-0 z-50 flex flex-col items-center w-full bg-teal-600 shadow-md">
-      {/* 1. TOP BAR (bg-teal-700) */}
-      <div className="w-full bg-teal-700 text-white/80 text-[11px] py-1.5 flex justify-center">
+    // 🌟 HEADER ARKA PLANI KIRMIZI (#C8102E) YAPILDI
+    <header className="sticky top-0 z-50 flex flex-col items-center w-full bg-[#C8102E] shadow-md">
+      {/* 1. TOP BAR (bg-[#7F0A1A]) */}
+      <div className="w-full bg-[#7F0A1A] text-white/80 text-[11px] py-1.5 flex justify-center">
         <div className="flex items-center justify-between w-full px-4 max-w-7xl">
           <span className="transition-colors cursor-pointer hover:text-white">Check order status</span>
           <div className="flex gap-4">
@@ -271,8 +271,8 @@ export default function Header() {
       {/* 2. MAIN HEADER */}
       <div className="flex items-center justify-between w-full gap-6 px-4 py-4 max-w-7xl lg:gap-12">
         <Link href="/" className="flex flex-col items-center flex-shrink-0 group">
-          <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:text-teal-100">blendartbook</span>          
-          <span className="text-teal-200 text-[9px] tracking-[0.2em] uppercase font-bold">Be Whoever</span>
+          <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
+          <span className="text-white/80 text-[9px] tracking-[0.2em] uppercase font-bold">Be Whoever</span>
         </Link>
 
         <div className="relative flex items-center flex-1 max-w-2xl overflow-hidden bg-white rounded-lg shadow-inner">
@@ -285,10 +285,10 @@ export default function Header() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleSearchKeyPress}
           />
-          {/* 🌟 ARAMA BUTONU RENGİ GÜNCELLENDİ */}
+          {/* 🌟 ARAMA BUTONU RENGİ GÜNCELLENDİ (#009966) */}
           <button 
             onClick={handleSearch}
-            className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-teal-700 hover:bg-teal-800"
+            className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-[#009966] hover:bg-[#008055]"
           >
             Search
           </button>
@@ -301,27 +301,27 @@ export default function Header() {
           
           <Link href={user ? "/account" : "/auth"} className="flex items-center gap-2 group">
             {user && userName ? (
-              <span className="text-sm font-bold capitalize transition-colors text-teal-200 group-hover:text-white">
+              <span className="text-sm font-bold capitalize transition-colors text-white/90 group-hover:text-white">
                 Hi, {userName}
               </span>
             ) : (
               <User 
                 size={22} 
-                className={`cursor-pointer transition-opacity ${user ? "opacity-100 text-teal-200" : "opacity-80 group-hover:opacity-100"}`} 
+                className={`cursor-pointer transition-opacity ${user ? "opacity-100 text-white" : "opacity-80 group-hover:opacity-100"}`} 
               />
             )}
           </Link>
           
-          {/* 🌟 SEPET BUTONU RENGİ GÜNCELLENDİ (bg-teal-700) */}
+          {/* 🌟 SEPET BUTONU RENGİ GÜNCELLENDİ (#00C292) */}
           <Link 
             href="/cart" 
-            className="relative flex items-center bg-teal-700 px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-teal-800 transition-all shadow-md"
+            className="relative flex items-center bg-[#00C292] px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#00A67C] transition-all shadow-md text-white"
           >
             <ShoppingCart size={18} />
             <span className="hidden ml-2 text-white md:inline-block">Cart</span>
             
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-teal-700">
+              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white">
                 {cartCount}
               </span>
             )}
@@ -331,7 +331,7 @@ export default function Header() {
       </div>
 
       {/* 3. NAVIGATION */}
-      <nav className="relative flex justify-center w-full border-t bg-teal-800/30 border-white/5">
+      <nav className="relative flex justify-center w-full border-t bg-black/10 border-white/5">
         <div className="relative flex items-center w-full px-4 max-w-7xl" onMouseLeave={handleMouseLeave}>
           <ul className="flex items-center">
             <li className="px-4 py-3 text-white cursor-pointer hover:bg-white/10">
@@ -346,7 +346,7 @@ export default function Header() {
                 {item.hasDropdown ? (
                   <button
                     className={`px-5 py-3 text-[13px] font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      openDropdown === item.label ? "bg-teal-900 text-white shadow-inner" : "text-white hover:bg-white/10"
+                      openDropdown === item.label ? "bg-[#7F0A1A] text-white shadow-inner" : "text-white hover:bg-white/10"
                     }`}
                   >
                     {item.icon} {item.label}
