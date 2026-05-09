@@ -88,17 +88,15 @@ function PaymentForm({
     setProcessing(true);
     setErrorMessage(null);
 
-    // 1. Önce Siparişi Veritabanına "Pending" Olarak Kaydet
+    // 1. Save order to Supabase as "Pending"
     const orderCode = await onBeforePayment();
     if (!orderCode) {
-      setErrorMessage(
-        "Sipariş oluşturulurken veritabanında bir hata oluştu. Lütfen tekrar deneyin.",
-      );
+      setErrorMessage(t("order_save_error"));
       setProcessing(false);
       return;
     }
 
-    // 2. Stripe Ödemesini Gerçekleştir
+    // 2. Execute Stripe Payment
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -122,10 +120,10 @@ function PaymentForm({
       return;
     }
 
-    // 3. Ödeme başarılıysa Supabase'de durumu "Paid" yap
+    // 3. If payment successful, update status to "Paid" in Supabase
     await onPaymentSuccess(orderCode);
 
-    // 4. Başarılı sayfasına sipariş numarasıyla yönlendir
+    // 4. Redirect to success page with order code
     window.location.href = `/checkout/success?orderCode=${orderCode}`;
   };
 
@@ -197,10 +195,10 @@ export default function CheckoutPage() {
   // --- SUPABASE SİPARİŞ KAYIT FONKSİYONU ---
   const createOrderInSupabase = async (): Promise<string | null> => {
     try {
-      // Rastgele Sipariş Kodu Üret (Örn: BLND-8X4M9Q)
+      // Generate random order code (Ex: BLND-8X4M9Q)
       const orderNumber = `BLND-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-      // 1. Ana Siparişi (orders) kaydet
+      // 1. Save main order (orders)
       const { data: orderData, error: orderError } = await supabase
         .from("orders")
         .insert({
@@ -208,7 +206,7 @@ export default function CheckoutPage() {
           customer_email: email.trim(),
           customer_name: fullName.trim(),
           customer_phone: phone.trim(),
-          shipping_country: country.trim(), // İleride adres detaylarını da ayrı sütuna ekleyebilirsin
+          shipping_country: country.trim(), // Shipping address details could be added to separate columns in the future
           total_amount: localTotal,
           discount_amount: localDiscount,
           status: "pending",
@@ -220,7 +218,7 @@ export default function CheckoutPage() {
 
       if (orderError) throw orderError;
 
-      // 2. Siparişteki Ürünleri (order_items) kaydet
+      // 2. Save order items (order_items)
       const orderItems = cart.map((item) => ({
         order_id: orderData.id,
         product_id: item.id,
@@ -239,7 +237,7 @@ export default function CheckoutPage() {
       return orderNumber;
     } catch (err: unknown) {
       console.error(
-        "Sipariş veritabanına kaydedilemedi:",
+        "Order could not be saved to database:",
         getErrorMessage(err),
       );
       return null;
@@ -270,9 +268,7 @@ export default function CheckoutPage() {
 
   const checkLegalConsent = () => {
     if (!legalAccepted) {
-      setIntentError(
-        "Please accept Distance Sales Agreement, Refund Policy and KVKK text.",
-      );
+      setIntentError(t("legal_consent_error"));
       setLegalError(true);
       const legalSection = document.getElementById("legal-consent");
       legalSection?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -285,7 +281,7 @@ export default function CheckoutPage() {
 
   const createPaymentIntent = async () => {
     if (!canInitPayment) {
-      setIntentError("Please add items to cart and enter your email.");
+      setIntentError(t("cart_email_error"));
       return;
     }
     if (!checkLegalConsent()) return;
@@ -330,19 +326,17 @@ export default function CheckoutPage() {
 
   const startRevolutCheckout = async () => {
     if (!canInitPayment) {
-      setIntentError("Please add items to cart and enter your email.");
+      setIntentError(t("cart_email_error"));
       return;
     }
     if (!checkLegalConsent()) return;
 
     setRevolutLoading(true);
     try {
-      // 1. Önce Siparişi Veritabanına Kaydet
+      // 1. Save order to Supabase
       const orderCode = await createOrderInSupabase();
       if (!orderCode) {
-        throw new Error(
-          "Veritabanına sipariş kaydedilemedi. Lütfen tekrar deneyin.",
-        );
+        throw new Error(t("order_save_error"));
       }
 
       // 2. Revolut API'sine bağlan
@@ -385,16 +379,16 @@ export default function CheckoutPage() {
 
   const handlePayOnDelivery = async () => {
     if (!canInitPayment) {
-      setIntentError("Please add items to cart and enter your email.");
+      setIntentError(t("cart_email_error"));
       return;
     }
     if (!checkLegalConsent()) return;
 
     setPodLoading(true);
-    // Kapıda ödeme seçildiğinde siparişi kaydet ve başarılı sayfasına at
+    // Save order and redirect to success page
     const orderCode = await createOrderInSupabase();
     if (!orderCode) {
-      setIntentError("Failed to save order. Please try again.");
+      setIntentError(t("order_save_error"));
       setPodLoading(false);
       return;
     }
