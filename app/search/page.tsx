@@ -208,7 +208,7 @@ function SearchPageContent() {
           {/* Fiyat Aralığı */}
           <div>
             <label className="text-sm font-semibold text-gray-700 mb-3 block">
-              Fiyat Aralığı: 0 - {priceRange} TL
+              Fiyat Aralığı: 0 - {priceRange} €
             </label>
             <input
               type="range"
@@ -280,7 +280,7 @@ function SearchPageContent() {
                   {/* Fiyat ve Kategori */}
                   <div className="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between">
                     <span className="text-teal-700 font-black text-base">
-                      {book.price} TL
+                      {book.price} €
                     </span>
                     <span className="text-xs font-bold text-gray-400 uppercase bg-gray-50 px-2 py-1 rounded">
                       {book.category || "Genel"}

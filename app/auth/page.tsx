@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import { Mail, Lock, ArrowRight, Loader2, CheckCircle2, UserPlus, User, Phone, ArrowLeft } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function AuthPage() {
+  const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true); // Toggle state
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isRecoveryReset, setIsRecoveryReset] = useState(false);
@@ -164,36 +166,36 @@ export default function AuthPage() {
           </Link>
           <h1 className="text-2xl font-bold text-[#1A2E35]">
             {isRecoveryReset
-              ? "Set your new password"
+              ? t("set_new_password")
               : isForgotPassword
-                ? "Reset your password"
+                ? t("reset_your_password")
                 : isLogin
-                  ? "Welcome back"
-                  : "Create an Account"}
+                  ? t("welcome_back")
+                  : t("create_an_account")}
           </h1>
           <p className="text-sm text-gray-500 mt-2">
             {isRecoveryReset
-              ? "Choose a secure password and save it."
+              ? t("choose_secure_password")
               : isForgotPassword
-              ? "We'll email you a password reset link."
+              ? t("email_reset_link")
               : isLogin
-                ? "Enter your details to access your account."
-                : "Join us to track orders and save your cart."}
+                ? t("enter_details_access")
+                : t("join_track_orders")}
           </p>
         </div>
 
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-6 border border-red-100 flex items-start gap-2 animate-in fade-in">
-            <span className="font-bold shrink-0">Error:</span> {error}
+            <span className="font-bold shrink-0">{t("error_label")}</span> {error}
           </div>
         )}
 
         {resetEmailSent && isForgotPassword ? (
           <div className="bg-teal-50 text-teal-800 p-6 rounded-xl border border-teal-100 text-center animate-in zoom-in-95">
             <CheckCircle2 size={48} className="text-teal-500 mx-auto mb-4" />
-            <h3 className="font-bold text-lg mb-2">Check your email!</h3>
+            <h3 className="font-bold text-lg mb-2">{t("check_your_email")}</h3>
             <p className="text-sm opacity-90">
-              If an account exists for <strong>{email.trim()}</strong>, you&apos;ll receive a reset link shortly.
+              {t("if_account_exists")} <strong>{email.trim()}</strong>, you&apos;ll receive a reset link shortly.
             </p>
             <button
               onClick={returnToLogin}
@@ -201,21 +203,21 @@ export default function AuthPage() {
               type="button"
             >
               <ArrowLeft size={16} />
-              Return to Login
+              {t("return_to_login")}
             </button>
           </div>
         ) : success && !isLogin ? (
           <div className="bg-teal-50 text-teal-800 p-6 rounded-xl border border-teal-100 text-center animate-in zoom-in-95">
             <CheckCircle2 size={48} className="text-teal-500 mx-auto mb-4" />
-            <h3 className="font-bold text-lg mb-2">Check your email!</h3>
+            <h3 className="font-bold text-lg mb-2">{t("check_your_email")}</h3>
             <p className="text-sm opacity-90">
-              We&apos;ve sent a confirmation link to <strong>{email}</strong>. Please click it to verify your account.
+              We&apos;ve sent a confirmation link to <strong>{email}</strong>. {t("click_verify_account")}
             </p>
             <button 
               onClick={() => { setSuccess(false); setIsLogin(true); }}
               className="mt-6 inline-block bg-[#1A2E35] text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-black transition-colors"
             >
-              Return to Login
+              {t("return_to_login")}
             </button>
           </div>
         ) : (
@@ -225,7 +227,7 @@ export default function AuthPage() {
             {!isLogin && !isForgotPassword && !isRecoveryReset && (
               <>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Full Name</label>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">{t("full_name")}</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                       <User size={18} />
@@ -236,13 +238,13 @@ export default function AuthPage() {
                       onChange={(e) => setFullName(e.target.value)}
                       required
                       className="w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#F14D5D] focus:ring-1 focus:ring-[#F14D5D] transition-colors bg-gray-50 focus:bg-white"
-                      placeholder="John Doe"
+                      placeholder={t("john_doe")}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Phone Number</label>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">{t("phone_number")}</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                       <Phone size={18} />
@@ -262,7 +264,7 @@ export default function AuthPage() {
             {/* ---------------------------------------------- */}
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Email Address</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">{t("email_address")}</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                   <Mail size={18} />
@@ -284,7 +286,7 @@ export default function AuthPage() {
             {!isForgotPassword && !isRecoveryReset && (
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide">Password</label>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide">{t("password_label")}</label>
                   {isLogin && (
                     <button
                       type="button"
@@ -314,7 +316,7 @@ export default function AuthPage() {
 
             {isRecoveryReset && (
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">New Password</label>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">{t("new_password")}</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <Lock size={18} />
@@ -326,7 +328,7 @@ export default function AuthPage() {
                     required
                     minLength={6}
                     className="w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white focus:border-[#F14D5D] focus:ring-[#F14D5D]"
-                    placeholder="At least 6 characters"
+                    placeholder={t("at_least_6_chars")}
                   />
                 </div>
               </div>
@@ -334,7 +336,7 @@ export default function AuthPage() {
 
             {isRecoveryReset && (
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Confirm Password</label>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">{t("confirm_password")}</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <Lock size={18} />
@@ -346,7 +348,7 @@ export default function AuthPage() {
                     required
                     minLength={6}
                     className="w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white focus:border-[#F14D5D] focus:ring-[#F14D5D]"
-                    placeholder="Repeat new password"
+                    placeholder={t("repeat_new_password")}
                   />
                 </div>
               </div>
@@ -362,13 +364,13 @@ export default function AuthPage() {
               {loading ? (
                 <Loader2 className="animate-spin" size={20} />
               ) : isRecoveryReset ? (
-                <>Update Password <ArrowRight size={18} /></>
+                <>{t("update_password")} <ArrowRight size={18} /></>
               ) : isForgotPassword ? (
-                <>Send Reset Link <ArrowRight size={18} /></>
+                <>{t("send_reset_link")} <ArrowRight size={18} /></>
               ) : isLogin ? (
-                <>Log In <ArrowRight size={18} /></>
+                <>{t("log_in")} <ArrowRight size={18} /></>
               ) : (
-                <>Create Account <UserPlus size={18} /></>
+                <>{t("create_account_btn")} <UserPlus size={18} /></>
               )}
             </button>
 
@@ -378,7 +380,7 @@ export default function AuthPage() {
                 onClick={returnToLogin}
                 className="w-full h-12 rounded-lg font-bold flex items-center justify-center gap-2 border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                <ArrowLeft size={18} /> Back to Login
+                <ArrowLeft size={18} /> {t("back_to_login")}
               </button>
             )}
           </form>
@@ -393,7 +395,7 @@ export default function AuthPage() {
               type="button"
               className={`font-bold hover:underline transition-colors ${isLogin ? 'text-[#F14D5D]' : 'text-[#2CB391]'}`}
             >
-              {isLogin ? "Sign up for free" : "Log in here"}
+              {isLogin ? t("sign_up_free") : t("log_in_here")}
             </button>
           </div>
         )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useLanguage } from "../../context/LanguageContext";
 import { useState, useMemo, useEffect } from "react";
 import { Filter, Star, ShoppingCart, ChevronDown, Loader2 } from "lucide-react";
 import { supabase, getErrorMessage } from "../../lib/supabaseClient"; 
@@ -8,6 +9,7 @@ import { useCart } from "../../context/CartContext";
 import ProductCard from "../../components/ProductCard";
 
 export default function BooksByLanguage() {
+  const { t } = useLanguage();
   const params = useParams();
   const currentLanguage = (params?.languages as string) || "";
 
@@ -69,12 +71,12 @@ export default function BooksByLanguage() {
       <aside className="w-full md:w-64 space-y-8 bg-gray-50 p-6 rounded-xl h-fit border border-gray-100">
         <div>
           <h3 className="font-bold text-lg mb-6 flex items-center gap-2 border-b pb-2 text-gray-800">
-            <Filter size={20} className="text-red-700" /> Properties
+            <Filter size={20} className="text-red-700" /> {t("properties")}
           </h3>
 
           <div className="mb-8">
             <label className="text-sm font-bold text-gray-700 block mb-3">
-              Price: up to €{priceRange}
+              {t("price_up_to")}{priceRange}
             </label>
             <input 
               type="range" 
@@ -93,12 +95,12 @@ export default function BooksByLanguage() {
         <header className="flex justify-between items-center mb-8 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
           <div>
             <h1 className="text-2xl font-black uppercase text-gray-900 italic">
-              {currentLanguage} Books
+              {t(currentLanguage.toLowerCase()) || currentLanguage} {t("Books".toLowerCase()) || "Books"}
             </h1>
-            <p className="text-xs text-gray-500 font-medium">{filteredProducts.length} items found</p>
+            <p className="text-xs text-gray-500 font-medium">{filteredProducts.length} {t("items_found")}</p>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600 font-bold cursor-pointer">
-            Sort by: Popularity <ChevronDown size={16} />
+            {t("sort_by_popularity")} <ChevronDown size={16} />
           </div>
         </header>
 
@@ -120,7 +122,7 @@ export default function BooksByLanguage() {
 
         {!loading && filteredProducts.length === 0 && (
           <div className="text-center py-20 text-gray-400">
-            <p>No products found for this language or price range.</p>
+            <p>{t("no_products_found")}</p>
           </div>
         )}
       </main>

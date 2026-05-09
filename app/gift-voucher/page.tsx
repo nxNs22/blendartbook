@@ -32,7 +32,7 @@ export default function GiftVoucherPage() {
     }
 
     const voucherId = `gift-voucher-${Date.now()}`;
-    const voucherTitle = `Gift Voucher ${voucherAmount.toFixed(2)} TL`;
+    const voucherTitle = `Gift Voucher ${voucherAmount.toFixed(2)} €`;
     const voucherAuthor = `For: ${recipientName.trim()} (${recipientEmail.trim()})`;
 
     addToCart({
@@ -43,7 +43,7 @@ export default function GiftVoucherPage() {
       author: voucherAuthor,
     });
 
-    setSuccessMessage(`Gift voucher (${voucherAmount.toFixed(2)} TL) added to your cart.`);
+    setSuccessMessage(`Gift voucher (${voucherAmount.toFixed(2)} €) added to your cart.`);
     setMessage("");
   };
 
@@ -79,13 +79,13 @@ export default function GiftVoucherPage() {
                 }`}
               >
                 <p className="text-xs text-gray-500 uppercase font-bold">Voucher</p>
-                <p className="text-xl font-black text-[#1A2E35]">{amount} TL</p>
+                <p className="text-xl font-black text-[#1A2E35]">{amount} €</p>
               </button>
             ))}
           </div>
 
           <div className="mt-4">
-            <label className="block text-xs font-bold uppercase text-gray-600 mb-2">Or enter custom amount (min 50 TL)</label>
+            <label className="block text-xs font-bold uppercase text-gray-600 mb-2">Or enter custom amount (min 50 €)</label>
             <input
               type="number"
               min={50}
@@ -142,7 +142,7 @@ export default function GiftVoucherPage() {
           <div className="mt-8 flex flex-col md:flex-row md:items-center gap-4 md:justify-between">
             <div>
               <p className="text-sm text-gray-500">Selected voucher value</p>
-              <p className="text-3xl font-black text-[#1A2E35]">{voucherAmount.toFixed(2)} TL</p>
+              <p className="text-3xl font-black text-[#1A2E35]">{voucherAmount.toFixed(2)} €</p>
             </div>
 
             <button

@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, getErrorMessage } from "../../lib/supabaseClient";
 import { CheckCircle2, Loader2, Lock } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function UpdatePasswordPage() {
+  const { t } = useLanguage();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -90,13 +92,13 @@ export default function UpdatePasswordPage() {
               blendartbook
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-[#1A2E35]">Set a new password</h1>
-          <p className="text-sm text-gray-500 mt-2">Enter a new password for your account.</p>
+          <h1 className="text-2xl font-bold text-[#1A2E35]">{t("set_new_password_title")}</h1>
+          <p className="text-sm text-gray-500 mt-2">{t("enter_new_password_desc")}</p>
         </div>
 
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-6 border border-red-100 flex items-start gap-2">
-            <span className="font-bold shrink-0">Error:</span> {error}
+            <span className="font-bold shrink-0">{t("error_label")}</span> {error}
           </div>
         )}
 
@@ -106,30 +108,30 @@ export default function UpdatePasswordPage() {
           </div>
         ) : !ready ? (
           <div className="bg-amber-50 text-amber-800 p-4 rounded-xl border border-amber-100 text-sm">
-            This reset link is missing or expired. Please go back and request a new password reset email.
+            {t("missing_expired_link")}
             <div className="mt-4">
               <Link href="/auth" className="text-sm font-bold text-[#2CB391] hover:underline">
-                Go to Sign In
+                {t("go_to_signin")}
               </Link>
             </div>
           </div>
         ) : success ? (
           <div className="bg-teal-50 text-teal-800 p-6 rounded-xl border border-teal-100 text-center">
             <CheckCircle2 size={48} className="text-teal-500 mx-auto mb-4" />
-            <h3 className="font-bold text-lg mb-2">Password updated</h3>
-            <p className="text-sm opacity-90">You can now sign in with your new password.</p>
+            <h3 className="font-bold text-lg mb-2">{t("password_updated")}</h3>
+            <p className="text-sm opacity-90">{t("can_signin_new_password")}</p>
             <Link
               href="/auth"
               className="mt-6 inline-block bg-[#1A2E35] text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-black transition-colors"
             >
-              Continue to Sign In
+              {t("continue_to_signin")}
             </Link>
           </div>
         ) : (
           <form onSubmit={handleUpdatePassword} className="space-y-5">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-                New Password
+                {t("new_password")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -142,14 +144,14 @@ export default function UpdatePasswordPage() {
                   required
                   minLength={6}
                   className="w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#F14D5D] focus:ring-1 focus:ring-[#F14D5D] transition-colors bg-gray-50 focus:bg-white"
-                  placeholder="At least 6 characters"
+                  placeholder={t("at_least_6_chars")}
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-                Confirm Password
+                {t("confirm_password")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -162,7 +164,7 @@ export default function UpdatePasswordPage() {
                   required
                   minLength={6}
                   className="w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#F14D5D] focus:ring-1 focus:ring-[#F14D5D] transition-colors bg-gray-50 focus:bg-white"
-                  placeholder="Repeat password"
+                  placeholder={t("repeat_password")}
                 />
               </div>
             </div>
@@ -172,7 +174,7 @@ export default function UpdatePasswordPage() {
               disabled={loading}
               className="w-full text-white h-12 rounded-lg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed bg-[#F14D5D] hover:bg-[#d43f4d]"
             >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : "Update Password"}
+              {loading ? <Loader2 className="animate-spin" size={20} /> : t("update_password")}
             </button>
           </form>
         )}

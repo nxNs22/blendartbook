@@ -8,72 +8,76 @@ import {
   Calendar, Headphones, Gamepad2, Video, ShoppingBag, Briefcase,
   Image as ImageIcon, PenTool, Monitor,
   VenetianMask, UserRound, Baby, Sparkles,
-  BookOpen, Mic, Tablet, Palette, Paintbrush, Box, Music, Scissors
+  BookOpen, Mic, Tablet, Palette, Paintbrush, Box, Music, Scissors,
+  Globe, Check
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage, LANGUAGES, Language } from "../context/LanguageContext";
 import { supabase, getErrorMessage } from "../lib/supabaseClient"; 
 
 // --- VERİ YAPILARI ---
 
-const languages = [
-  { name: "Books in English", flag: "🇬🇧", slug: "english", count: "2 156 890" },
-  { name: "Books in Turkish", flag: "🇹🇷", slug: "turkish", count: "284 730" },
-  { name: "Books in Romanian", flag: "🇷🇴", slug: "romanian", count: "156 420" },
-  { name: "Books in Bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "89 340" },
+const languageBooks = [
+  { nameKey: "books_in_english", flag: "🇬🇧", slug: "english", count: "2 156 890" },
+  { nameKey: "books_in_turkish", flag: "🇹🇷", slug: "turkish", count: "284 730" },
+  { nameKey: "books_in_romanian", flag: "🇷🇴", slug: "romanian", count: "156 420" },
+  { nameKey: "books_in_bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "89 340" },
 ];
 
 const ebookLanguages = [
-  { name: "E-books in Turkish", flag: "🇹🇷", slug: "turkish", count: "45 200" },
-  { name: "E-books in English", flag: "🇬🇧", slug: "english", count: "890 400" },
-  { name: "E-books in Romanian", flag: "🇷🇴", slug: "romanian", count: "156 420" },
-  { name: "E-books in Bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "89 340" }
+  { nameKey: "ebooks_in_turkish", flag: "🇹🇷", slug: "turkish", count: "45 200" },
+  { nameKey: "ebooks_in_english", flag: "🇬🇧", slug: "english", count: "890 400" },
+  { nameKey: "ebooks_in_romanian", flag: "🇷🇴", slug: "romanian", count: "156 420" },
+  { nameKey: "ebooks_in_bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "89 340" }
 ];
 
 const audiobookLanguages = [
-  { name: "Audiobooks in Turkish", flag: "🇹🇷", slug: "turkish", count: "8 400" },
-  { name: "Audiobooks in English", flag: "🇬🇧", slug: "english", count: "210 000" },
-  { name: "Audiobooks in Romanian", flag: "🇷🇴", slug: "romanian", count: "8 400" },
-  { name: "Audiobooks in Bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "8 400" }
+  { nameKey: "audiobooks_in_turkish", flag: "🇹🇷", slug: "turkish", count: "8 400" },
+  { nameKey: "audiobooks_in_english", flag: "🇬🇧", slug: "english", count: "210 000" },
+  { nameKey: "audiobooks_in_romanian", flag: "🇷🇴", slug: "romanian", count: "8 400" },
+  { nameKey: "audiobooks_in_bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "8 400" }
 ];
 
-const otherProducts = [
-  { name: "Calendar/Diary", icon: <Calendar size={28} />, count: "203 929", color: "bg-blue-500/20 text-blue-400" },
-  { name: "Audio", icon: <Headphones size={28} />, count: "192 774", color: "bg-purple-500/20 text-purple-400" },
-  { name: "Game/Toy", icon: <Gamepad2 size={28} />, count: "83 931", color: "bg-orange-500/20 text-orange-400" },
-  { name: "Video", icon: <Video size={28} />, count: "67 926", color: "bg-red-500/20 text-red-400" },
-  { name: "Printed items", icon: <ImageIcon size={28} />, count: "77 103", color: "bg-yellow-500/20 text-yellow-400" },
-  { name: "Stationery", icon: <PenTool size={28} />, count: "10 941", color: "bg-green-500/20 text-green-400" },
-  { name: "Digital", icon: <Monitor size={28} />, count: "11 146", color: "bg-indigo-500/20 text-indigo-400" },
+const otherProductKeys = [
+  { nameKey: "calendar_diary", icon: <Calendar size={28} />, count: "203 929", color: "bg-blue-500/20 text-blue-400" },
+  { nameKey: "audio", icon: <Headphones size={28} />, count: "192 774", color: "bg-purple-500/20 text-purple-400" },
+  { nameKey: "game_toy", icon: <Gamepad2 size={28} />, count: "83 931", color: "bg-orange-500/20 text-orange-400" },
+  { nameKey: "video", icon: <Video size={28} />, count: "67 926", color: "bg-red-500/20 text-red-400" },
+  { nameKey: "printed_items", icon: <ImageIcon size={28} />, count: "77 103", color: "bg-yellow-500/20 text-yellow-400" },
+  { nameKey: "stationery", icon: <PenTool size={28} />, count: "10 941", color: "bg-green-500/20 text-green-400" },
+  { nameKey: "digital", icon: <Monitor size={28} />, count: "11 146", color: "bg-indigo-500/20 text-indigo-400" },
 ];
 
-const giftCategories = [
-  { name: "Gifts for women", icon: <ShoppingBag size={32} />, href: "/gifts/women" },
-  { name: "Gifts for men", icon: <Briefcase size={32} />, href: "/gifts/men" },
-  { name: "Gifts for girls", icon: <Sparkles size={32} />, href: "/gifts/girls" },
-  { name: "Gifts for boys", icon: <Gamepad2 size={32} />, href: "/gifts/boys" },
-  { name: "Gifts for children", icon: <Baby size={32} />, href: "/gifts/children" },
+const giftCategoryKeys = [
+  { nameKey: "gifts_for_women", icon: <ShoppingBag size={32} />, href: "/gifts/women" },
+  { nameKey: "gifts_for_men", icon: <Briefcase size={32} />, href: "/gifts/men" },
+  { nameKey: "gifts_for_girls", icon: <Sparkles size={32} />, href: "/gifts/girls" },
+  { nameKey: "gifts_for_boys", icon: <Gamepad2 size={32} />, href: "/gifts/boys" },
+  { nameKey: "gifts_for_children", icon: <Baby size={32} />, href: "/gifts/children" },
 ];
 
-const artCategories = [
-  { name: "Painting", href: "/art/painting", icon: <Paintbrush size={24} /> },
-  { name: "Sculpture", href: "/art/sculpture", icon: <Box size={24} /> },
-  { name: "Music", href: "/art/music", icon: <Music size={24} /> },
-  { name: "Crafts", href: "/art/crafts", icon: <Scissors size={24} /> },
+const artCategoryKeys = [
+  { nameKey: "painting", href: "/art/painting", icon: <Paintbrush size={24} /> },
+  { nameKey: "sculpture", href: "/art/sculpture", icon: <Box size={24} /> },
+  { nameKey: "music", href: "/art/music", icon: <Music size={24} /> },
+  { nameKey: "crafts", href: "/art/crafts", icon: <Scissors size={24} /> },
 ];
 
-type LanguageItem = {
-  name: string;
+type LanguageBookItem = {
+  nameKey: string;
   flag: string;
   slug: string;
   count: string;
 };
 
 function DropdownPanel({ type, onClose }: { type: string; onClose: () => void }) {
+  const { t } = useLanguage();
+
   const getContent = () => {
-    if (type === "Books") return { title: "16 386 577 books in 175 languages", data: languages, basePath: "/books" };
-    if (type === "E-books") return { title: "1 245 000 e-books to download", data: ebookLanguages, basePath: "/e-books" };
-    if (type === "Audiobooks") return { title: "450 000 audiobooks for your ears", data: audiobookLanguages, basePath: "/audiobooks" };
+    if (type === "books") return { title: t("books_title"), data: languageBooks, basePath: "/books" };
+    if (type === "ebooks") return { title: t("ebooks_title"), data: ebookLanguages, basePath: "/e-books" };
+    if (type === "audiobooks") return { title: t("audiobooks_title"), data: audiobookLanguages, basePath: "/audiobooks" };
     return null;
   };
 
@@ -89,17 +93,17 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
             <>
               <h2 className="mb-10 text-3xl font-bold text-center text-white md:text-5xl">{content.title}</h2>
               <div className="grid max-w-2xl grid-cols-1 gap-6 mx-auto mb-8 md:grid-cols-3">
-                {content.data.map((lang: LanguageItem) => {
+                {content.data.map((lang: LanguageBookItem) => {
                   const safeSlug = (lang.slug || "").toLowerCase();
                   return (
                     <Link 
-                      key={lang.name} 
+                      key={lang.nameKey} 
                       href={`${content.basePath}/${safeSlug}`} 
                       onClick={onClose}
                       className="flex flex-col items-center gap-3 transition-opacity group hover:opacity-80"
                     >
                       <div className="text-5xl transition-transform md:text-6xl drop-shadow-lg group-hover:scale-110">{lang.flag}</div>
-                      <span className="text-sm font-semibold text-white/80 group-hover:text-white">{lang.name}</span>
+                      <span className="text-sm font-semibold text-white/80 group-hover:text-white">{t(lang.nameKey)}</span>
                       <span className="text-sm text-white/50">{lang.count}</span>
                     </Link>
                   );
@@ -108,34 +112,34 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
             </>
           )}
 
-          {type === "Other products" && (
+          {type === "other_products" && (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-7">
-              {otherProducts.map((product) => (
+              {otherProductKeys.map((product) => (
                 <Link 
-                  key={product.name} 
-                  href={`/other/${product.name.toLowerCase().replace("/", "-")}`}
+                  key={product.nameKey} 
+                  href={`/other/${t(product.nameKey).toLowerCase().replace("/", "-")}`}
                   onClick={onClose} 
                   className="flex flex-col items-center p-4 transition-all rounded-xl hover:bg-white/5 group"
                 >
                   <div className={`w-16 h-16 ${product.color} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-white`}>
                     {product.icon}
                   </div>
-                  <span className="text-white font-bold text-[12px] text-center mb-1">{product.name}</span>
+                  <span className="text-white font-bold text-[12px] text-center mb-1">{t(product.nameKey)}</span>
                   <span className="text-white/40 text-[10px] italic">{product.count}</span>
                 </Link>
               ))}
             </div>
           )}
 
-          {type === "Gift tips" && (
+          {type === "gift_tips" && (
             <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-start">
               <div className="grid flex-1 grid-cols-2 gap-6 md:grid-cols-5">
-                {giftCategories.map((item) => (
-                  <Link key={item.name} href={item.href} onClick={onClose} className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all">
+                {giftCategoryKeys.map((item) => (
+                  <Link key={item.nameKey} href={item.href} onClick={onClose} className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all">
                     <div className="flex items-center justify-center w-20 h-20 mb-4 text-white/80 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-[#E62E4D] group-hover:text-white group-hover:scale-110">
                       {item.icon}
                     </div>
-                    <span className="text-sm font-bold leading-tight text-center text-white">{item.name}</span>
+                    <span className="text-sm font-bold leading-tight text-center text-white">{t(item.nameKey)}</span>
                   </Link>
                 ))}
               </div>
@@ -144,19 +148,19 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
                 <div className="flex items-center justify-center w-20 h-20 mb-4 text-pink-500 border rounded-full bg-pink-500/20 border-pink-500/30">
                   <Ticket size={40} />
                 </div>
-                <h3 className="mb-1 text-xl font-bold text-pink-400 text-nowrap">Gift voucher</h3>
-                <Link href="/gift-voucher" className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-2.5 rounded-full font-bold text-sm">Buy now</Link>
+                <h3 className="mb-1 text-xl font-bold text-pink-400 text-nowrap">{t("gift_voucher")}</h3>
+                <Link href="/gift-voucher" className="bg-pink-600 hover:bg-pink-700 text-white px-8 py-2.5 rounded-full font-bold text-sm">{t("buy_now")}</Link>
               </div>
             </div>
           )}
 
-          {type === "Art" && (
+          {type === "art" && (
              <div className="flex flex-col items-center">
-               <h2 className="mb-8 text-3xl font-bold text-center text-white md:text-4xl">Explore Unique Art Pieces</h2>
+               <h2 className="mb-8 text-3xl font-bold text-center text-white md:text-4xl">{t("art_title")}</h2>
                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-3xl">
-                 {artCategories.map((sub) => (
+                 {artCategoryKeys.map((sub) => (
                    <Link 
-                     key={sub.name} 
+                     key={sub.nameKey} 
                      href={sub.href} 
                      onClick={onClose}
                      className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all"
@@ -165,7 +169,7 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
                        {sub.icon}
                      </div>
                      <span className="text-sm font-bold leading-tight text-center text-white">
-                       {sub.name}
+                       {t(sub.nameKey)}
                      </span>
                    </Link>
                  ))}
@@ -175,10 +179,83 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
 
           <div className="flex justify-center pt-6 mt-10 text-sm italic border-t border-white/10 text-white/80">
             <Sparkles className="mr-2 text-[#E62E4D]" size={18} />
-            Don&apos;t know what to choose? We are here to help!
+            {t("help_text")}
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// --- LANGUAGE SELECTOR DROPDOWN ---
+function LanguageSelector() {
+  const { language, setLanguage, currentLanguageOption } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-1.5 font-bold tracking-widest uppercase cursor-pointer hover:text-white transition-all duration-200 group"
+        aria-label="Select language"
+        id="language-selector"
+      >
+        <Globe size={13} className="opacity-70 group-hover:opacity-100 transition-opacity" />
+        <span className="text-[11px]">{currentLanguageOption.code.toUpperCase()}</span>
+        <ChevronDown size={11} className={`transition-transform duration-300 opacity-60 ${isOpen ? "rotate-180" : ""}`} />
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 top-full mt-2 w-52 bg-[#1a1a2e] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-[999] animate-in fade-in slide-in-from-top-2 duration-200">
+          {/* Header */}
+          <div className="px-4 py-2.5 border-b border-white/10 bg-white/5">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">
+              🌐 Select Language
+            </span>
+          </div>
+
+          {/* Language options */}
+          <div className="py-1">
+            {LANGUAGES.map((lang) => {
+              const isActive = language === lang.code;
+              return (
+                <button
+                  key={lang.code}
+                  onClick={() => {
+                    setLanguage(lang.code);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all duration-150 ${
+                    isActive
+                      ? "bg-[#E62E4D]/20 text-white"
+                      : "text-white/70 hover:bg-white/5 hover:text-white"
+                  }`}
+                >
+                  <span className="text-xl leading-none">{lang.flag}</span>
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <span className="text-sm font-semibold truncate">{lang.name}</span>
+                    <span className="text-[10px] text-white/40">{lang.nativeName}</span>
+                  </div>
+                  {isActive && (
+                    <Check size={14} className="text-[#E62E4D] flex-shrink-0" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -189,6 +266,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { user } = useAuth();
   const { cartCount } = useCart();
+  const { t } = useLanguage();
 
   const [userName, setUserName] = useState<string | null>(null);
 
@@ -220,20 +298,21 @@ export default function Header() {
     fetchUserName();
   }, [user]);
 
+  // Nav items use internal keys for dropdown matching, labels are translated
   const navItems = [
-    { label: "Books", hasDropdown: true, icon: <BookOpen size={16} /> },
-    { label: "Art", hasDropdown: true, icon: <Palette size={16} /> }, 
-    { label: "Handmade", hasDropdown: false, href: "/handmade", icon: <PenTool size={16} /> }, 
-    { label: "E-books", hasDropdown: true, icon: <Tablet size={16} /> },
-    { label: "Audiobooks", hasDropdown: true, icon: <Mic size={16} /> },
-    { label: "Other products", hasDropdown: true, icon: <Gamepad2 size={16} /> },
-    { label: "Gift tips", hasDropdown: true, icon: <Gift size={16} /> },
-    { label: "Gift voucher", hasDropdown: false, href: "/gift-voucher" },
+    { label: t("books"), dropdownKey: "books", hasDropdown: true, icon: <BookOpen size={16} /> },
+    { label: t("art"), dropdownKey: "art", hasDropdown: true, icon: <Palette size={16} /> }, 
+    { label: t("handmade"), dropdownKey: "handmade", hasDropdown: false, href: "/handmade", icon: <PenTool size={16} /> }, 
+    { label: t("ebooks"), dropdownKey: "ebooks", hasDropdown: true, icon: <Tablet size={16} /> },
+    { label: t("audiobooks"), dropdownKey: "audiobooks", hasDropdown: true, icon: <Mic size={16} /> },
+    { label: t("other_products"), dropdownKey: "other_products", hasDropdown: true, icon: <Gamepad2 size={16} /> },
+    { label: t("gift_tips"), dropdownKey: "gift_tips", hasDropdown: true, icon: <Gift size={16} /> },
+    { label: t("gift_voucher"), dropdownKey: "gift_voucher", hasDropdown: false, href: "/gift-voucher" },
   ];
 
-  const handleMouseEnter = (label: string) => {
+  const handleMouseEnter = (key: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setOpenDropdown(label);
+    setOpenDropdown(key);
   };
 
   const handleMouseLeave = () => {
@@ -260,10 +339,10 @@ export default function Header() {
       {/* 1. TOP BAR (bg-[#7F0A1A]) */}
       <div className="w-full bg-[#7F0A1A] text-white/80 text-[11px] py-1.5 flex justify-center">
         <div className="flex items-center justify-between w-full px-4 max-w-7xl">
-          <span className="transition-colors cursor-pointer hover:text-white">Check order status</span>
-          <div className="flex gap-4">
-            <span className="hidden md:inline">Free delivery over €30</span>
-            <span className="font-bold tracking-widest underline uppercase cursor-pointer hover:text-white underline-offset-4">EN</span>
+          <span className="transition-colors cursor-pointer hover:text-white">{t("check_order_status")}</span>
+          <div className="flex items-center gap-4">
+            <span className="hidden md:inline">{t("free_delivery")}</span>
+            <LanguageSelector />
           </div>
         </div>
       </div>
@@ -272,14 +351,14 @@ export default function Header() {
       <div className="flex items-center justify-between w-full gap-6 px-4 py-4 max-w-7xl lg:gap-12">
         <Link href="/" className="flex flex-col items-center flex-shrink-0 group">
           <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
-          <span className="text-white/80 text-[9px] tracking-[0.2em] uppercase font-bold">Be Whoever</span>
+          <span className="text-white/80 text-[9px] tracking-[0.2em] uppercase font-bold">{t("be_whoever")}</span>
         </Link>
 
         <div className="relative flex items-center flex-1 max-w-2xl overflow-hidden bg-white rounded-lg shadow-inner">
           <Search size={18} className="ml-4 text-gray-400" />
           <input 
             type="text" 
-            placeholder="Search books, authors, categories..." 
+            placeholder={t("search_placeholder")} 
             className="w-full pl-3 pr-24 text-sm text-gray-800 h-11 focus:outline-none" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -290,7 +369,7 @@ export default function Header() {
             onClick={handleSearch}
             className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-[#009966] hover:bg-[#008055]"
           >
-            Search
+            {t("search")}
           </button>
         </div>
 
@@ -302,7 +381,7 @@ export default function Header() {
           <Link href={user ? "/account" : "/auth"} className="flex items-center gap-2 group">
             {user && userName ? (
               <span className="text-sm font-bold capitalize transition-colors text-white/90 group-hover:text-white">
-                Hi, {userName}
+                {t("hi")}, {userName}
               </span>
             ) : (
               <User 
@@ -318,7 +397,7 @@ export default function Header() {
             className="relative flex items-center bg-[#00C292] px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#00A67C] transition-all shadow-md text-white"
           >
             <ShoppingCart size={18} />
-            <span className="hidden ml-2 text-white md:inline-block">Cart</span>
+            <span className="hidden ml-2 text-white md:inline-block">{t("cart")}</span>
             
             {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white">
@@ -339,18 +418,18 @@ export default function Header() {
             </li>
             {navItems.map((item) => (
               <li 
-                key={item.label} 
+                key={item.dropdownKey} 
                 className="relative"
-                onMouseEnter={() => item.hasDropdown && handleMouseEnter(item.label)}
+                onMouseEnter={() => item.hasDropdown && handleMouseEnter(item.dropdownKey)}
               >
                 {item.hasDropdown ? (
                   <button
                     className={`px-5 py-3 text-[13px] font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      openDropdown === item.label ? "bg-[#7F0A1A] text-white shadow-inner" : "text-white hover:bg-white/10"
+                      openDropdown === item.dropdownKey ? "bg-[#7F0A1A] text-white shadow-inner" : "text-white hover:bg-white/10"
                     }`}
                   >
                     {item.icon} {item.label}
-                    <ChevronDown size={14} className={`transition-transform duration-300 ${openDropdown === item.label ? "rotate-180" : ""}`} />
+                    <ChevronDown size={14} className={`transition-transform duration-300 ${openDropdown === item.dropdownKey ? "rotate-180" : ""}`} />
                   </button>
                 ) : (
                   <Link href={item.href || "#"} className="px-5 py-3 text-[13px] font-bold text-white hover:bg-white/10 flex items-center gap-2">

@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     const promo = getPromoByCode(promoCode);
     if (promo?.minSubtotal && subtotal < promo.minSubtotal) {
       return Response.json(
-        { error: `Promo code requires minimum ${promo.minSubtotal.toFixed(2)} TL subtotal.` },
+        { error: `Promo code requires minimum ${promo.minSubtotal.toFixed(2)} € subtotal.` },
         { status: 400 },
       );
     }
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInKurus,
-      currency: "try",
+      currency: "eur",
       customer: customer.id,
       automatic_payment_methods: { enabled: true },
       receipt_email: customerEmail.trim().toLowerCase(),

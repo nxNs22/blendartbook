@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useLanguage } from "../context/LanguageContext";
 import { ChevronLeft, ChevronRight, Loader2, Sparkles, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
@@ -22,6 +23,7 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export default function NewArrivals() {
+  const { t } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
@@ -120,8 +122,8 @@ export default function NewArrivals() {
               <Sparkles size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">New Arrivals</h2>
-              <p className="text-gray-500 mt-1 text-sm">Freshly added to our collection</p>
+              <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">{t("new_arrivals")}</h2>
+              <p className="text-gray-500 mt-1 text-sm">{t("freshly_added")}</p>
             </div>
           </div>
           {!loading && products.length > 4 && (
@@ -179,7 +181,7 @@ export default function NewArrivals() {
                           {product.title}
                         </h3>
                       </Link>
-                      <p className="text-[15px] text-[#8A9A9D] truncate mb-2">{product.details?.author || 'Unknown Author'}</p>
+                      <p className="text-[15px] text-[#8A9A9D] truncate mb-2">{product.details?.author || '{t("unknown_author")}'}</p>
                       <StarRating rating={5} />
                       <div className="mt-auto pt-4">
                         <span className="text-[22px] font-black text-teal-700 tracking-tight">{Number(product.price || 0).toFixed(2)} €</span>

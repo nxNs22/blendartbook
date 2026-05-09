@@ -4,10 +4,12 @@ import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { ArrowLeft, CheckCircle2, CreditCard, Loader2, Mail, Phone, ShieldCheck, User } from "lucide-react";
+import { ArrowLeft, CreditCard, Loader2, Mail, Phone, User } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { calculateDiscount, calculateSubtotal, getPromoByCode, parsePrice } from "../lib/pricing";
+import CheckoutProgress from "../components/CheckoutProgress";
+import { useLanguage } from "../context/LanguageContext";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "");
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
@@ -47,6 +49,7 @@ function PaymentForm({
 }) {
   const stripe = useStripe();
   const elements = useElements();
+  const { t } = useLanguage();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
 
@@ -75,7 +78,7 @@ function PaymentForm({
     });
 
     if (error) {
-      setErrorMessage(error.message ?? "Payment failed.");
+      setErrorMessage(error.message ?? t("payment_failed"));
       setProcessing(false);
       return;
     }
@@ -94,14 +97,14 @@ function PaymentForm({
       >
         {processing ? (
           <span className="inline-flex items-center gap-2">
-            <Loader2 className="animate-spin" size={16} /> Processing payment...
+            <Loader2 className="animate-spin" size={16} /> {t("processing_payment")}
           </span>
         ) : (
-          "Pay now"
+          t("pay_now")
         )}
       </button>
       <p className="text-xs text-gray-500">
-        Customer must enter card number, expiry date, and CVV in the secure card form.
+        {t("card_form_instruction")}
       </p>
     </form>
   );
@@ -110,10 +113,14 @@ function PaymentForm({
 export default function CheckoutPage() {
   const { cart } = useCart();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [email, setEmail] = useState(() => user?.email ?? "");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState("Turkey");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [zipCode, setZipCode] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [saveCard, setSaveCard] = useState(true);
   const [loadingIntent, setLoadingIntent] = useState(false);
@@ -132,8 +139,8 @@ export default function CheckoutPage() {
   const localTotal = Math.max(localSubtotal - localDiscount, 0);
 
   const canInitPayment = useMemo(() => {
-    return cart.length > 0 && email.trim().length > 3;
-  }, [cart.length, email]);
+    return cart.length > 0 && email.trim().length > 3 && deliveryAddress.trim().length > 5;
+  }, [cart.length, email, deliveryAddress]);
 
   const fetchSavedCards = async () => {
     if (!email.trim()) return;
@@ -243,6 +250,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F1FBF8] via-white to-[#F6FAFF]">
+      <CheckoutProgress currentStep={2} />
       <div className="max-w-7xl mx-auto px-4 py-10 md:py-14">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
@@ -254,39 +262,15 @@ export default function CheckoutPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
-          <div className="rounded-xl bg-white border border-[#D6F3EB] px-4 py-3 flex items-center gap-3">
-            <CheckCircle2 size={18} className="text-[#2CB391]" />
-            <div>
-              <p className="text-[11px] uppercase tracking-wide text-gray-500 font-bold">Step 1</p>
-              <p className="text-sm font-semibold text-[#1A2E35]">Contact details</p>
-            </div>
-          </div>
-          <div className="rounded-xl bg-white border border-[#D6F3EB] px-4 py-3 flex items-center gap-3">
-            <CheckCircle2 size={18} className="text-[#2CB391]" />
-            <div>
-              <p className="text-[11px] uppercase tracking-wide text-gray-500 font-bold">Step 2</p>
-              <p className="text-sm font-semibold text-[#1A2E35]">Payment method</p>
-            </div>
-          </div>
-          <div className="rounded-xl bg-white border border-[#D6F3EB] px-4 py-3 flex items-center gap-3">
-            <ShieldCheck size={18} className="text-[#2CB391]" />
-            <div>
-              <p className="text-[11px] uppercase tracking-wide text-gray-500 font-bold">Step 3</p>
-              <p className="text-sm font-semibold text-[#1A2E35]">Confirmation</p>
-            </div>
-          </div>
-        </div>
-
         <div className="grid lg:grid-cols-[1.5fr_1fr] gap-8">
           <div className="space-y-6">
             <section className="rounded-2xl border border-gray-200 bg-white p-6">
               <h2 className="font-bold text-lg text-[#1A2E35] mb-4 inline-flex items-center gap-2">
-                <User size={18} /> Passenger & contact details
+                <User size={18} /> {t("shipping_contact_details")}
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">Full name</label>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("full_name")}</label>
                   <input
                     type="text"
                     value={fullName}
@@ -297,7 +281,7 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">Country</label>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("country")}</label>
                   <input
                     type="text"
                     value={country}
@@ -308,7 +292,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase text-gray-600 mb-2 inline-flex items-center gap-1">
-                    <Mail size={13} /> Email
+                    <Mail size={13} /> {t("email_address")}
                   </label>
                   <input
                     type="email"
@@ -321,7 +305,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase text-gray-600 mb-2 inline-flex items-center gap-1">
-                    <Phone size={13} /> Phone
+                    <Phone size={13} /> {t("phone_number")}
                   </label>
                   <input
                     type="tel"
@@ -329,6 +313,38 @@ export default function CheckoutPage() {
                     onChange={(event) => setPhone(event.target.value)}
                     className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
                     placeholder="+90 555 000 0000"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("delivery_address")}</label>
+                  <textarea
+                    value={deliveryAddress}
+                    onChange={(event) => setDeliveryAddress(event.target.value)}
+                    required
+                    className="w-full min-h-[100px] rounded-lg border border-gray-200 p-3 text-sm outline-none focus:border-[#2CB391] resize-none"
+                    placeholder="Street name, building number, apartment..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("city")}</label>
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(event) => setCity(event.target.value)}
+                    required
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    placeholder="City"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("zip_code")}</label>
+                  <input
+                    type="text"
+                    value={zipCode}
+                    onChange={(event) => setZipCode(event.target.value)}
+                    required
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    placeholder="12345"
                   />
                 </div>
               </div>
@@ -450,7 +466,7 @@ export default function CheckoutPage() {
 
           <aside className="lg:sticky lg:top-6 h-fit">
             <div className="rounded-2xl border border-gray-200 p-6 bg-white shadow-sm">
-              <h2 className="font-bold text-lg text-[#1A2E35] mb-4">Order summary</h2>
+              <h2 className="font-bold text-lg text-[#1A2E35] mb-4">{t("order_summary")}</h2>
 
               <div className="space-y-2 text-sm max-h-60 overflow-y-auto pr-1">
                 {cart.length === 0 && <p className="text-gray-500">No items in cart yet.</p>}
@@ -459,7 +475,7 @@ export default function CheckoutPage() {
                     <span className="text-gray-700">
                       {item.title} x {item.quantity}
                     </span>
-                    <span className="font-semibold">{(parsePrice(item.price) * item.quantity).toFixed(2)} TL</span>
+                    <span className="font-semibold">{(parsePrice(item.price) * item.quantity).toFixed(2)} €</span>
                   </div>
                 ))}
               </div>
@@ -467,15 +483,15 @@ export default function CheckoutPage() {
               <div className="mt-5 pt-4 border-t space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal</span>
-                  <span>{localSubtotal.toFixed(2)} TL</span>
+                  <span>{localSubtotal.toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between text-sm text-teal-700">
                   <span>Discount</span>
-                  <span>-{localDiscount.toFixed(2)} TL</span>
+                  <span>-{localDiscount.toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between text-xl font-black text-[#1A2E35] pt-1">
                   <span>Total</span>
-                  <span>{localTotal.toFixed(2)} TL</span>
+                  <span>{localTotal.toFixed(2)} €</span>
                 </div>
               </div>
 
@@ -511,3 +527,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

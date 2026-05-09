@@ -78,7 +78,7 @@ async function getBookInventoryContext(): Promise<string> {
     const bookList = books
       .map(
         (b) =>
-          `- "${b.title}" by ${b.author} (Genre: ${b.genre || "General"}, Price: ${b.price} TL, Stock: ${b.stock})`
+          `- "${b.title}" by ${b.author} (Genre: ${b.genre || "General"}, Price: ${b.price} €, Stock: ${b.stock})`
       )
       .join("\n");
 
@@ -126,7 +126,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { messages } = body as { messages: { role: string; content: string }[] };
+    const { messages, language } = body as { messages: { role: string; content: string }[], language?: string };
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return Response.json({ error: "Messages array is required." }, { status: 400 });
@@ -134,7 +134,7 @@ export async function POST(request: Request) {
 
     // Get book inventory for context
     const inventoryContext = await getBookInventoryContext();
-    const fullSystemPrompt = `${SYSTEM_PROMPT}\n\n${inventoryContext}`;
+    const fullSystemPrompt = `${SYSTEM_PROMPT}\n\nIMPORTANT: The user has selected the language code '${language || "en"}' on the website. You MUST reply in this language.\n\n${inventoryContext}`;
 
     // Convert messages to Gemini format
     const geminiMessages: ChatMessage[] = messages.map((msg) => ({

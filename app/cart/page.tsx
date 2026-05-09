@@ -1,9 +1,10 @@
 "use client";
 import { useCart } from "../context/CartContext";
 import { useMemo, useState } from "react";
-import { ShoppingCart, Truck, MapPin, FileText, Trash2, ChevronRight, ArrowLeft } from "lucide-react";
+import { Trash2, ChevronRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { calculateDiscount, calculateSubtotal, getPromoByCode, PromoRule } from "../lib/pricing";
+import CheckoutProgress from "../components/CheckoutProgress";
 
 export default function CartPage() {
   // 1. cartItems yerine "cart" çekiyoruz. totalPrice'ı biz hesaplayacağız.
@@ -13,7 +14,7 @@ export default function CartPage() {
   const [promoMessage, setPromoMessage] = useState<string | null>(null);
 
   // 2. Toplam fiyatı güvenli bir şekilde hesaplıyoruz 
-  // (Veritabanından string "120 TL" veya number gelebilir)
+  // (Veritabanından string "120 €" veya number gelebilir)
   const subtotal = calculateSubtotal(cart);
 
   const discountAmount = useMemo(() => {
@@ -39,7 +40,7 @@ export default function CartPage() {
 
     if (matchedPromo.minSubtotal && subtotal < matchedPromo.minSubtotal) {
       setAppliedPromo(null);
-      setPromoMessage(`This code requires at least ${matchedPromo.minSubtotal.toFixed(2)} TL subtotal.`);
+      setPromoMessage(`This code requires at least ${matchedPromo.minSubtotal.toFixed(2)} € subtotal.`);
       return;
     }
 
@@ -49,7 +50,7 @@ export default function CartPage() {
       setPromoMessage(`${matchedPromo.code} applied: ${matchedPromo.value}% discount.`);
       return;
     }
-    setPromoMessage(`${matchedPromo.code} applied: ${matchedPromo.value.toFixed(2)} TL off.`);
+    setPromoMessage(`${matchedPromo.code} applied: ${matchedPromo.value.toFixed(2)} € off.`);
   };
 
   const clearPromoCode = () => {
@@ -58,30 +59,9 @@ export default function CartPage() {
     setPromoMessage(null);
   };
 
-  const steps = [
-    { name: "Shopping cart", icon: <ShoppingCart size={20} />, active: true },
-    { name: "Delivery & Payment", icon: <Truck size={20} />, active: false },
-    { name: "Delivery details", icon: <MapPin size={20} />, active: false },
-    { name: "Order summary", icon: <FileText size={20} />, active: false },
-  ];
-
   return (
     <div className="bg-white min-h-screen">
-      {/* 1. STEPS BAR (Yeşil Alan) */}
-      <div className="bg-[#2CB391] py-8">
-        <div className="max-w-6xl mx-auto px-4 flex justify-between items-center relative">
-          {steps.map((step, idx) => (
-            <div key={idx} className={`flex flex-col items-center z-10 ${step.active ? "text-white" : "text-white/60"}`}>
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${step.active ? "bg-white text-[#2CB391]" : "bg-[#249278]"}`}>
-                {step.icon}
-              </div>
-              <span className="text-xs font-bold uppercase">{step.name}</span>
-            </div>
-          ))}
-          {/* Bağlantı Çizgisi */}
-          <div className="absolute top-6 left-0 w-full h-[2px] bg-white/20 -z-0 hidden md:block" />
-        </div>
-      </div>
+      <CheckoutProgress currentStep={1} />
 
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* 2. TABLO BAŞLIKLARI */}
@@ -135,7 +115,7 @@ export default function CartPage() {
               </div>
               
               <div className="flex items-center justify-end gap-4 font-bold text-[#1A2E35]">
-                {item.price} TL
+                {item.price} €
                 <button 
                   onClick={() => removeFromCart(item.id)} 
                   className="text-red-300 hover:text-red-500 transition-colors"
@@ -187,12 +167,12 @@ export default function CartPage() {
           </div>
           <div className="text-right">
             <p className="text-gray-500 text-sm">Subtotal:</p>
-            <p className="text-xl font-extrabold text-[#1A2E35]">{subtotal.toFixed(2)} TL</p>
+            <p className="text-xl font-extrabold text-[#1A2E35]">{subtotal.toFixed(2)} €</p>
             {safeDiscountAmount > 0 && (
-              <p className="text-sm font-bold text-teal-600">- {safeDiscountAmount.toFixed(2)} TL discount</p>
+              <p className="text-sm font-bold text-teal-600">- {safeDiscountAmount.toFixed(2)} € discount</p>
             )}
             <p className="text-gray-500 text-sm mt-1">Total price:</p>
-            <p className="text-4xl font-black text-[#1A2E35]">{totalPrice.toFixed(2)} TL</p>
+            <p className="text-4xl font-black text-[#1A2E35]">{totalPrice.toFixed(2)} €</p>
           </div>
         </div>
 
@@ -220,3 +200,4 @@ export default function CartPage() {
     </div>
   );
 }
+

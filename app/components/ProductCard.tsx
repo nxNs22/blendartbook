@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../context/CartContext";
@@ -21,6 +22,7 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export default function ProductCard({ product }: { product: any }) {
+  const { t } = useLanguage();
   const [hovered, setHovered] = useState(false);
   const { addToCart } = useCart();
 
@@ -77,7 +79,7 @@ export default function ProductCard({ product }: { product: any }) {
             {product.title}
           </h3>
         </Link>
-        <p className="text-[15px] text-[#8A9A9D] truncate mb-2">{product.details?.author || 'Unknown Author'}</p>
+        <p className="text-[15px] text-[#8A9A9D] truncate mb-2">{product.details?.author || '{t("unknown_author")}'}</p>
         <StarRating rating={5} />
         <div className="mt-auto pt-4">
           <span className="text-[22px] font-black text-teal-700 tracking-tight">

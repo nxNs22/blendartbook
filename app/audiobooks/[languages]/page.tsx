@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useLanguage } from "../../context/LanguageContext";
 import { useState, useEffect, useMemo } from "react";
 import { Filter, ShoppingCart, ChevronDown, Loader2, Mic2, Clock } from "lucide-react";
 import { useCart } from "../../context/CartContext"; 
@@ -8,6 +9,7 @@ import { supabase, getErrorMessage } from "../../lib/supabaseClient";
 import ProductCard from "../../components/ProductCard";
 
 export default function AudiobookCategoryPage() {
+  const { t } = useLanguage();
   const params = useParams();
   // URL parametresini hem 'language' hem 'languages' olarak kontrol ediyoruz
   const currentLang = (params?.language as string) || (params?.languages as string) || "Unknown";
@@ -67,11 +69,11 @@ export default function AudiobookCategoryPage() {
       {/* Sidebar Filters */}
       <aside className="w-full md:w-64 space-y-8 bg-gray-50 p-6 rounded-xl h-fit border border-gray-100 shrink-0">
         <h3 className="font-bold text-lg mb-6 flex items-center gap-2 border-b pb-2 tracking-tight text-gray-800">
-          <Filter size={20} className="text-red-700" /> Audio Filters
+          <Filter size={20} className="text-red-700" /> {t("audio_filters") || "Audio Filters"}
         </h3>
         <div className="mb-8">
           <label className="text-sm font-bold text-gray-700 block mb-3 italic">
-            Max Price: €{priceRange}
+            {t("max_price") || "Max Price: €"}{priceRange}
           </label>
           <input 
             type="range" min="0" max="300" value={priceRange} 
@@ -85,17 +87,17 @@ export default function AudiobookCategoryPage() {
       <main className="flex-1">
         <div className="flex justify-between items-center mb-8 border-b pb-6">
           <h1 className="text-2xl font-black uppercase italic text-gray-900">
-            Audio Library: <span className="text-teal-600 capitalize">{currentLang}</span>
+            {t("audio_library") || "Audio Library:"} <span className="text-teal-600 capitalize">{currentLang}</span>
           </h1>
           <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">
-            {loading ? "Syncing..." : `${filteredProducts.length} Audiobooks`}
+            {loading ? (t("syncing") || "Syncing...") : `${filteredProducts.length} ${t("audiobooks") || "Audiobooks"}`}
           </p>
         </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <Loader2 className="animate-spin text-teal-600" size={48} />
-            <p className="text-sm text-gray-400 animate-pulse">Tuning frequencies...</p>
+            <p className="text-sm text-gray-400 animate-pulse">{t("tuning_frequencies") || "Tuning frequencies..."}</p>
           </div>
         ) : error ? (
           <div className="bg-red-50 text-red-600 p-6 rounded-xl border border-red-100 text-center">
@@ -113,7 +115,7 @@ export default function AudiobookCategoryPage() {
         {!loading && filteredProducts.length === 0 && (
           <div className="text-center py-24 bg-white rounded-3xl border-2 border-dashed border-gray-100">
             <Mic2 className="mx-auto text-gray-200 mb-4" size={64} />
-            <p className="text-gray-400 font-medium">No audiobooks found matching your criteria.</p>
+            <p className="text-gray-400 font-medium">{t("no_audiobooks_found") || "No audiobooks found matching your criteria."}</p>
           </div>
         )}
       </main>

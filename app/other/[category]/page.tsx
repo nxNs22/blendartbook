@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useLanguage } from "../../context/LanguageContext";
 import { useState, useEffect, useMemo } from "react";
 import { Filter, ChevronDown, ShoppingCart, Loader2, Package } from "lucide-react";
 import { supabase, getErrorMessage } from "../../lib/supabaseClient"; 
@@ -8,6 +9,7 @@ import { useCart } from "../../context/CartContext";
 import ProductCard from "../../components/ProductCard";
 
 export default function OtherProductsPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const categoryParam = (params?.category as string) || "all";
   const displayCategory = categoryParam === "all" ? "All Products" : categoryParam.replace("-", " ");
@@ -73,12 +75,12 @@ export default function OtherProductsPage() {
       {/* SOL TARAF: FİLTRELER */}
       <aside className="w-full md:w-64 bg-gray-50 p-6 rounded-xl border border-gray-100 h-fit shrink-0">
         <h3 className="font-bold mb-4 flex items-center gap-2">
-          <Filter size={18} className="text-red-700" /> Properties
+          <Filter size={18} className="text-red-700" /> {t("properties")}
         </h3>
         
         <div className="mb-8">
           <label className="text-sm font-bold text-gray-700 block mb-3">
-            Price: up to €{priceRange}
+            {t("price_up_to")}{priceRange}
           </label>
           <input 
             type="range" 
@@ -96,9 +98,9 @@ export default function OtherProductsPage() {
         <header className="flex justify-between items-center mb-8 border-b pb-4">
           <h1 className="text-2xl font-black uppercase italic flex items-center gap-2">
             <Package size={24} className="text-teal-600" /> 
-            Browsing: <span className="text-teal-600 capitalize">{displayCategory}</span>
+            {t("browsing")} <span className="text-teal-600 capitalize">{t(displayCategory.toLowerCase().replace(" ", "_")) || displayCategory}</span>
           </h1>
-          <p className="text-xs text-gray-500 font-medium">{filteredProducts.length} items found</p>
+          <p className="text-xs text-gray-500 font-medium">{filteredProducts.length} {t("items_found")}</p>
         </header>
 
         {loading ? (
@@ -107,7 +109,7 @@ export default function OtherProductsPage() {
           </div>
         ) : error ? (
           <div className="text-red-500 p-4 border border-red-100 rounded-lg bg-red-50 text-center">
-            Hata: {error}
+            {t("error_label")} {error}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -121,7 +123,7 @@ export default function OtherProductsPage() {
         {!loading && filteredProducts.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <Package className="mx-auto mb-4 opacity-20" size={48} />
-            <p>No products found in this collection.</p>
+            <p>{t("no_products_collection")}</p>
           </div>
         )}
       </main>

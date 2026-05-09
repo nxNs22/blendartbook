@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useLanguage } from "../context/LanguageContext";
 import { ChevronLeft, ChevronRight, Loader2, TrendingUp, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
@@ -20,6 +21,7 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export default function BestsellersSection() {
+  const { t } = useLanguage();
   const [hoveredBook, setHoveredBook] = useState<string | null>(null);
   const [books, setBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -122,8 +124,8 @@ export default function BestsellersSection() {
               <TrendingUp size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">Bestsellers</h2>
-              <p className="text-teal-600/80 mt-1 text-sm font-medium">Most loved books by our readers</p>
+              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">{t("bestsellers")}</h2>
+              <p className="text-teal-600/80 mt-1 text-sm font-medium">{t("most_loved_books")}</p>
             </div>
           </div>
           {!loading && books.length > 4 && (
@@ -158,7 +160,7 @@ export default function BestsellersSection() {
                   >
                     {book.stock < 30 && (
                       <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-md">
-                        Only {book.stock} left!
+                        {t("only")} {book.stock} {t("left")}
                       </div>
                     )}
 
@@ -185,7 +187,7 @@ export default function BestsellersSection() {
                           {book.title}
                         </h3>
                       </Link>
-                      <p className="text-xs text-gray-400 mt-1 mb-1 truncate">{book.details?.author || 'Unknown Author'}</p>
+                      <p className="text-xs text-gray-400 mt-1 mb-1 truncate">{book.details?.author || '{t("unknown_author")}'}</p>
                       <StarRating rating={5} />
                       <div className="flex items-center gap-2 mt-2">
                         <span className="text-base font-black text-teal-700">{Number(book.price || 0).toFixed(2)} €</span>

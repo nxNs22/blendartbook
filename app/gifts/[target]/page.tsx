@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useLanguage } from "../../context/LanguageContext";
 import { useState, useEffect, useMemo } from "react";
 import { 
   Filter, Star, ShoppingCart, ChevronDown, 
@@ -11,6 +12,7 @@ import { useCart } from "../../context/CartContext";
 import ProductCard from "../../components/ProductCard";
 
 export default function GiftsTargetPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const target = (params?.target as string) || "Gifts";
   

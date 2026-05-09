@@ -1,12 +1,14 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useLanguage } from "../../context/LanguageContext";
 import { useState, useEffect, useMemo } from "react";
 import { Search, Loader2, Palette } from "lucide-react";
 import { supabase, getErrorMessage } from "../../lib/supabaseClient"; 
 import ProductCard from "../../components/ProductCard";
 
 export default function ArtCategoryPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const subcategory = (params?.subcategory as string) || "art";
   
@@ -105,7 +107,7 @@ export default function ArtCategoryPage() {
           </div>
 
           <section>
-            <h3 className="font-bold text-sm text-[#1A2E35] mb-4 border-b border-gray-100 pb-2">Price: up to €{priceRange.to}</h3>
+            <h3 className="font-bold text-sm text-[#1A2E35] mb-4 border-b border-gray-100 pb-2">{t("price_up_to")}{priceRange.to}</h3>
             <input 
               type="range" 
               min="0" 

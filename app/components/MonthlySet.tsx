@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useLanguage } from "../context/LanguageContext";
 import { ChevronLeft, ChevronRight, Loader2, CalendarHeart } from "lucide-react";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import ProductCard from "./ProductCard";
 
 export default function MonthlySet() {
+  const { t } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -90,8 +92,8 @@ export default function MonthlySet() {
               <CalendarHeart size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">Book Set of the Month</h2>
-              <p className="text-teal-600/80 mt-1 text-sm font-medium">Carefully selected books for this month</p>
+              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">{t("book_set_of_month")}</h2>
+              <p className="text-teal-600/80 mt-1 text-sm font-medium">{t("carefully_selected")}</p>
             </div>
           </div>
           {!loading && products.length > 4 && (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLanguage } from "../context/LanguageContext";
 import Image from "next/image";
 
 const characters = [
@@ -39,6 +40,7 @@ const characters = [
 ];
 
 export default function HeroSection() {
+  const { t } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -65,7 +67,7 @@ export default function HeroSection() {
       {/* 1. Marquee headline - İlk koddaki stil korundu */}
       <div className="bg-gradient-to-r from-teal-50 via-white to-teal-50 py-3 overflow-hidden border-b border-teal-100">
         <div className="text-center text-xl sm:text-2xl md:text-3xl font-bold tracking-wide px-4 text-teal-800">
-          THE WORLD&apos;S WIDEST SELECTION OF BOOKS
+          {t("worlds_widest_selection")}
         </div>
       </div>
 
@@ -113,9 +115,9 @@ export default function HeroSection() {
         >
           <h1 className="text-center">
             <span className="block text-white text-3xl sm:text-4xl md:text-6xl font-black tracking-wide drop-shadow-2xl mb-2">
-              BE{" "}
+              {t("be_whoever").split(" ")[0]}{" "}
               <span className="text-teal-400 italic text-4xl sm:text-5xl md:text-7xl font-black">
-                {active.title}
+                {active.title || t("be_whoever").split(" ")[1]}
               </span>
             </span>
           </h1>
@@ -138,7 +140,7 @@ export default function HeroSection() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
             </svg>
-            <span className="text-[10px] block mt-1 uppercase font-bold">Buy book</span>
+            <span className="text-[10px] block mt-1 uppercase font-bold">{t("buy_book")}</span>
           </button>
           
           <button
@@ -153,7 +155,7 @@ export default function HeroSection() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-[10px] block mt-1 uppercase font-bold">Video</span>
+            <span className="text-[10px] block mt-1 uppercase font-bold">{t("video_btn")}</span>
           </button>
         </div>
       </div>

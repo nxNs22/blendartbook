@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, useId } from "react";
+import { useLanguage } from "../context/LanguageContext";
 import { MessageCircle, X, Send, Sparkles, Bot, User } from "lucide-react";
 
 interface Message {
@@ -9,14 +10,16 @@ interface Message {
   content: string;
 }
 
-const SUGGESTIONS = [
-  "📖 Recommend a book",
-  "🎭 Popular genres",
-  "🎁 Gift ideas",
-  "🌍 Books in English",
-];
-
 export default function AIChatWidget() {
+  const { t, language } = useLanguage();
+  
+  const SUGGESTIONS = [
+    t("recommend_book"),
+    t("popular_genres"),
+    t("gift_ideas"),
+    t("books_in_english"),
+  ];
+
   const instanceId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -24,7 +27,7 @@ export default function AIChatWidget() {
       id: "welcome",
       role: "assistant",
       content:
-        "Hi there! 📚 I'm blendartbook AI, your personal book assistant. I can help you discover amazing books, recommend reads based on your taste, or answer any questions about our library. What are you looking for today?",
+        t("ai_greeting"),
     },
   ]);
   const [input, setInput] = useState("");
@@ -83,7 +86,7 @@ export default function AIChatWidget() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: apiMessages }),
+        body: JSON.stringify({ messages: apiMessages, language }),
       });
 
       if (!response.ok) {
@@ -275,7 +278,7 @@ export default function AIChatWidget() {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Ask me about books..."
+                placeholder={t("ask_me_about")}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -295,7 +298,7 @@ export default function AIChatWidget() {
 
             {/* Footer */}
             <div className="ai-chat-footer">
-              Powered by blendartbook AI ✨
+              {t("powered_by")}
             </div>
           </div>
         </div>

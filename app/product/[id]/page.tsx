@@ -134,7 +134,7 @@ export default function ProductDetail() {
               {/* Fiyat ve Puan */}
               <div className="flex items-center justify-between mb-8 pb-8 border-b border-gray-100">
                 <div className="text-4xl font-bold text-teal-600">
-                  ${product.price?.toFixed(2)}
+                  {product.price?.toFixed(2)} €
                 </div>
                 <div className="flex items-center bg-gray-50 px-3 py-1.5 rounded-lg">
                   <Star className="w-5 h-5 text-yellow-400 fill-current" />

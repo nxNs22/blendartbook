@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function PromoBanner() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
 
   return (
@@ -20,19 +22,18 @@ export default function PromoBanner() {
 
       <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
         <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-4">
-          Join the{" "}
+          {t("join_the")}{" "}
           <span className="text-accent">LIBROAMANTO</span>{" "}
           Club
         </h2>
         <p className="text-teal-200 text-lg mb-8 max-w-xl mx-auto">
-          Get exclusive discounts, early access to new releases, and free
-          shipping on your first order!
+          {t("promo_desc")}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
           <input
             type="email"
-            placeholder="Enter your email address"
+            placeholder={t("enter_email")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-sm"
@@ -42,12 +43,12 @@ export default function PromoBanner() {
             className="bg-accent hover:bg-accent-dark text-teal-900 font-bold px-6 py-3 rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-accent/30 text-sm"
             id="newsletter-submit"
           >
-            Join Now
+            {t("join_now")}
           </button>
         </div>
 
         <p className="text-teal-300/60 text-xs mt-4">
-          By joining, you agree to our Terms & Conditions and Privacy Policy
+          {t("promo_terms")}
         </p>
       </div>
     </section>

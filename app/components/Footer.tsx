@@ -1,6 +1,8 @@
 "use client";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
   return (
     // 🌟 ARKA PLAN RENGİ teal-700 OLARAK GÜNCELLENDİ
     <footer className="bg-teal-700 text-white" id="footer">
@@ -9,7 +11,7 @@ export default function Footer() {
         {/* Tagline */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-heading font-bold text-white inline-block">
-            All the books in the world
+            {t("all_the_books")}
           </h2>
         </div>
 
@@ -18,7 +20,7 @@ export default function Footer() {
           {/* Column 1 */}
           <div>
             <h3 className="text-sm font-heading font-bold text-white mb-4 uppercase tracking-wider">
-              All about shopping
+              {t("all_about_shopping")}
             </h3>
             <ul className="space-y-2.5">
               <li>
@@ -26,7 +28,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  All about shopping
+                  {t("all_about_shopping")}
                 </a>
               </li>
               <li>
@@ -34,7 +36,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Delivery and payment
+                  {t("delivery_payment")}
                 </a>
               </li>
               <li>
@@ -42,7 +44,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Terms and conditions
+                  {t("terms_conditions")}
                 </a>
               </li>
             </ul>
@@ -51,7 +53,7 @@ export default function Footer() {
           {/* Column 2 */}
           <div>
             <h3 className="text-sm font-heading font-bold text-white mb-4 uppercase tracking-wider">
-              About the shop
+              {t("about_the_shop")}
             </h3>
             <ul className="space-y-2.5">
               <li>
@@ -59,7 +61,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Who we are
+                  {t("who_we_are")}
                 </a>
               </li>
               <li>
@@ -67,7 +69,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Contacts
+                  {t("contacts")}
                 </a>
               </li>
               <li>
@@ -75,7 +77,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Books sustainability
+                  {t("books_sustainability")}
                 </a>
               </li>
             </ul>
@@ -84,7 +86,7 @@ export default function Footer() {
           {/* Column 3 */}
           <div>
             <h3 className="text-sm font-heading font-bold text-white mb-4 uppercase tracking-wider">
-              For customers
+              {t("for_customers")}
             </h3>
             <ul className="space-y-2.5">
               <li>
@@ -92,7 +94,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Loyalty programme
+                  {t("loyalty_programme")}
                 </a>
               </li>
               <li>
@@ -100,7 +102,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Order status
+                  {t("order_status")}
                 </a>
               </li>
               <li>
@@ -108,7 +110,7 @@ export default function Footer() {
                   href="#"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
-                  Returns / Complaints
+                  {t("returns_complaints")}
                 </a>
               </li>
             </ul>
@@ -117,7 +119,7 @@ export default function Footer() {
           {/* Column 4 - Social */}
           <div>
             <h3 className="text-sm font-heading font-bold text-white mb-4">
-              Let&apos;s stay together
+              {t("lets_stay_together")}
               <span className="text-red-400 ml-1">♥</span>
             </h3>
 

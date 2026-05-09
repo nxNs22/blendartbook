@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const promo = getPromoByCode(promoCode);
     if (promo?.minSubtotal && subtotal < promo.minSubtotal) {
       return Response.json(
-        { error: `Promo code requires minimum ${promo.minSubtotal.toFixed(2)} TL subtotal.` },
+        { error: `Promo code requires minimum ${promo.minSubtotal.toFixed(2)} € subtotal.` },
         { status: 400 },
       );
     }
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     const orderPayload = {
       amount: amountInMinor,
-      currency: "TRY",
+      currency: "EUR",
       description: "Web Library Shop order",
       redirect_url: `${baseSiteUrl}/checkout/success?provider=revolut`,
       merchant_order_data: {

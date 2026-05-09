@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useLanguage } from "../../context/LanguageContext";
 import { useState, useEffect } from "react";
 import { Filter, ShoppingCart, ChevronDown, Loader2, BookOpen } from "lucide-react";
 import { useCart } from "../../context/CartContext"; 
@@ -8,6 +9,7 @@ import { supabase, getErrorMessage } from "../../lib/supabaseClient"; // 🌟 Su
 import ProductCard from "../../components/ProductCard";
 
 export default function DigitalCategoryPage() {
+  const { t } = useLanguage();
   const params = useParams();
   // URL yapına göre 'language' veya 'languages' kontrol et
   const currentLang = (params?.language as string) || (params?.languages as string) || "Unknown";

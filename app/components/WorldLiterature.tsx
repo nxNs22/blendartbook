@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useLanguage } from "../context/LanguageContext";
 import { ChevronLeft, ChevronRight, Loader2, Globe } from "lucide-react";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import ProductCard from "./ProductCard";
 
 export default function WorldLiterature() {
+  const { t } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -90,8 +92,8 @@ export default function WorldLiterature() {
               <Globe size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">World Literature</h2>
-              <p className="text-gray-500 mt-1 text-sm">Timeless classics from around the globe</p>
+              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">{t("world_literature")}</h2>
+              <p className="text-gray-500 mt-1 text-sm">{t("timeless_classics")}</p>
             </div>
           </div>
           {!loading && products.length > 4 && (
