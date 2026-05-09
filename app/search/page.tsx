@@ -257,7 +257,7 @@ function SearchPageContent() {
                     </span>
                     <button
                       onClick={(e) => handleAddToCart(book, e)}
-                      className="absolute bottom-3 right-3 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 rounded-full shadow-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
+                      className="absolute bottom-3 right-3 bg-teal-600 hover:bg-teal-700 text-white p-2.5 rounded-full shadow-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
                       title="Add to Cart"
                     >
                       <ShoppingCart size={18} />
@@ -279,7 +279,7 @@ function SearchPageContent() {
 
                   {/* Fiyat ve Kategori */}
                   <div className="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between">
-                    <span className="text-emerald-700 font-black text-base">
+                    <span className="text-teal-700 font-black text-base">
                       {book.price} TL
                     </span>
                     <span className="text-xs font-bold text-gray-400 uppercase bg-gray-50 px-2 py-1 rounded">

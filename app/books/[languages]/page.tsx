@@ -5,6 +5,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Filter, Star, ShoppingCart, ChevronDown, Loader2 } from "lucide-react";
 import { supabase, getErrorMessage } from "../../lib/supabaseClient"; 
 import { useCart } from "../../context/CartContext"; 
+import ProductCard from "../../components/ProductCard";
 
 export default function BooksByLanguage() {
   const params = useParams();
@@ -81,7 +82,7 @@ export default function BooksByLanguage() {
               max="250" 
               value={priceRange}
               onChange={(e) => setPriceRange(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
             />
           </div>
         </div>
@@ -103,52 +104,19 @@ export default function BooksByLanguage() {
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-emerald-600" size={40} />
+            <Loader2 className="animate-spin text-teal-600" size={40} />
           </div>
         ) : error ? (
           <div className="text-red-500 p-4 border border-red-100 rounded-lg bg-red-50">
             Error loading products: {error}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <div key={product.id} className="group flex flex-col bg-white border border-gray-100 rounded-xl p-3 hover:shadow-2xl transition-all duration-300">
-                <div className="relative aspect-[2/3] rounded-lg overflow-hidden mb-4 bg-gray-100">
-                  <img 
-                    src={product.image_url || "https://via.placeholder.com/150x220?text=No+Image"} 
-                    alt={product.title} 
-                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500" 
-                  />
-                  <button 
-                    onClick={(e) => handleAddToCart(product, e)}
-                    className="absolute bottom-3 right-3 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 rounded-full shadow-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
-                  >
-                    <ShoppingCart size={18} />
-                  </button>
-                </div>
-                
-                <h4 className="font-bold text-sm text-gray-900 line-clamp-1">{product.title}</h4>
-                {/* 🌟 JSONB Detayına Erişim */}
-                <p className="text-[11px] text-gray-500 mb-2 italic">
-                    {product.details?.author || "Unknown Author"}
-                </p>
-                
-                <div className="flex items-center gap-0.5 mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-
-                <div className="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between">
-                  <span className="text-emerald-700 font-black text-base">€{product.price?.toFixed(2)}</span>
-                  <span className="text-[9px] font-bold text-gray-400 uppercase bg-gray-50 px-2 py-1 rounded">
-                    {product.details?.format || "Hardcover"}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+    {filteredProducts.map((product) => (
+      <ProductCard key={product.id} product={product} />
+    ))}
+  </div>
+)}
 
         {!loading && filteredProducts.length === 0 && (
           <div className="text-center py-20 text-gray-400">

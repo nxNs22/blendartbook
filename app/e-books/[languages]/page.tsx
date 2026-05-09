@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Filter, ShoppingCart, ChevronDown, Loader2, BookOpen } from "lucide-react";
 import { useCart } from "../../context/CartContext"; 
 import { supabase, getErrorMessage } from "../../lib/supabaseClient"; // 🌟 Supabase bağlantısını ekle
+import ProductCard from "../../components/ProductCard";
 
 export default function DigitalCategoryPage() {
   const params = useParams();
@@ -64,14 +65,14 @@ export default function DigitalCategoryPage() {
       {/* Sidebar Filters */}
       <aside className="w-full md:w-64 space-y-8 bg-gray-50 p-6 rounded-xl h-fit border border-gray-100 shrink-0">
         <h3 className="font-bold text-lg mb-6 flex items-center gap-2 border-b pb-2 tracking-tight text-gray-800">
-          <Filter size={20} className="text-emerald-600" /> Digital Filters
+          <Filter size={20} className="text-teal-600" /> Digital Filters
         </h3>
         <div className="mb-8">
           <label className="text-sm font-bold text-gray-700 block mb-3">Max Price: €{priceRange}</label>
           <input 
             type="range" min="0" max="250" value={priceRange} 
             onChange={(e) => setPriceRange(Number(e.target.value))} 
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600" 
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600" 
           />
         </div>
       </aside>
@@ -80,42 +81,20 @@ export default function DigitalCategoryPage() {
       <main className="flex-1">
         <div className="flex justify-between items-center mb-8 border-b pb-6">
           <h1 className="text-2xl font-black uppercase italic text-gray-900">
-            Digital Library: <span className="text-emerald-600 capitalize">{currentLang}</span>
+            Digital Library: <span className="text-teal-600 capitalize">{currentLang}</span>
           </h1>
           <p className="text-xs text-gray-400 font-bold">{filteredProducts.length} items available</p>
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 className="animate-spin text-emerald-600" size={40} /></div>
+          <div className="flex justify-center py-20"><Loader2 className="animate-spin text-teal-600" size={40} /></div>
         ) : error ? (
           <div className="bg-red-50 text-red-500 p-4 rounded-lg text-center">{error}</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="group relative bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
-                <div className="relative aspect-[3/4] bg-teal-50 flex items-center justify-center">
-                  {product.image_url ? (
-                    <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
-                  ) : (
-                    <BookOpen size={64} className="text-teal-200" />
-                  )}
-                  <div className="absolute inset-0 bg-emerald-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <button onClick={(e) => handleAddToCart(product, e)} className="bg-white text-emerald-600 p-3 rounded-full shadow-lg transform hover:scale-110 transition-transform">
-                      <ShoppingCart size={20} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-gray-900 text-sm mb-1 line-clamp-1">{product.title}</h3>
-                  <p className="text-xs text-gray-500 mb-3">{product.details?.author || "Unknown Author"}</p>
-                  <div className="flex justify-between items-center pt-2 border-t border-gray-50">
-                    <span className="font-black text-emerald-700">€{product.price?.toFixed(2)}</span>
-                    <span className="text-[10px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded uppercase font-bold">
-                       {product.details?.format || "Digital"}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}

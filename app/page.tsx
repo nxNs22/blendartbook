@@ -5,6 +5,9 @@ import BestsellersSection from "./components/BestsellersSection";
 import CategoriesSection from "./components/CategoriesSection";
 import PromoBanner from "./components/PromoBanner";
 import Footer from "./components/Footer";
+import NewArrivals from "./components/NewArrivals";
+import MonthlySet from "./components/MonthlySet";
+import WorldLiterature from "./components/WorldLiterature";
 
 export default function Home() {
   return (
@@ -14,11 +17,15 @@ export default function Home() {
       
       <main className="flex-1">
         <HeroSection />
-        <FeaturesBar />
+        
         {/* BestsellersSection artık Supabase'den veri çekiyor */}
+        <NewArrivals/>
+        <MonthlySet/>
+        <WorldLiterature/>
         <BestsellersSection /> 
         <CategoriesSection />
-        <PromoBanner />
+ 
+        <FeaturesBar />
       </main>
 
 

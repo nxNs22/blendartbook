@@ -469,7 +469,7 @@ export default function CheckoutPage() {
                   <span>Subtotal</span>
                   <span>{localSubtotal.toFixed(2)} TL</span>
                 </div>
-                <div className="flex justify-between text-sm text-emerald-700">
+                <div className="flex justify-between text-sm text-teal-700">
                   <span>Discount</span>
                   <span>-{localDiscount.toFixed(2)} TL</span>
                 </div>

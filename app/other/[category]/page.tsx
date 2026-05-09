@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Filter, ChevronDown, ShoppingCart, Loader2, Package } from "lucide-react";
 import { supabase, getErrorMessage } from "../../lib/supabaseClient"; 
 import { useCart } from "../../context/CartContext";
+import ProductCard from "../../components/ProductCard";
 
 export default function OtherProductsPage() {
   const params = useParams();
@@ -85,7 +86,7 @@ export default function OtherProductsPage() {
             max="500" 
             value={priceRange}
             onChange={(e) => setPriceRange(Number(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
           />
         </div>
       </aside>
@@ -94,15 +95,15 @@ export default function OtherProductsPage() {
       <main className="flex-1">
         <header className="flex justify-between items-center mb-8 border-b pb-4">
           <h1 className="text-2xl font-black uppercase italic flex items-center gap-2">
-            <Package size={24} className="text-emerald-600" /> 
-            Browsing: <span className="text-emerald-600 capitalize">{displayCategory}</span>
+            <Package size={24} className="text-teal-600" /> 
+            Browsing: <span className="text-teal-600 capitalize">{displayCategory}</span>
           </h1>
           <p className="text-xs text-gray-500 font-medium">{filteredProducts.length} items found</p>
         </header>
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-emerald-600" size={40} />
+            <Loader2 className="animate-spin text-teal-600" size={40} />
           </div>
         ) : error ? (
           <div className="text-red-500 p-4 border border-red-100 rounded-lg bg-red-50 text-center">
@@ -111,44 +112,8 @@ export default function OtherProductsPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="group flex flex-col bg-white border border-gray-100 rounded-xl p-3 hover:shadow-2xl transition-all duration-300">
-                
-                <div className="relative aspect-square rounded-lg overflow-hidden mb-4 bg-teal-50 flex items-center justify-center">
-                  {product.image_url ? (
-                    <img 
-                      src={product.image_url} 
-                      alt={product.title} 
-                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500" 
-                    />
-                  ) : (
-                    <span className="text-6xl">📦</span>
-                  )}
-                  
-                  <button 
-                    onClick={(e) => handleAddToCart(product, e)}
-                    className="absolute bottom-3 right-3 bg-emerald-600 hover:bg-emerald-700 text-white p-2.5 rounded-full shadow-xl opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
-                  >
-                    <ShoppingCart size={18} />
-                  </button>
-                </div>
-                
-                <h4 className="font-bold text-sm text-gray-900 line-clamp-2 min-h-[40px]">{product.title}</h4>
-                
-                {/* JSONB Detay Gösterimi (Örn: Marka veya Malzeme) */}
-                <p className="text-[11px] text-gray-500 mb-2">
-                  {product.details?.brand || product.details?.author || "General Item"}
-                </p>
-
-                <div className="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between">
-                  <span className="text-emerald-700 font-black text-base">€{product.price?.toFixed(2)}</span>
-                  {product.stock <= 5 && product.stock > 0 && (
-                    <span className="text-[9px] text-red-500 font-bold uppercase">Only {product.stock} left!</span>
-                  )}
-                  {product.stock === 0 && (
-                    <span className="text-[9px] text-gray-400 font-bold uppercase">Out of stock</span>
-                  )}
-                </div>
-              </div>
+              
+                <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
