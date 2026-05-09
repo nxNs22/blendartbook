@@ -2,17 +2,38 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
-import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { ArrowLeft, CreditCard, Loader2, Mail, Phone, User } from "lucide-react";
+import {
+  ArrowLeft,
+  CreditCard,
+  Loader2,
+  Mail,
+  Phone,
+  User,
+} from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { calculateDiscount, calculateSubtotal, getPromoByCode, parsePrice } from "../lib/pricing";
+import {
+  calculateDiscount,
+  calculateSubtotal,
+  getPromoByCode,
+  parsePrice,
+} from "../lib/pricing";
 import CheckoutProgress from "../components/CheckoutProgress";
 import { useLanguage } from "../context/LanguageContext";
+import { supabase, getErrorMessage } from "../lib/supabaseClient";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "");
-const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "",
+);
+const stripePublishableKey =
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
 
 type IntentPayload = {
   clientSecret: string;
@@ -36,16 +57,23 @@ const safeParseResponseBody = async (response: Response) => {
   try {
     return JSON.parse(rawText);
   } catch {
-    return { error: "Server returned an unexpected response. Please check payment configuration." };
+    return {
+      error:
+        "Server returned an unexpected response. Please check payment configuration.",
+    };
   }
 };
 
 function PaymentForm({
   customerEmail,
   customerName,
+  onBeforePayment,
+  onPaymentSuccess,
 }: {
   customerEmail: string;
   customerName: string;
+  onBeforePayment: () => Promise<string | null>;
+  onPaymentSuccess: (orderCode: string) => Promise<void>;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -60,6 +88,17 @@ function PaymentForm({
     setProcessing(true);
     setErrorMessage(null);
 
+    // 1. Önce Siparişi Veritabanına "Pending" Olarak Kaydet
+    const orderCode = await onBeforePayment();
+    if (!orderCode) {
+      setErrorMessage(
+        "Sipariş oluşturulurken veritabanında bir hata oluştu. Lütfen tekrar deneyin.",
+      );
+      setProcessing(false);
+      return;
+    }
+
+    // 2. Stripe Ödemesini Gerçekleştir
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -72,7 +111,7 @@ function PaymentForm({
               },
             }
           : undefined,
-        return_url: `${window.location.origin}/checkout/success`,
+        return_url: `${window.location.origin}/checkout/success?orderCode=${orderCode}`,
       },
       redirect: "if_required",
     });
@@ -83,13 +122,19 @@ function PaymentForm({
       return;
     }
 
-    window.location.href = "/checkout/success";
+    // 3. Ödeme başarılıysa Supabase'de durumu "Paid" yap
+    await onPaymentSuccess(orderCode);
+
+    // 4. Başarılı sayfasına sipariş numarasıyla yönlendir
+    window.location.href = `/checkout/success?orderCode=${orderCode}`;
   };
 
   return (
     <form onSubmit={handlePay} className="space-y-4">
       <PaymentElement />
-      {errorMessage && <p className="text-sm text-red-600 font-semibold">{errorMessage}</p>}
+      {errorMessage && (
+        <p className="text-sm text-red-600 font-semibold">{errorMessage}</p>
+      )}
       <button
         type="submit"
         disabled={!stripe || !elements || processing}
@@ -97,15 +142,14 @@ function PaymentForm({
       >
         {processing ? (
           <span className="inline-flex items-center gap-2">
-            <Loader2 className="animate-spin" size={16} /> {t("processing_payment")}
+            <Loader2 className="animate-spin" size={16} />{" "}
+            {t("processing_payment")}
           </span>
         ) : (
           t("pay_now")
         )}
       </button>
-      <p className="text-xs text-gray-500">
-        {t("card_form_instruction")}
-      </p>
+      <p className="text-xs text-gray-500">{t("card_form_instruction")}</p>
     </form>
   );
 }
@@ -131,16 +175,76 @@ export default function CheckoutPage() {
   const [legalAccepted, setLegalAccepted] = useState(false);
   const [legalError, setLegalError] = useState(false);
   const [revolutLoading, setRevolutLoading] = useState(false);
+  const [podLoading, setPodLoading] = useState(false);
   const stripeConfigured = stripePublishableKey.trim().length > 0;
 
   const localSubtotal = calculateSubtotal(cart);
   const localPromo = getPromoByCode(promoCode);
-  const localDiscount = Math.min(calculateDiscount(localSubtotal, localPromo), localSubtotal);
+  const localDiscount = Math.min(
+    calculateDiscount(localSubtotal, localPromo),
+    localSubtotal,
+  );
   const localTotal = Math.max(localSubtotal - localDiscount, 0);
 
   const canInitPayment = useMemo(() => {
-    return cart.length > 0 && email.trim().length > 3 && deliveryAddress.trim().length > 5;
+    return (
+      cart.length > 0 &&
+      email.trim().length > 3 &&
+      deliveryAddress.trim().length > 5
+    );
   }, [cart.length, email, deliveryAddress]);
+
+  // --- SUPABASE SİPARİŞ KAYIT FONKSİYONU ---
+  const createOrderInSupabase = async (): Promise<string | null> => {
+    try {
+      // Rastgele Sipariş Kodu Üret (Örn: BLND-8X4M9Q)
+      const orderNumber = `BLND-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+      // 1. Ana Siparişi (orders) kaydet
+      const { data: orderData, error: orderError } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user?.id || null,
+          customer_email: email.trim(),
+          customer_name: fullName.trim(),
+          customer_phone: phone.trim(),
+          shipping_country: country.trim(), // İleride adres detaylarını da ayrı sütuna ekleyebilirsin
+          total_amount: localTotal,
+          discount_amount: localDiscount,
+          status: "pending",
+          payment_status: "pending",
+          order_number: orderNumber,
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // 2. Siparişteki Ürünleri (order_items) kaydet
+      const orderItems = cart.map((item) => ({
+        order_id: orderData.id,
+        product_id: item.id,
+        product_title: item.title,
+        quantity: item.quantity,
+        price_at_purchase:
+          typeof item.price === "number" ? item.price : parsePrice(item.price),
+      }));
+
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      return orderNumber;
+    } catch (err: unknown) {
+      console.error(
+        "Sipariş veritabanına kaydedilemedi:",
+        getErrorMessage(err),
+      );
+      return null;
+    }
+  };
 
   const fetchSavedCards = async () => {
     if (!email.trim()) return;
@@ -152,8 +256,11 @@ export default function CheckoutPage() {
         body: JSON.stringify({ customerEmail: email.trim() }),
       });
       const data = await safeParseResponseBody(response);
-      if (!response.ok) throw new Error(data?.error ?? "Failed to load saved cards.");
-      setSavedCards(Array.isArray(data.paymentMethods) ? data.paymentMethods : []);
+      if (!response.ok)
+        throw new Error(data?.error ?? "Failed to load saved cards.");
+      setSavedCards(
+        Array.isArray(data.paymentMethods) ? data.paymentMethods : [],
+      );
     } catch {
       setSavedCards([]);
     } finally {
@@ -161,12 +268,28 @@ export default function CheckoutPage() {
     }
   };
 
+  const checkLegalConsent = () => {
+    if (!legalAccepted) {
+      setIntentError(
+        "Please accept Distance Sales Agreement, Refund Policy and KVKK text.",
+      );
+      setLegalError(true);
+      const legalSection = document.getElementById("legal-consent");
+      legalSection?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return false;
+    }
+    setIntentError(null);
+    setLegalError(false);
+    return true;
+  };
+
   const createPaymentIntent = async () => {
     if (!canInitPayment) {
       setIntentError("Please add items to cart and enter your email.");
       return;
     }
-    setIntentError(null);
+    if (!checkLegalConsent()) return;
+
     setLoadingIntent(true);
     setIntentData(null);
 
@@ -175,7 +298,8 @@ export default function CheckoutPage() {
         id: item.id,
         title: item.title,
         quantity: item.quantity,
-        price: typeof item.price === "number" ? item.price : parsePrice(item.price),
+        price:
+          typeof item.price === "number" ? item.price : parsePrice(item.price),
       }));
 
       const response = await fetch("/api/payments/create-intent", {
@@ -190,12 +314,15 @@ export default function CheckoutPage() {
       });
 
       const data = await safeParseResponseBody(response);
-      if (!response.ok) throw new Error(data?.error ?? "Failed to initialize payment.");
+      if (!response.ok)
+        throw new Error(data?.error ?? "Failed to initialize payment.");
 
       setIntentData(data);
       await fetchSavedCards();
     } catch (error: unknown) {
-      setIntentError(error instanceof Error ? error.message : "Unexpected checkout error.");
+      setIntentError(
+        error instanceof Error ? error.message : "Unexpected checkout error.",
+      );
     } finally {
       setLoadingIntent(false);
     }
@@ -206,23 +333,25 @@ export default function CheckoutPage() {
       setIntentError("Please add items to cart and enter your email.");
       return;
     }
-    if (!legalAccepted) {
-      setIntentError("Please accept Distance Sales Agreement, Refund Policy and KVKK text.");
-      setLegalError(true);
-      const legalSection = document.getElementById("legal-consent");
-      legalSection?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
+    if (!checkLegalConsent()) return;
 
-    setIntentError(null);
-    setLegalError(false);
     setRevolutLoading(true);
     try {
+      // 1. Önce Siparişi Veritabanına Kaydet
+      const orderCode = await createOrderInSupabase();
+      if (!orderCode) {
+        throw new Error(
+          "Veritabanına sipariş kaydedilemedi. Lütfen tekrar deneyin.",
+        );
+      }
+
+      // 2. Revolut API'sine bağlan
       const payloadCart = cart.map((item) => ({
         id: item.id,
         title: item.title,
         quantity: item.quantity,
-        price: typeof item.price === "number" ? item.price : parsePrice(item.price),
+        price:
+          typeof item.price === "number" ? item.price : parsePrice(item.price),
       }));
 
       const response = await fetch("/api/payments/revolut/create-order", {
@@ -238,14 +367,39 @@ export default function CheckoutPage() {
 
       const data = await safeParseResponseBody(response);
       if (!response.ok || !data?.checkoutUrl) {
-        throw new Error(data?.error ?? "Failed to initialize Revolut checkout.");
+        throw new Error(
+          data?.error ?? "Failed to initialize Revolut checkout.",
+        );
       }
       window.location.href = String(data.checkoutUrl);
     } catch (error: unknown) {
-      setIntentError(error instanceof Error ? error.message : "Unexpected Revolut checkout error.");
+      setIntentError(
+        error instanceof Error
+          ? error.message
+          : "Unexpected Revolut checkout error.",
+      );
     } finally {
       setRevolutLoading(false);
     }
+  };
+
+  const handlePayOnDelivery = async () => {
+    if (!canInitPayment) {
+      setIntentError("Please add items to cart and enter your email.");
+      return;
+    }
+    if (!checkLegalConsent()) return;
+
+    setPodLoading(true);
+    // Kapıda ödeme seçildiğinde siparişi kaydet ve başarılı sayfasına at
+    const orderCode = await createOrderInSupabase();
+    if (!orderCode) {
+      setIntentError("Failed to save order. Please try again.");
+      setPodLoading(false);
+      return;
+    }
+
+    window.location.href = `/checkout/success?orderCode=${orderCode}`;
   };
 
   return (
@@ -254,10 +408,17 @@ export default function CheckoutPage() {
       <div className="max-w-7xl mx-auto px-4 py-10 md:py-14">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-[#2CB391] font-bold">Secure Checkout</p>
-            <h1 className="text-3xl md:text-4xl font-black text-[#1A2E35] mt-1">Delivery & Payment</h1>
+            <p className="text-xs uppercase tracking-[0.2em] text-[#2CB391] font-bold">
+              Secure Checkout
+            </p>
+            <h1 className="text-3xl md:text-4xl font-black text-[#1A2E35] mt-1">
+              Delivery & Payment
+            </h1>
           </div>
-          <Link href="/cart" className="text-sm font-bold text-gray-500 hover:text-gray-700 inline-flex items-center gap-2">
+          <Link
+            href="/cart"
+            className="text-sm font-bold text-gray-500 hover:text-gray-700 inline-flex items-center gap-2"
+          >
             <ArrowLeft size={14} /> Back to cart
           </Link>
         </div>
@@ -270,7 +431,9 @@ export default function CheckoutPage() {
               </h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("full_name")}</label>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">
+                    {t("full_name")}
+                  </label>
                   <input
                     type="text"
                     value={fullName}
@@ -281,7 +444,9 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("country")}</label>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">
+                    {t("country")}
+                  </label>
                   <input
                     type="text"
                     value={country}
@@ -316,7 +481,9 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("delivery_address")}</label>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">
+                    {t("delivery_address")}
+                  </label>
                   <textarea
                     value={deliveryAddress}
                     onChange={(event) => setDeliveryAddress(event.target.value)}
@@ -326,7 +493,9 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("city")}</label>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">
+                    {t("city")}
+                  </label>
                   <input
                     type="text"
                     value={city}
@@ -337,7 +506,9 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">{t("zip_code")}</label>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-2">
+                    {t("zip_code")}
+                  </label>
                   <input
                     type="text"
                     value={zipCode}
@@ -362,11 +533,15 @@ export default function CheckoutPage() {
                   <input
                     type="text"
                     value={promoCode}
-                    onChange={(event) => setPromoCode(event.target.value.toUpperCase())}
+                    onChange={(event) =>
+                      setPromoCode(event.target.value.toUpperCase())
+                    }
                     className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
                     placeholder="GIFT10"
                   />
-                  <p className="text-xs text-gray-500 mt-2">No code? Leave this empty and continue.</p>
+                  <p className="text-xs text-gray-500 mt-2">
+                    No code? Leave this empty and continue.
+                  </p>
                 </div>
 
                 <label className="inline-flex items-center gap-2 text-sm text-gray-700">
@@ -381,7 +556,9 @@ export default function CheckoutPage() {
                 <div
                   id="legal-consent"
                   className={`rounded-lg p-3 ${
-                    legalError ? "border border-red-300 bg-red-50" : "border border-gray-200 bg-gray-50"
+                    legalError
+                      ? "border border-red-300 bg-red-50"
+                      : "border border-gray-200 bg-gray-50"
                   }`}
                 >
                   <label className="inline-flex items-start gap-2 text-sm text-gray-700">
@@ -396,15 +573,24 @@ export default function CheckoutPage() {
                     />
                     <span>
                       I accept{" "}
-                      <Link href="/legal/mesafeli-satis-sozlesmesi" className="text-[#2CB391] font-semibold hover:underline">
+                      <Link
+                        href="/legal/mesafeli-satis-sozlesmesi"
+                        className="text-[#2CB391] font-semibold hover:underline"
+                      >
                         Distance Sales Agreement
                       </Link>
                       ,{" "}
-                      <Link href="/legal/iade-iptal-kosullari" className="text-[#2CB391] font-semibold hover:underline">
+                      <Link
+                        href="/legal/iade-iptal-kosullari"
+                        className="text-[#2CB391] font-semibold hover:underline"
+                      >
                         Refund & Cancellation
                       </Link>{" "}
                       and{" "}
-                      <Link href="/legal/kvkk-aydinlatma-metni" className="text-[#2CB391] font-semibold hover:underline">
+                      <Link
+                        href="/legal/kvkk-aydinlatma-metni"
+                        className="text-[#2CB391] font-semibold hover:underline"
+                      >
                         KVKK Privacy Notice
                       </Link>
                       .
@@ -418,64 +604,101 @@ export default function CheckoutPage() {
                   disabled={revolutLoading || !canInitPayment}
                   className="w-full h-12 rounded-lg bg-white border border-[#1A2E35] text-[#1A2E35] hover:bg-gray-50 font-bold disabled:opacity-60"
                 >
-                  {revolutLoading ? "Redirecting to Revolut..." : "Pay with Revolut"}
+                  {revolutLoading
+                    ? "Redirecting to Revolut..."
+                    : "Pay with Revolut"}
                 </button>
                 <p className="text-xs text-gray-500">
-                  Revolut hosted checkout page for real card payments and wallet methods.
+                  Revolut hosted checkout page for real card payments and wallet
+                  methods.
                 </p>
 
                 <button
                   type="button"
                   onClick={createPaymentIntent}
-                  disabled={loadingIntent || !canInitPayment || !stripeConfigured}
+                  disabled={
+                    loadingIntent || !canInitPayment || !stripeConfigured
+                  }
                   className="w-full h-12 rounded-lg bg-[#2CB391] hover:bg-[#249278] text-white font-bold disabled:opacity-60"
                 >
-                  {loadingIntent ? "Preparing secure payment..." : "Open card details form"}
+                  {loadingIntent
+                    ? "Preparing secure payment..."
+                    : "Open card details form"}
                 </button>
                 {!intentData?.clientSecret && stripeConfigured && (
                   <p className="text-xs text-gray-500">
-                    Click “Open card details form” to enter card number, expiry date, and CVV.
+                    Click “Open card details form” to enter card number, expiry
+                    date, and CVV.
                   </p>
                 )}
                 {!stripeConfigured && (
                   <p className="text-xs text-amber-700 font-semibold">
-                    Online card payment is not configured yet. Add `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` to enable it.
+                    Online card payment is not configured yet. Add
+                    `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY`
+                    to enable it.
                   </p>
                 )}
                 {!stripeConfigured && (
-                  <Link
-                    href="/checkout/success"
-                    className="w-full h-12 rounded-lg border border-[#2CB391] text-[#2CB391] font-bold inline-flex items-center justify-center hover:bg-[#E8F5F1]"
+                  <button
+                    type="button"
+                    onClick={handlePayOnDelivery}
+                    disabled={podLoading || !canInitPayment}
+                    className="w-full h-12 rounded-lg border border-[#2CB391] text-[#2CB391] font-bold inline-flex items-center justify-center hover:bg-[#E8F5F1] disabled:opacity-60"
                   >
-                    Continue with Pay on delivery
-                  </Link>
+                    {podLoading
+                      ? "Saving order..."
+                      : "Continue with Pay on delivery"}
+                  </button>
                 )}
 
-                {intentError && <p className="text-sm text-red-600 font-semibold">{intentError}</p>}
+                {intentError && (
+                  <p className="text-sm text-red-600 font-semibold">
+                    {intentError}
+                  </p>
+                )}
               </div>
 
               {intentData?.clientSecret && (
                 <div className="mt-6 border-t pt-6">
-                <Elements stripe={stripePromise} options={{ clientSecret: intentData.clientSecret }}>
-                    <PaymentForm customerEmail={email.trim()} customerName={fullName.trim()} />
-                </Elements>
-              </div>
-            )}
+                  <Elements
+                    stripe={stripePromise}
+                    options={{ clientSecret: intentData.clientSecret }}
+                  >
+                    <PaymentForm
+                      customerEmail={email.trim()}
+                      customerName={fullName.trim()}
+                      onBeforePayment={createOrderInSupabase}
+                      onPaymentSuccess={async (orderCode) => {
+                        await supabase
+                          .from("orders")
+                          .update({ payment_status: "paid" })
+                          .eq("order_number", orderCode);
+                      }}
+                    />
+                  </Elements>
+                </div>
+              )}
             </section>
           </div>
 
           <aside className="lg:sticky lg:top-6 h-fit">
             <div className="rounded-2xl border border-gray-200 p-6 bg-white shadow-sm">
-              <h2 className="font-bold text-lg text-[#1A2E35] mb-4">{t("order_summary")}</h2>
+              <h2 className="font-bold text-lg text-[#1A2E35] mb-4">
+                {t("order_summary")}
+              </h2>
 
               <div className="space-y-2 text-sm max-h-60 overflow-y-auto pr-1">
-                {cart.length === 0 && <p className="text-gray-500">No items in cart yet.</p>}
+                {cart.length === 0 && (
+                  <p className="text-gray-500">No items in cart yet.</p>
+                )}
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between gap-3">
                     <span className="text-gray-700">
                       {item.title} x {item.quantity}
                     </span>
-                    <span className="font-semibold">{(parsePrice(item.price) * item.quantity).toFixed(2)} €</span>
+                    <span className="font-semibold">
+                      {(parsePrice(item.price) * item.quantity).toFixed(2)} €
+                    </span>
                   </div>
                 ))}
               </div>
@@ -497,7 +720,9 @@ export default function CheckoutPage() {
 
               <div className="mt-6 pt-4 border-t">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-bold text-sm text-gray-700">Saved cards for this email</h3>
+                  <h3 className="font-bold text-sm text-gray-700">
+                    Saved cards for this email
+                  </h3>
                   <button
                     type="button"
                     onClick={fetchSavedCards}
@@ -513,8 +738,12 @@ export default function CheckoutPage() {
                 ) : (
                   <ul className="space-y-2">
                     {savedCards.map((card) => (
-                      <li key={card.id} className="text-xs bg-white border rounded px-3 py-2">
-                        {card.brand.toUpperCase()} •••• {card.last4} {card.expMonth}/{card.expYear}
+                      <li
+                        key={card.id}
+                        className="text-xs bg-white border rounded px-3 py-2"
+                      >
+                        {card.brand.toUpperCase()} •••• {card.last4}{" "}
+                        {card.expMonth}/{card.expYear}
                       </li>
                     ))}
                   </ul>
@@ -527,4 +756,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
