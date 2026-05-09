@@ -246,7 +246,13 @@ const translations: Translations = {
     "password_updated": "Password updated",
     "can_signin_new_password": "You can now sign in with your new password.",
     "continue_to_signin": "Continue to Sign In",
-    "repeat_password": "Repeat password"
+    "repeat_password": "Repeat password",
+    "payment_successful": "Payment successful",
+    "payment_received_desc": "Thank you. Your payment has been received and processed securely.",
+    "order_number": "Order Number",
+    "estimated_delivery": "Your order will reach you in 5-6 days.",
+    "continue_shopping": "Continue shopping",
+    "back_to_cart": "Back to Cart"
   },
 
   bg: {
@@ -448,7 +454,13 @@ const translations: Translations = {
     "password_updated": "Паролата е обновена",
     "can_signin_new_password": "Вече можете да влезете с новата си парола.",
     "continue_to_signin": "Продължи към Вход",
-    "repeat_password": "Повторете паролата"
+    "repeat_password": "Повторете паролата",
+    "payment_successful": "Плащането е успешно",
+    "payment_received_desc": "Благодарим ви. Вашето плащане е получено и обработено сигурно.",
+    "order_number": "Номер на поръчка",
+    "estimated_delivery": "Вашата поръчка ще пристигне при вас след 5-6 дни.",
+    "continue_shopping": "Продължете с пазаруването",
+    "back_to_cart": "Назад към количката"
   },
 
   tr: {
@@ -650,7 +662,13 @@ const translations: Translations = {
     "password_updated": "Şifre güncellendi",
     "can_signin_new_password": "Artık yeni şifrenizle giriş yapabilirsiniz.",
     "continue_to_signin": "Giriş Yapmaya Devam Et",
-    "repeat_password": "Şifreyi tekrarla"
+    "repeat_password": "Şifreyi tekrarla",
+    "payment_successful": "Ödeme başarılı",
+    "payment_received_desc": "Teşekkür ederiz. Ödemeniz alındı ve güvenli bir şekilde işlendi.",
+    "order_number": "Sipariş Numarası",
+    "estimated_delivery": "Siparişiniz 5-6 gün içinde size ulaşacaktır.",
+    "continue_shopping": "Alışverişe devam et",
+    "back_to_cart": "Sepete Geri Dön"
   },
 
   ro: {
@@ -852,7 +870,13 @@ const translations: Translations = {
     "password_updated": "Parolă actualizată",
     "can_signin_new_password": "Acum vă puteți autentifica cu noua parolă.",
     "continue_to_signin": "Continuă spre Autentificare",
-    "repeat_password": "Repetați parola"
+    "repeat_password": "Repetați parola",
+    "payment_successful": "Plată reușită",
+    "payment_received_desc": "Vă mulțumim. Plata dumneavoastră a fost primită și procesată în siguranță.",
+    "order_number": "Număr comandă",
+    "estimated_delivery": "Comanda dumneavoastră va ajunge la dumneavoastră în 5-6 zile.",
+    "continue_shopping": "Continuă cumpărăturile",
+    "back_to_cart": "Înapoi la coș"
   },
 };
 
