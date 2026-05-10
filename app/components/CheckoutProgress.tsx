@@ -5,7 +5,7 @@ import { ShoppingCart, Truck, MapPin, FileText } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
 interface CheckoutProgressProps {
-  currentStep: number; // 1: Cart, 2: Delivery & Payment, 3: Delivery Details, 4: Order Summary
+  currentStep: number; // 1: Cart, 2: Delivery & Payment, 3: Order Summary
 }
 
 const CheckoutProgress: React.FC<CheckoutProgressProps> = ({ currentStep }) => {
@@ -14,7 +14,6 @@ const CheckoutProgress: React.FC<CheckoutProgressProps> = ({ currentStep }) => {
   const steps = [
     { key: "shopping_cart", icon: ShoppingCart, label: t("shopping_cart") },
     { key: "delivery_payment", icon: Truck, label: t("delivery_payment") },
-    { key: "delivery_details", icon: MapPin, label: t("delivery_details") },
     { key: "order_summary", icon: FileText, label: t("order_summary") },
   ];
 
