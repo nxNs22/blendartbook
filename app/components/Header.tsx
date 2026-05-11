@@ -372,10 +372,10 @@ export default function Header() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleSearchKeyPress}
           />
-          {/* 🌟 ARAMA BUTONU RENGİ GÜNCELLENDİ (#009966) */}
+          {/* 🌟 ARAMA BUTONU RENGİ TURKUAZ (#2CB391) YAPILDI */}
           <button 
             onClick={handleSearch}
-            className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-[#009966] hover:bg-[#008055]"
+            className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-[#2CB391] hover:bg-[#249278]"
           >
             {t("search")}
           </button>
