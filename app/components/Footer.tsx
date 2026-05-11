@@ -5,8 +5,8 @@ import { useLanguage } from "../context/LanguageContext";
 export default function Footer() {
   const { t } = useLanguage();
   return (
-    // 🌟 ARKA PLAN RENGİ teal-700 OLARAK GÜNCELLENDİ
-    <footer className="bg-teal-700 text-white" id="footer">
+    // 🌟 ARKA PLAN RENGİ ÖZEL MAVİ (#5BCDE9) OLARAK GÜNCELLENDİ
+    <footer className="bg-[#5BCDE9] text-white" id="footer">
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 pt-16 pb-10">
         {/* Tagline */}
