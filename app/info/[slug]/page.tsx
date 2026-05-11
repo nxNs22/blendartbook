@@ -15,29 +15,29 @@ export default function DynamicInfoPage({ params }: { params: { slug: string } }
         return {
           title: t("books_sustainability"),
           icon: <Leaf size={48} />,
-          desc: "Our commitment to the planet and responsible publishing.",
-          content: "We believe in a sustainable future for the world of art and literature. We source our paper from FSC-certified forests and use eco-friendly inks whenever possible. Our packaging is 100% recyclable and plastic-free."
+          desc: t("sustainability_desc"),
+          content: t("sustainability_content")
         };
       case "loyalty":
         return {
           title: t("loyalty_programme"),
           icon: <Gift size={48} />,
-          desc: "Rewarding our most passionate readers and collectors.",
-          content: "Join the BlendArtBook Loyalty Programme to earn points on every purchase. Points can be redeemed for exclusive discounts, early access to rare editions, and free shipping on all orders."
+          desc: t("loyalty_desc"),
+          content: t("loyalty_content")
         };
       case "returns":
         return {
           title: t("returns_complaints"),
           icon: <RotateCcw size={48} />,
-          desc: "Hassle-free returns and dedicated support for your satisfaction.",
-          content: "Not satisfied with your purchase? No problem. We offer a 30-day return policy for all items in their original condition. Simply contact our support team to initiate a return or exchange."
+          desc: t("returns_desc"),
+          content: t("returns_content")
         };
       case "terms-conditions":
         return {
           title: t("terms_conditions"),
           icon: <Scale size={48} />,
-          desc: "The fine print, made clear and transparent.",
-          content: "By using our website, you agree to our terms of service. We are committed to transparency and fairness in all our dealings with our community."
+          desc: t("terms_hero_desc"),
+          content: t("terms_section1_content")
         };
       default:
         return {
@@ -71,10 +71,10 @@ export default function DynamicInfoPage({ params }: { params: { slug: string } }
              <div className="prose prose-teal max-w-none text-gray-700 leading-relaxed text-lg">
                 <p>{pageContent.content}</p>
                 <div className="mt-12 p-8 bg-white rounded-3xl border border-gray-200">
-                   <h4 className="font-black text-[#1A2E35] mb-4">Still have questions?</h4>
-                   <p className="text-sm text-gray-500 mb-6">Our dedicated support team is ready to assist you with any further details regarding this topic.</p>
+                   <h4 className="font-black text-[#1A2E35] mb-4">{t("still_have_questions")}</h4>
+                   <p className="text-sm text-gray-500 mb-6">{t("support_team_desc")}</p>
                    <Link href="/about/contacts" className="text-[#2CB391] font-black text-sm uppercase tracking-widest hover:underline">
-                      Contact Support →
+                      {t("contact_support")} →
                    </Link>
                 </div>
              </div>

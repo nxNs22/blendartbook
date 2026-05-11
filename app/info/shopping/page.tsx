@@ -17,7 +17,7 @@ export default function ShoppingInfoPage() {
               {t("all_about_shopping")}
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Everything you need to know about your shopping experience at BlendArtBook. We strive to make it seamless, secure, and inspiring.
+              {t("shopping_hero_desc")}
             </p>
           </div>
 
@@ -27,9 +27,9 @@ export default function ShoppingInfoPage() {
               <div className="w-12 h-12 bg-[#2CB391] rounded-2xl flex items-center justify-center text-white mb-6">
                 <ShoppingBag size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[#1A2E35] mb-4">Easy Ordering</h3>
+              <h3 className="text-xl font-bold text-[#1A2E35] mb-4">{t("easy_ordering")}</h3>
               <p className="text-gray-600 leading-relaxed">
-                Add your favorite books or art pieces to your cart with one click. Our checkout process is optimized for speed and clarity.
+                {t("easy_ordering_desc")}
               </p>
             </div>
 
@@ -37,9 +37,9 @@ export default function ShoppingInfoPage() {
               <div className="w-12 h-12 bg-[#2CB391] rounded-2xl flex items-center justify-center text-white mb-6">
                 <ShieldCheck size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[#1A2E35] mb-4">Secure Payments</h3>
+              <h3 className="text-xl font-bold text-[#1A2E35] mb-4">{t("secure_payments")}</h3>
               <p className="text-gray-600 leading-relaxed">
-                We use industry-leading encryption (SSL) and trusted payment gateways like Stripe and Revolut to ensure your data is always safe.
+                {t("secure_payments_desc")}
               </p>
             </div>
 
@@ -47,9 +47,9 @@ export default function ShoppingInfoPage() {
               <div className="w-12 h-12 bg-[#2CB391] rounded-2xl flex items-center justify-center text-white mb-6">
                 <Zap size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[#1A2E35] mb-4">Fast Processing</h3>
+              <h3 className="text-xl font-bold text-[#1A2E35] mb-4">{t("fast_processing")}</h3>
               <p className="text-gray-600 leading-relaxed">
-                Orders are processed within 24 hours. You will receive a tracking number as soon as your package leaves our warehouse.
+                {t("fast_processing_desc")}
               </p>
             </div>
 
@@ -57,30 +57,30 @@ export default function ShoppingInfoPage() {
               <div className="w-12 h-12 bg-[#2CB391] rounded-2xl flex items-center justify-center text-white mb-6">
                 <RefreshCw size={24} />
               </div>
-              <h3 className="text-xl font-bold text-[#1A2E35] mb-4">Customer Support</h3>
+              <h3 className="text-xl font-bold text-[#1A2E35] mb-4">{t("cust_support_desc")}</h3>
               <p className="text-gray-600 leading-relaxed">
-                Our support team is available via chat and email to help you with any questions about your order or our products.
+                {t("cust_support_desc")}
               </p>
             </div>
           </div>
 
           {/* Detailed Content */}
           <div className="prose prose-teal max-w-none text-gray-700">
-            <h2 className="text-2xl font-black text-[#1A2E35] mb-4">How to shop?</h2>
+            <h2 className="text-2xl font-black text-[#1A2E35] mb-4">{t("how_to_shop")}</h2>
             <p className="mb-8">
-              Browsing through our collection is easy. You can use the search bar to find specific titles or explore our curated categories from the main menu. Once you find something you like, simply select the quantity and click "Add to Cart".
+              {t("how_to_shop_desc")}
             </p>
 
-            <h2 className="text-2xl font-black text-[#1A2E35] mb-4">Tracking your order</h2>
+            <h2 className="text-2xl font-black text-[#1A2E35] mb-4">{t("tracking_order")}</h2>
             <p className="mb-8">
-              After placing an order, you can view its status in your account dashboard. We also send automated email updates at every stage of the delivery process.
+              {t("tracking_order_desc")}
             </p>
 
             <div className="mt-20 p-10 bg-gray-50 rounded-[2.5rem] border border-gray-100 text-center">
-              <h3 className="text-2xl font-black text-[#1A2E35] mb-4">Need help with your order?</h3>
-              <p className="text-gray-500 mb-8 max-w-md mx-auto">Our support experts are ready to assist you with any questions about products, shipping, or returns.</p>
+              <h3 className="text-2xl font-black text-[#1A2E35] mb-4">{t("need_help_order")}</h3>
+              <p className="text-gray-500 mb-8 max-w-md mx-auto">{t("support_experts_desc")}</p>
               <Link href="/about/contacts" className="inline-block bg-[#2CB391] text-white font-black py-4 px-10 rounded-2xl hover:bg-[#249278] transition-all shadow-lg shadow-teal-900/10">
-                Contact Support
+                {t("contact_support")}
               </Link>
             </div>
           </div>
