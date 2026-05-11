@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useLanguage } from "../../context/LanguageContext";
 import { Mail, Phone, MapPin, MessageSquare } from "lucide-react";
 
@@ -16,7 +15,7 @@ export default function ContactsPage() {
               {t("contacts")}
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We're here to help. Reach out to us through any of these channels.
+              {t("contacts_hero_desc")}
             </p>
           </div>
 
@@ -28,11 +27,8 @@ export default function ContactsPage() {
                   <Mail size={24} />
                 </div>
                 <div>
-                  <h4 className="font-black text-[#1A2E35] mb-1">Email Us</h4>
-                  <p className="text-gray-500 text-sm mb-2">For general inquiries and support</p>
-                  <a href="mailto:support@blendartbook.com" className="text-lg font-bold text-[#2CB391] hover:underline">
-                    support@blendartbook.com
-                  </a>
+                  <h4 className="font-black text-[#1A2E35] mb-1">{t("email_us")}</h4>
+                  <p className="text-gray-500 text-sm mb-2">support@blendartbook.com</p>
                 </div>
               </div>
 
@@ -41,11 +37,8 @@ export default function ContactsPage() {
                   <Phone size={24} />
                 </div>
                 <div>
-                  <h4 className="font-black text-[#1A2E35] mb-1">Call Us</h4>
-                  <p className="text-gray-500 text-sm mb-2">Mon-Fri from 9am to 6pm</p>
-                  <a href="tel:+442012345678" className="text-lg font-bold text-[#1A2E35] hover:text-[#2CB391] transition-colors">
-                    +44 20 1234 5678
-                  </a>
+                  <h4 className="font-black text-[#1A2E35] mb-1">{t("call_us")}</h4>
+                  <p className="text-gray-500 text-sm mb-2">+44 20 1234 5678</p>
                 </div>
               </div>
 
@@ -54,11 +47,9 @@ export default function ContactsPage() {
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <h4 className="font-black text-[#1A2E35] mb-1">Visit Us</h4>
-                  <p className="text-gray-500 text-sm mb-2">Our headquarters</p>
+                  <h4 className="font-black text-[#1A2E35] mb-1">{t("visit_us")}</h4>
                   <p className="text-lg font-bold text-[#1A2E35]">
-                    123 Art Street, Creative Quarter<br />
-                    London, EC1A 1BB, UK
+                    {t("art_street_address")}
                   </p>
                 </div>
               </div>
@@ -70,13 +61,16 @@ export default function ContactsPage() {
                 <MessageSquare size={150} />
               </div>
               <div className="relative z-10">
-                <h3 className="text-2xl font-black mb-4">Live Chat</h3>
+                <h3 className="text-2xl font-black mb-4">{t("live_chat")}</h3>
                 <p className="text-gray-400 mb-8 leading-relaxed">
-                  Need immediate assistance? Our AI assistant and support team are available 24/7 to help you with your shopping journey.
+                  {t("live_chat_desc")}
                 </p>
               </div>
-              <button className="bg-[#2CB391] text-white font-black py-4 px-8 rounded-2xl hover:bg-[#249278] transition-all relative z-10 shadow-xl shadow-teal-900/20">
-                Start a Conversation
+              <button 
+                onClick={() => window.dispatchEvent(new CustomEvent("open-ai-chat"))}
+                className="bg-[#2CB391] text-white font-black py-4 px-8 rounded-2xl hover:bg-[#249278] transition-all relative z-10 shadow-xl shadow-teal-900/20"
+              >
+                {t("start_conversation")}
               </button>
             </div>
           </div>

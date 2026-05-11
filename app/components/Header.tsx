@@ -19,8 +19,8 @@ import { supabase, getErrorMessage } from "../lib/supabaseClient";
 // --- VERİ YAPILARI ---
 
 const languageBooks = [
-  { nameKey: "books_in_english", flag: "🇬🇧", slug: "english", count: "2 156 890" },
   { nameKey: "books_in_turkish", flag: "🇹🇷", slug: "turkish", count: "284 730" },
+  { nameKey: "books_in_english", flag: "🇬🇧", slug: "english", count: "2 156 890" },
   { nameKey: "books_in_romanian", flag: "🇷🇴", slug: "romanian", count: "156 420" },
   { nameKey: "books_in_bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "89 340" },
 ];
@@ -91,8 +91,10 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
           
           {content && content.data && (
             <>
-              <h2 className="mb-10 text-3xl font-bold text-center text-white md:text-5xl">{content.title}</h2>
-              <div className="grid max-w-2xl grid-cols-1 gap-6 mx-auto mb-8 md:grid-cols-3">
+              <h2 className="mb-12 text-4xl font-black text-center text-white md:text-7xl tracking-tight">
+                {content.title}
+              </h2>
+              <div className="flex flex-wrap justify-center max-w-5xl gap-x-12 gap-y-12 mx-auto mb-12">
                 {content.data.map((lang: LanguageBookItem) => {
                   const safeSlug = (lang.slug || "").toLowerCase();
                   return (
@@ -100,11 +102,17 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
                       key={lang.nameKey} 
                       href={`${content.basePath}/${safeSlug}`} 
                       onClick={onClose}
-                      className="flex flex-col items-center gap-3 transition-opacity group hover:opacity-80"
+                      className="flex flex-col items-center gap-3 transition-all group w-56"
                     >
-                      <div className="text-5xl transition-transform md:text-6xl drop-shadow-lg group-hover:scale-110">{lang.flag}</div>
-                      <span className="text-sm font-semibold text-white/80 group-hover:text-white">{t(lang.nameKey)}</span>
-                      <span className="text-sm text-white/50">{lang.count}</span>
+                      <div className="text-6xl transition-transform md:text-7xl drop-shadow-2xl group-hover:scale-110 mb-2">
+                        {lang.flag}
+                      </div>
+                      <span className="text-base font-bold text-white group-hover:text-[#E62E4D] transition-colors">
+                        {t(lang.nameKey)}
+                      </span>
+                      <span className="text-sm font-semibold text-white/40 tracking-wider">
+                        {lang.count}
+                      </span>
                     </Link>
                   );
                 })}
@@ -177,8 +185,8 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
              </div>
           )}
 
-          <div className="flex justify-center pt-6 mt-10 text-sm italic border-t border-white/10 text-white/80">
-            <Sparkles className="mr-2 text-[#E62E4D]" size={18} />
+          <div className="flex justify-center items-center pt-10 mt-12 text-base italic border-t border-white/5 text-white/60">
+            <Sparkles className="mr-3 text-[#E62E4D]" size={20} />
             {t("help_text")}
           </div>
         </div>

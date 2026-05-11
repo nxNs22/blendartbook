@@ -210,13 +210,13 @@ export default function Footer() {
           {/* Legal links */}
           <div className="flex items-center gap-4 text-xs text-white/60">
             <a href="#" className="hover:text-white transition-colors">
-              Cookies
+              {t("cookies")}
             </a>
             <a href="#" className="hover:text-white transition-colors">
-              Privacy
+              {t("privacy")}
             </a>
             <a href="#" className="hover:text-white transition-colors">
-              Accessibility
+              {t("accessibility")}
             </a>
           </div>
         </div>
