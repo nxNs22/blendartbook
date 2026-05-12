@@ -64,17 +64,17 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full" id="hero-section">
-      {/* 1. Marquee headline - İlk koddaki stil korundu */}
+      {/* 1. Marquee headline */}
       <div className="bg-gradient-to-r from-teal-50 via-white to-teal-50 py-3 overflow-hidden border-b border-teal-100">
         <div className="text-center text-xl sm:text-2xl md:text-3xl font-bold tracking-wide px-4 text-teal-800">
           {t("worlds_widest_selection")}
         </div>
       </div>
 
-      {/* 2. Hero image area - İkinci koddaki sağlam yapı (Inline height/position) */}
+      {/* 2. Hero image area */}
       <div
         className={`relative overflow-hidden transition-all duration-700 bg-gradient-to-br ${active.bgColor}`}
-        style={{ height: '600px', position: 'relative' }}
+        style={{ height: 'calc(350px + 20vh)', minHeight: '400px', maxHeight: '650px', position: 'relative' }}
       >
         {/* Background image container */}
         <div
@@ -93,61 +93,51 @@ export default function HeroSection() {
             sizes="(max-width: 768px) 100vw, 1200px"
           />
           
-          {/* Gradients Overlay - İlk koddaki derinlik korundu */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" style={{ position: 'absolute', inset: 0 }} />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40 z-10" style={{ position: 'absolute', inset: 0 }} />
+          {/* Gradients Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40 z-10" />
         </div>
 
-        {/* Decorative arrows - İlk koddaki estetik detaylar */}
-        <div className="absolute left-[15%] top-1/2 -translate-y-1/2 hidden lg:block z-20 pointer-events-none" style={{ position: 'absolute' }}>
-          <div className="text-white/20 text-8xl font-bold select-none">&raquo;</div>
-        </div>
-        <div className="absolute right-[15%] top-1/2 -translate-y-1/2 hidden lg:block z-20 pointer-events-none" style={{ position: 'absolute' }}>
-          <div className="text-white/20 text-8xl font-bold select-none">&laquo;</div>
-        </div>
-
-        {/* Content Area - Her iki kodun birleşimi */}
+        {/* Content Area */}
         <div
-          className={`absolute inset-0 z-20 flex flex-col items-center justify-end pb-24 px-4 transition-all duration-500 ${
+          className={`absolute inset-0 z-20 flex flex-col items-center justify-end pb-12 sm:pb-24 px-4 transition-all duration-500 ${
             isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
           }`}
-          style={{ position: 'absolute', bottom: 0, width: '100%' }}
         >
           <h1 className="text-center">
-            <span className="block text-white text-3xl sm:text-4xl md:text-6xl font-black tracking-wide drop-shadow-2xl mb-2">
+            <span className="block text-white text-2xl sm:text-4xl md:text-6xl font-black tracking-wide drop-shadow-2xl mb-2">
               {t("be_whoever").split(" ")[0]}{" "}
-              <span className="text-teal-400 italic text-4xl sm:text-5xl md:text-7xl font-black">
+              <span className="text-teal-400 italic text-3xl sm:text-5xl md:text-7xl font-black">
                 {active.title || t("be_whoever").split(" ")[1]}
               </span>
             </span>
           </h1>
-          <p className="text-white/80 text-sm sm:text-base md:text-lg max-w-lg text-center mt-3 drop-shadow-lg leading-relaxed">
+          <p className="text-white/80 text-xs sm:text-base md:text-lg max-w-lg text-center mt-3 drop-shadow-lg leading-relaxed line-clamp-2 sm:line-clamp-none">
             {active.description}
           </p>
         </div>
 
-        {/* Side action buttons - İlk koddaki SVG ve cam efekti korundu */}
-        <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-30"
-             style={{ position: 'absolute', right: '2rem', top: '50%', transform: 'translateY(-50%)' }}>
+        {/* Side action buttons */}
+        <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-30">
           <button
-            className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-white hover:bg-teal-600 transition-all duration-300 group"
+            className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-2 sm:p-3 text-white hover:bg-teal-600 transition-all duration-300 group"
           >
             <svg
-              className="w-6 h-6 group-hover:scale-110 transition-transform"
+              className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
             </svg>
-            <span className="text-[10px] block mt-1 uppercase font-bold">{t("buy_book")}</span>
+            <span className="text-[8px] sm:text-[10px] block mt-1 uppercase font-bold">{t("buy_book")}</span>
           </button>
           
           <button
-            className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3 text-white hover:bg-white/20 transition-all duration-300 group"
+            className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-2 sm:p-3 text-white hover:bg-white/20 transition-all duration-300 group"
           >
             <svg
-              className="w-6 h-6 group-hover:scale-110 transition-transform"
+              className="w-5 h-5 sm:w-6 sm:h-6 group-hover:scale-110 transition-transform"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -155,18 +145,18 @@ export default function HeroSection() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-[10px] block mt-1 uppercase font-bold">{t("video_btn")}</span>
+            <span className="text-[8px] sm:text-[10px] block mt-1 uppercase font-bold">{t("video_btn")}</span>
           </button>
         </div>
       </div>
 
-      {/* 3. Character tabs - Temiz ve stabil tasarım */}
+      {/* 3. Character tabs */}
       <div className="flex bg-teal-950 overflow-x-auto no-scrollbar border-t border-white/10">
         {characters.map((char, i) => (
           <button
             key={char.name}
             onClick={() => handleTabChange(i)}
-            className={`flex-1 min-w-[130px] py-4 px-6 text-xs font-black tracking-widest uppercase transition-all duration-300 relative border-r border-white/5 ${
+            className={`flex-1 min-w-[100px] sm:min-w-[130px] py-3 sm:py-4 px-4 sm:px-6 text-[10px] sm:text-xs font-black tracking-widest uppercase transition-all duration-300 relative border-r border-white/5 ${
               i === activeIndex
                 ? "bg-teal-600 text-white"
                 : "text-white/40 hover:text-white hover:bg-white/5"

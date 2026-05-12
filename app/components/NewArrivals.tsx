@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { ChevronLeft, ChevronRight, Loader2, Sparkles, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import { useCart } from "../context/CartContext";
+
+import { demoNewArrivals } from "../data/demoProducts";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -64,6 +66,14 @@ export default function NewArrivals() {
     fetchNewProducts();
   }, []);
 
+  // 🌟 FALLBACK: Eğer veritabanında az kitap varsa, demo kitaplar ekler
+  const displayProducts = useMemo(() => {
+    if (loading) return [];
+    if (products.length >= 11) return products;
+    
+    return [...products, ...demoNewArrivals.slice(0, 12 - products.length)];
+  }, [products, loading]);
+
   const handleAddToCart = (product: any, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation(); 
@@ -110,8 +120,8 @@ export default function NewArrivals() {
     carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  if (!loading && products.length === 0) return null;
-  const gridAlignment = products.length < 5 ? "justify-center" : "justify-start";
+  if (!loading && displayProducts.length === 0) return null;
+  const gridAlignment = displayProducts.length < 6 ? "justify-center" : "justify-start";
 
   return (
     <section className="py-16 bg-white">
@@ -126,7 +136,7 @@ export default function NewArrivals() {
               <p className="text-gray-500 mt-1 text-sm">{t("freshly_added")}</p>
             </div>
           </div>
-          {!loading && products.length > 4 && (
+          {!loading && displayProducts.length > 6 && (
             <div className="flex items-center gap-2">
               <button onClick={() => scroll('left')} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronLeft size={24} /></button>
               <button onClick={() => scroll('right')} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronRight size={24} /></button>
@@ -144,9 +154,9 @@ export default function NewArrivals() {
               /* 🌟 items-stretch eklendi: Bu sayede tüm kartlar en uzun karta göre hizalanır */
               className={`flex items-stretch gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
             >
-              {products.map((product) => (
+              {displayProducts.map((product) => (
                 /* 🌟 flex eklendi: Kartın içini tam olarak doldurmasını sağlar */
-                <div key={product.id} className="flex-none flex w-[calc(60%-12px)] sm:w-[calc(40%-16px)] md:w-[calc(33.333%-16px)] lg:w-[calc(20%-20px)] snap-start select-none">
+                <div key={product.id} className="flex-none flex w-[calc(60%-12px)] sm:w-[calc(40%-16px)] md:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-20px)] snap-start select-none">
                   <div 
                     /* 🌟 w-full eklendi: Kart kapsayıcıya tam oturur */
                     className={`group/card w-full relative flex flex-col bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden ${isDragging ? "pointer-events-none" : ""}`}
@@ -156,12 +166,15 @@ export default function NewArrivals() {
                     
                     <div className="relative aspect-[4/5] bg-[#F8F9FA] overflow-hidden">
                       <Link href={`/product/${product.id}`} className="flex items-center justify-center w-full h-full p-4">
-                        {product.image_url ? (
-                          /* 🌟 object-cover yapıldı: Kapak resimleri boşluk kalmadan şıkça oturacak */
-                          <img src={product.image_url} alt={product.title} className="object-cover w-full h-full group-hover/card:scale-105 transition-transform duration-500" draggable="false" />
-                        ) : (
-                          <span className="text-6xl group-hover/card:scale-105 transition-transform duration-300">📚</span>
-                        )}
+                        <img 
+                          src={product.image_url || "/images/default-book.png"} 
+                          alt={product.title} 
+                          className="object-cover w-full h-full group-hover/card:scale-105 transition-transform duration-500" 
+                          draggable="false" 
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/images/default-book.png";
+                          }}
+                        />
                       </Link>
 
                       <div className={`absolute inset-0 z-10 bg-black/5 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${hoveredProduct === product.id ? "opacity-100" : "opacity-0"}`}>

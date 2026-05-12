@@ -43,46 +43,49 @@ export default function ProductCard({ product }: { product: any }) {
 
   return (
     <div 
-      className="group/card relative flex flex-col h-full bg-white rounded-2xl border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 overflow-hidden"
+      className="group/card relative flex flex-col h-full bg-white rounded-[24px] border border-gray-50 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="relative aspect-[4/5] bg-[#F8F9FA] overflow-hidden">
-        <Link href={`/product/${productId}`} className="flex items-center justify-center w-full h-full">
-          {product.image_url ? (
-            // 🌟 DÜZELTME BURADA: object-contain yerine object-cover eklendi (resim alanı tam dolduracak)
+      <div className="relative aspect-[1/1] bg-white overflow-hidden p-3">
+          <Link href={`/product/${productId}`} className="flex items-center justify-center w-full h-full rounded-[18px] overflow-hidden">
             <img 
-              src={product.image_url} 
+              src={product.image_url || "/images/default-book.png"} 
               alt={product.title} 
-              className="object-cover w-full h-full group-hover/card:scale-105 transition-transform duration-500" 
+              className="object-cover w-full h-full group-hover/card:scale-110 transition-transform duration-700 ease-out" 
               draggable="false"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/images/default-book.png";
+              }}
             />
-          ) : (
-            <span className="text-6xl group-hover/card:scale-105 transition-transform duration-300">📚</span>
-          )}
-        </Link>
+          </Link>
 
-        <div className={`absolute inset-0 z-10 bg-black/5 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${hovered ? "opacity-100" : "opacity-0"}`}>
+        <div className={`absolute inset-0 z-10 bg-black/10 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${hovered ? "opacity-100" : "opacity-0"}`}>
            <button 
              onClick={handleAddToCart} 
-             className="bg-white text-teal-700 w-12 h-12 rounded-full flex items-center justify-center hover:bg-teal-600 hover:text-white hover:scale-110 transition-all shadow-lg pointer-events-auto"
+             className="bg-white text-[#5BCDE9] w-14 h-14 rounded-full flex items-center justify-center hover:bg-[#5BCDE9] hover:text-white hover:scale-110 transition-all shadow-xl pointer-events-auto"
              title="Add to Cart"
            >
-             <ShoppingCart size={20} />
+             <ShoppingCart size={24} />
            </button>
         </div>
       </div>
 
-      <div className="p-5 flex flex-col flex-1 bg-white">
+      <div className="p-6 flex flex-col flex-1">
         <Link href={`/product/${productId}`}>
-          <h3 className="text-[17px] font-bold text-[#1A2E35] line-clamp-2 leading-snug mb-1 hover:text-teal-600 transition-colors">
+          <h3 className="text-[18px] font-black text-[#1A2E35] line-clamp-2 leading-tight mb-1 group-hover/card:text-[#5BCDE9] transition-colors tracking-tight">
             {product.title}
           </h3>
         </Link>
-        <p className="text-[15px] text-[#8A9A9D] truncate mb-2">{product.details?.author || '{t("unknown_author")}'}</p>
-        <StarRating rating={5} />
-        <div className="mt-auto pt-4">
-          <span className="text-[22px] font-black text-teal-700 tracking-tight">
+        <p className="text-[14px] font-medium text-[#8A9A9D] truncate mb-4">{product.details?.author || t("unknown_author")}</p>
+        
+        <div className="flex items-center gap-2 mb-6">
+           <StarRating rating={5} />
+           <span className="text-[12px] font-bold text-gray-400 mt-0.5">5</span>
+        </div>
+
+        <div className="mt-auto">
+          <span className="text-[26px] font-black text-[#5BCDE9] tracking-tighter">
             {Number(product.price || 0).toFixed(2)} €
           </span>
         </div>
