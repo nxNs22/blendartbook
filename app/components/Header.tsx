@@ -45,7 +45,7 @@ const otherProductKeys = [
   { nameKey: "game_toy", icon: <Gamepad2 size={28} />, count: "83 931", color: "bg-orange-500/20 text-orange-400" },
   { nameKey: "video", icon: <Video size={28} />, count: "67 926", color: "bg-red-500/20 text-red-400" },
   { nameKey: "printed_items", icon: <ImageIcon size={28} />, count: "77 103", color: "bg-yellow-500/20 text-yellow-400" },
-  { nameKey: "stationery", icon: <PenTool size={28} />, count: "10 941", color: "bg-green-500/20 text-green-400" },
+  { nameKey: "stationery", icon: <PenTool size={28} />, count: "10 941", color: "bg-teal-500/20 text-teal-400" },
   { nameKey: "digital", icon: <Monitor size={28} />, count: "11 146", color: "bg-indigo-500/20 text-indigo-400" },
 ];
 
@@ -402,7 +402,7 @@ export default function Header() {
           {/* 🌟 SEPET BUTONU RENGİ GÜNCELLENDİ (#00C292) */}
           <Link 
             href="/cart" 
-            className="relative flex items-center bg-[#00C292] px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#00A67C] transition-all shadow-md text-white"
+            className="relative flex items-center bg-[#5BCDE9] px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#38B2D0] transition-all shadow-md text-white"
           >
             <ShoppingCart size={18} />
             <span className="hidden ml-2 text-white md:inline-block">{t("cart")}</span>

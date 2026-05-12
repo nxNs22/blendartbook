@@ -12,7 +12,7 @@ export default function TermsConditionsPage() {
       <main className="py-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <div className="w-20 h-20 bg-teal-50 rounded-3xl flex items-center justify-center text-[#2CB391] mx-auto mb-8">
+            <div className="w-20 h-20 bg-teal-50 rounded-3xl flex items-center justify-center text-[#5BCDE9] mx-auto mb-8">
               <Scale size={48} />
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-[#1A2E35] mb-6">
@@ -26,7 +26,7 @@ export default function TermsConditionsPage() {
           <div className="space-y-10 text-gray-700 leading-relaxed">
              <section className="bg-gray-50 p-10 rounded-[2.5rem] border border-gray-100">
                 <h2 className="text-xl font-black text-[#1A2E35] mb-4 flex items-center gap-3">
-                   <FileText className="text-[#2CB391]" size={20} /> {t("terms_section1_title")}
+                   <FileText className="text-[#5BCDE9]" size={20} /> {t("terms_section1_title")}
                 </h2>
                 <p>
                    {t("terms_section1_content")}
@@ -35,7 +35,7 @@ export default function TermsConditionsPage() {
 
              <section className="bg-gray-50 p-10 rounded-[2.5rem] border border-gray-100">
                 <h2 className="text-xl font-black text-[#1A2E35] mb-4 flex items-center gap-3">
-                   <ShieldCheck className="text-[#2CB391]" size={20} /> {t("terms_section2_title")}
+                   <ShieldCheck className="text-[#5BCDE9]" size={20} /> {t("terms_section2_title")}
                 </h2>
                 <p>
                    {t("terms_section2_content")}
@@ -44,7 +44,7 @@ export default function TermsConditionsPage() {
 
              <section className="bg-gray-50 p-10 rounded-[2.5rem] border border-gray-100">
                 <h2 className="text-xl font-black text-[#1A2E35] mb-4 flex items-center gap-3">
-                   <Scale className="text-[#2CB391]" size={20} /> {t("terms_section3_title")}
+                   <Scale className="text-[#5BCDE9]" size={20} /> {t("terms_section3_title")}
                 </h2>
                 <p>
                    {t("terms_section3_content")}

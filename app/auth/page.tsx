@@ -158,7 +158,7 @@ export default function AuthPage() {
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-teal-100 max-w-md w-full relative overflow-hidden transition-all duration-300">
         
         {/* Dynamic Top Accent Color */}
-        <div className={`absolute top-0 left-0 w-full h-1 transition-colors duration-500 ${isLogin && !isForgotPassword ? 'bg-[#2CB391]' : 'bg-[#F14D5D]'}`} />
+        <div className={`absolute top-0 left-0 w-full h-1 transition-colors duration-500 ${isLogin && !isForgotPassword ? 'bg-[#5BCDE9]' : 'bg-[#F14D5D]'}`} />
 
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex flex-col items-center group mb-6">
@@ -277,7 +277,7 @@ export default function AuthPage() {
                   autoCapitalize="none"
                   autoCorrect="off"
                   inputMode="email"
-                  className={`w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white ${isLogin ? 'focus:border-[#2CB391] focus:ring-[#2CB391]' : 'focus:border-[#F14D5D] focus:ring-[#F14D5D]'}`}
+                  className={`w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white ${isLogin ? 'focus:border-[#5BCDE9] focus:ring-[#5BCDE9]' : 'focus:border-[#F14D5D] focus:ring-[#F14D5D]'}`}
                   placeholder="you@example.com"
                 />
               </div>
@@ -291,7 +291,7 @@ export default function AuthPage() {
                     <button
                       type="button"
                       onClick={openForgotPassword}
-                      className="text-xs text-[#2CB391] hover:underline font-semibold"
+                      className="text-xs text-[#5BCDE9] hover:underline font-semibold"
                     >
                       Forgot password?
                     </button>
@@ -307,7 +307,7 @@ export default function AuthPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={isLogin ? 1 : 6}
-                    className={`w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white ${isLogin ? 'focus:border-[#2CB391] focus:ring-[#2CB391]' : 'focus:border-[#F14D5D] focus:ring-[#F14D5D]'}`}
+                    className={`w-full h-12 pl-10 pr-4 text-sm border border-gray-200 rounded-lg focus:outline-none transition-colors bg-gray-50 focus:bg-white ${isLogin ? 'focus:border-[#5BCDE9] focus:ring-[#5BCDE9]' : 'focus:border-[#F14D5D] focus:ring-[#F14D5D]'}`}
                     placeholder={isLogin ? "••••••••" : "At least 6 characters"}
                   />
                 </div>
@@ -358,7 +358,7 @@ export default function AuthPage() {
               type="submit"
               disabled={loading}
               className={`w-full text-white h-12 rounded-lg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed ${
-                isLogin && !isForgotPassword ? 'bg-[#2CB391] hover:bg-[#249278]' : 'bg-[#F14D5D] hover:bg-[#d43f4d]'
+                isLogin && !isForgotPassword ? 'bg-[#5BCDE9] hover:bg-[#38B2D0]' : 'bg-[#F14D5D] hover:bg-[#d43f4d]'
               }`}
             >
               {loading ? (
@@ -393,7 +393,7 @@ export default function AuthPage() {
             <button 
               onClick={toggleMode}
               type="button"
-              className={`font-bold hover:underline transition-colors ${isLogin ? 'text-[#F14D5D]' : 'text-[#2CB391]'}`}
+              className={`font-bold hover:underline transition-colors ${isLogin ? 'text-[#F14D5D]' : 'text-[#5BCDE9]'}`}
             >
               {isLogin ? t("sign_up_free") : t("log_in_here")}
             </button>

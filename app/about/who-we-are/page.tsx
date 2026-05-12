@@ -24,7 +24,7 @@ export default function WhoWeArePage() {
             <div className="relative">
               <div className="aspect-[4/5] rounded-[3rem] bg-teal-50 overflow-hidden shadow-2xl">
                 <div className="absolute inset-0 flex items-center justify-center p-12">
-                   <BookOpen size={120} className="text-[#2CB391] opacity-20" />
+                   <BookOpen size={120} className="text-[#5BCDE9] opacity-20" />
                 </div>
               </div>
             </div>
@@ -39,11 +39,11 @@ export default function WhoWeArePage() {
                 </p>
                 <div className="grid grid-cols-2 gap-8">
                    <div>
-                      <Heart className="text-[#2CB391] mb-4" />
+                      <Heart className="text-[#5BCDE9] mb-4" />
                       <h4 className="font-bold mb-2">{t("curated_with_love")}</h4>
                    </div>
                    <div>
-                      <Star className="text-[#2CB391] mb-4" />
+                      <Star className="text-[#5BCDE9] mb-4" />
                       <h4 className="font-bold mb-2">{t("quality_first")}</h4>
                    </div>
                 </div>

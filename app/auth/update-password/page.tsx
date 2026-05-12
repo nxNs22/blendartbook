@@ -110,7 +110,7 @@ export default function UpdatePasswordPage() {
           <div className="bg-amber-50 text-amber-800 p-4 rounded-xl border border-amber-100 text-sm">
             {t("missing_expired_link")}
             <div className="mt-4">
-              <Link href="/auth" className="text-sm font-bold text-[#2CB391] hover:underline">
+              <Link href="/auth" className="text-sm font-bold text-[#5BCDE9] hover:underline">
                 {t("go_to_signin")}
               </Link>
             </div>

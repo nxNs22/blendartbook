@@ -23,7 +23,7 @@ export default function ContactsPage() {
             {/* Contact Info */}
             <div className="space-y-8">
               <div className="flex items-start gap-6">
-                <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-[#2CB391] flex-shrink-0">
+                <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-[#5BCDE9] flex-shrink-0">
                   <Mail size={24} />
                 </div>
                 <div>
@@ -33,7 +33,7 @@ export default function ContactsPage() {
               </div>
 
               <div className="flex items-start gap-6">
-                <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-[#2CB391] flex-shrink-0">
+                <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-[#5BCDE9] flex-shrink-0">
                   <Phone size={24} />
                 </div>
                 <div>
@@ -43,7 +43,7 @@ export default function ContactsPage() {
               </div>
 
               <div className="flex items-start gap-6">
-                <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-[#2CB391] flex-shrink-0">
+                <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center text-[#5BCDE9] flex-shrink-0">
                   <MapPin size={24} />
                 </div>
                 <div>
@@ -68,7 +68,7 @@ export default function ContactsPage() {
               </div>
               <button 
                 onClick={() => window.dispatchEvent(new CustomEvent("open-ai-chat"))}
-                className="bg-[#2CB391] text-white font-black py-4 px-8 rounded-2xl hover:bg-[#249278] transition-all relative z-10 shadow-xl shadow-teal-900/20"
+                className="bg-[#5BCDE9] text-white font-black py-4 px-8 rounded-2xl hover:bg-[#38B2D0] transition-all relative z-10 shadow-xl shadow-teal-900/20"
               >
                 {t("start_conversation")}
               </button>

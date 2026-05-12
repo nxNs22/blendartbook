@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
-          <div className="w-20 h-20 bg-teal-50 rounded-3xl flex items-center justify-center text-[#2CB391] mx-auto mb-6">
+          <div className="w-20 h-20 bg-teal-50 rounded-3xl flex items-center justify-center text-[#5BCDE9] mx-auto mb-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

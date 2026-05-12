@@ -5,9 +5,10 @@ import { Trash2, ChevronRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { calculateDiscount, calculateSubtotal, getPromoByCode, PromoRule } from "../lib/pricing";
 import CheckoutProgress from "../components/CheckoutProgress";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function CartPage() {
-  // 1. cartItems yerine "cart" çekiyoruz. totalPrice'ı biz hesaplayacağız.
+  const { t } = useLanguage();
   const { cart, removeFromCart } = useCart();
   const [promoInput, setPromoInput] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<PromoRule | null>(null);
@@ -66,16 +67,16 @@ export default function CartPage() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* 2. TABLO BAŞLIKLARI */}
         <div className="hidden md:grid grid-cols-6 text-[11px] font-bold text-gray-400 uppercase border-b pb-4 mb-6">
-          <div className="col-span-2">Product</div>
-          <div className="text-center">Number</div>
-          <div className="text-center">Stock Availability</div>
-          <div className="text-center">Gift-wrapping</div>
-          <div className="text-right">Price</div>
+          <div className="col-span-2">{t("product_label")}</div>
+          <div className="text-center">{t("number_label")}</div>
+          <div className="text-center">{t("stock_availability")}</div>
+          <div className="text-center">{t("gift_wrapping")}</div>
+          <div className="text-right">{t("price_label")}</div>
         </div>
 
         {/* 3. ÜRÜN LİSTESİ */}
         {cart.length === 0 ? (
-          <div className="text-center py-20 italic text-gray-400 border-b">Your cart is empty.</div>
+          <div className="text-center py-20 italic text-gray-400 border-b">{t("cart_empty")}</div>
         ) : (
           cart.map((item) => (
             <div key={item.id} className="grid grid-cols-1 md:grid-cols-6 items-center gap-4 py-6 border-b">
@@ -92,8 +93,8 @@ export default function CartPage() {
 
                 <div>
                   <h4 className="font-bold text-[#1A2E35]">{item.title}</h4>
-                  <p className="text-xs text-gray-400 italic">{item.author || "Unknown Author"}</p>
-                  <p className="text-[10px] mt-1 uppercase text-gray-500">🇹🇷 / BOOK</p>
+                  <p className="text-xs text-gray-400 italic">{item.author || t("unknown_author")}</p>
+                  <p className="text-[10px] mt-1 uppercase text-gray-500">🇹🇷 / {t("book_label")}</p>
                 </div>
               </div>
               
@@ -102,15 +103,15 @@ export default function CartPage() {
               </div>
               
               <div className="flex justify-center">
-                <span className="bg-[#E8F5F1] text-[#2CB391] text-[10px] font-bold px-3 py-2 rounded text-center leading-tight">
-                  In stock <br /> <span className="text-[9px] font-normal">Shipping within 24 hours</span>
+                <span className="bg-[#E0F7FA] text-[#5BCDE9] text-[10px] font-bold px-3 py-2 rounded text-center leading-tight">
+                  {t("in_stock")} <br /> <span className="text-[9px] font-normal">{t("shipping_24h")}</span>
                 </span>
               </div>
               
               <div className="flex justify-center">
                 <select className="text-xs border rounded p-2 bg-gray-50 w-full max-w-[120px]">
-                  <option>Select</option>
-                  <option>Yes (+2.00 €)</option>
+                  <option>{t("select_option")}</option>
+                  <option>{t("gift_wrap_yes")}</option>
                 </select>
               </div>
               
@@ -131,20 +132,20 @@ export default function CartPage() {
         <div className="mt-12 flex flex-col md:flex-row justify-between items-start gap-8">
           <div className="w-full md:w-auto">
             <div className="bg-[#F9FBF9] p-4 border rounded flex flex-wrap gap-2 items-center">
-              <span className="text-xs font-bold text-[#2CB391]">Do you have a discount coupon?</span>
+              <span className="text-xs font-bold text-[#5BCDE9]">{t("have_coupon")}</span>
               <input
                 type="text"
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value)}
                 className="border p-1 text-sm outline-none w-36 uppercase"
-                placeholder="Code..."
+                placeholder={t("coupon_placeholder")}
               />
               <button
                 type="button"
                 onClick={applyPromoCode}
-                className="bg-[#2CB391] text-white px-4 py-1.5 text-xs font-bold rounded hover:bg-[#249278] transition-colors"
+                className="bg-[#5BCDE9] text-white px-4 py-1.5 text-xs font-bold rounded hover:bg-[#38B2D0] transition-colors"
               >
-                Apply
+                {t("apply_btn")}
               </button>
               {appliedPromo && (
                 <button
@@ -152,11 +153,11 @@ export default function CartPage() {
                   onClick={clearPromoCode}
                   className="border border-gray-300 text-gray-600 px-3 py-1.5 text-xs font-bold rounded hover:bg-gray-100 transition-colors"
                 >
-                  Remove
+                  {t("remove_btn")}
                 </button>
               )}
               <div className="w-full text-[11px] text-gray-500">
-                Example codes: <strong>GIFT10</strong>, <strong>WELCOME50</strong>, <strong>VOUCHER20</strong>
+                {t("example_codes")} <strong>GIFT10</strong>, <strong>WELCOME50</strong>, <strong>VOUCHER20</strong>
               </div>
               {promoMessage && (
                 <div className={`w-full text-xs font-semibold ${appliedPromo ? "text-teal-700" : "text-red-600"}`}>
@@ -166,12 +167,12 @@ export default function CartPage() {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-gray-500 text-sm">Subtotal:</p>
+            <p className="text-gray-500 text-sm">{t("subtotal_label")}</p>
             <p className="text-xl font-extrabold text-[#1A2E35]">{subtotal.toFixed(2)} €</p>
             {safeDiscountAmount > 0 && (
-              <p className="text-sm font-bold text-teal-600">- {safeDiscountAmount.toFixed(2)} € discount</p>
+              <p className="text-sm font-bold text-teal-600">- {safeDiscountAmount.toFixed(2)} € {t("discount_label")}</p>
             )}
-            <p className="text-gray-500 text-sm mt-1">Total price:</p>
+            <p className="text-gray-500 text-sm mt-1">{t("total_price_label")}</p>
             <p className="text-4xl font-black text-[#1A2E35]">{totalPrice.toFixed(2)} €</p>
           </div>
         </div>
@@ -179,7 +180,7 @@ export default function CartPage() {
         {/* 5. BUTONLAR */}
         <div className="mt-12 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors">
-            <ArrowLeft size={14} /> Back to the shop
+            <ArrowLeft size={14} /> {t("back_to_shop")}
           </Link>
           <Link
             href={cart.length === 0 ? "#" : "/checkout"}
@@ -193,7 +194,7 @@ export default function CartPage() {
                 : "bg-[#F14D5D] hover:bg-[#d43f4d] text-white"
             }`}
           >
-            Proceed to delivery & payment <ChevronRight size={18} />
+            {t("proceed_to_checkout")} <ChevronRight size={18} />
           </Link>
         </div>
       </div>

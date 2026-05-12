@@ -56,7 +56,7 @@ export default function DynamicInfoPage({ params }: { params: { slug: string } }
       <main className="py-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <div className="w-20 h-20 bg-teal-50 rounded-3xl flex items-center justify-center text-[#2CB391] mx-auto mb-8 shadow-sm">
+            <div className="w-20 h-20 bg-teal-50 rounded-3xl flex items-center justify-center text-[#5BCDE9] mx-auto mb-8 shadow-sm">
               {pageContent.icon}
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-[#1A2E35] mb-6">
@@ -73,7 +73,7 @@ export default function DynamicInfoPage({ params }: { params: { slug: string } }
                 <div className="mt-12 p-8 bg-white rounded-3xl border border-gray-200">
                    <h4 className="font-black text-[#1A2E35] mb-4">{t("still_have_questions")}</h4>
                    <p className="text-sm text-gray-500 mb-6">{t("support_team_desc")}</p>
-                   <Link href="/about/contacts" className="text-[#2CB391] font-black text-sm uppercase tracking-widest hover:underline">
+                   <Link href="/about/contacts" className="text-[#5BCDE9] font-black text-sm uppercase tracking-widest hover:underline">
                       {t("contact_support")} →
                    </Link>
                 </div>
