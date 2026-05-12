@@ -69,7 +69,7 @@ export default function NewArrivals() {
   // 🌟 FALLBACK: Eğer veritabanında az kitap varsa, demo kitaplar ekler
   const displayProducts = useMemo(() => {
     if (loading) return [];
-    if (products.length >= 11) return products;
+    if (products.length >= 12) return products;
     
     return [...products, ...demoNewArrivals.slice(0, 12 - products.length)];
   }, [products, loading]);

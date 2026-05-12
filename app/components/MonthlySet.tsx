@@ -98,12 +98,12 @@ export default function MonthlySet() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-white shadow-sm text-pink-500 rounded-lg">
+            <div className="p-2 bg-teal-50 text-teal-600 rounded-lg">
               <CalendarHeart size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">{t("book_set_of_month")}</h2>
-              <p className="text-teal-600/80 mt-1 text-sm font-medium">{t("carefully_selected")}</p>
+              <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">{t("book_set_of_month")}</h2>
+              <p className="text-gray-500 mt-1 text-sm font-medium">{t("carefully_selected")}</p>
             </div>
           </div>
           {!loading && displayProducts.length > 6 && (

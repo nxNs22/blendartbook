@@ -60,34 +60,35 @@ export default function ProductCard({ product }: { product: any }) {
             />
           </Link>
 
-        <div className={`absolute inset-0 z-10 bg-black/10 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${hovered ? "opacity-100" : "opacity-0"}`}>
-           <button 
-             onClick={handleAddToCart} 
-             className="bg-white text-[#5BCDE9] w-14 h-14 rounded-full flex items-center justify-center hover:bg-[#5BCDE9] hover:text-white hover:scale-110 transition-all shadow-xl pointer-events-auto"
-             title="Add to Cart"
-           >
-             <ShoppingCart size={24} />
-           </button>
-        </div>
       </div>
 
       <div className="p-6 flex flex-col flex-1">
         <Link href={`/product/${productId}`}>
-          <h3 className="text-[18px] font-black text-[#1A2E35] line-clamp-2 leading-tight mb-1 group-hover/card:text-[#5BCDE9] transition-colors tracking-tight">
-            {product.title}
-          </h3>
+          <div className="h-14 mb-1">
+            <h3 className="text-[18px] font-black text-[#1A2E35] line-clamp-2 leading-tight group-hover/card:text-[#5BCDE9] transition-colors tracking-tight">
+              {product.title}
+            </h3>
+          </div>
         </Link>
-        <p className="text-[14px] font-medium text-[#8A9A9D] truncate mb-4">{product.details?.author || t("unknown_author")}</p>
+        <div className="h-5 mb-4">
+          <p className="text-[14px] font-medium text-[#8A9A9D] truncate">{product.details?.author || t("unknown_author")}</p>
+        </div>
         
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 mb-4 h-6">
            <StarRating rating={5} />
            <span className="text-[12px] font-bold text-gray-400 mt-0.5">5</span>
         </div>
 
-        <div className="mt-auto">
-          <span className="text-[26px] font-black text-[#5BCDE9] tracking-tighter">
+        <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+          <span className="text-[22px] font-black text-[#5BCDE9] tracking-tighter">
             {Number(product.price || 0).toFixed(2)} €
           </span>
+          <button 
+            onClick={handleAddToCart}
+            className="text-[#5BCDE9] hover:text-[#4AB9D6] transition-colors p-1"
+          >
+            <ShoppingCart size={20} />
+          </button>
         </div>
       </div>
     </div>

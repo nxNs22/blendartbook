@@ -78,9 +78,9 @@ export default function BestsellersSection() {
   // 🌟 FALLBACK: Eğer veritabanında az kitap varsa, demo kitaplar ekler
   const displayBooks = useMemo(() => {
     if (loading) return [];
-    if (books.length >= 11) return books;
+    if (books.length >= 12) return books;
     
-    return [...books, ...demoBestsellers.slice(0, 11 - books.length)];
+    return [...books, ...demoBestsellers.slice(0, 12 - books.length)];
   }, [books, loading]);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -130,12 +130,12 @@ export default function BestsellersSection() {
         
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-white shadow-sm text-teal-600 rounded-lg">
+            <div className="p-2 bg-teal-50 text-teal-600 rounded-lg">
               <TrendingUp size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">{t("bestsellers")}</h2>
-              <p className="text-teal-600/80 mt-1 text-sm font-medium">{t("most_loved_books")}</p>
+              <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">{t("bestsellers")}</h2>
+              <p className="text-gray-500 mt-1 text-sm font-medium">{t("most_loved_books")}</p>
             </div>
           </div>
           {!loading && displayBooks.length > 6 && (

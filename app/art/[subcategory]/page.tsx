@@ -65,7 +65,7 @@ export default function ArtCategoryPage() {
 
     // 2. Eğer bu kategori için ürün yoksa demo ürünleri göster
     if (filtered.length === 0 && !loading) {
-      let demoList = [];
+      let demoList: any[] = [];
       if (isMainPage) {
         demoList = [...demoArt.painting, ...demoArt.sculpture, ...demoArt.music, ...demoArt.crafts];
       } else {

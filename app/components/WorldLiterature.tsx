@@ -102,7 +102,7 @@ export default function WorldLiterature() {
               <Globe size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">{t("world_literature")}</h2>
+              <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">{t("world_literature")}</h2>
               <p className="text-gray-500 mt-1 text-sm">{t("timeless_classics")}</p>
             </div>
           </div>

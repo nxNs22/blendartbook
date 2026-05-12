@@ -23,11 +23,11 @@ export default function AwardWinningBooks() {
     const fetchAwardWinning = async () => {
       setLoading(true);
       try {
-        // Assume collection_id 4 is for award winning books
+        // Assume collection_id 5 is for award winning books
         const { data, error } = await supabase
           .from("collection_products")
           .select("products ( * )")
-          .eq('collection_id', 4) 
+          .eq('collection_id', 5) 
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -99,7 +99,7 @@ export default function AwardWinningBooks() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-yellow-50 text-yellow-600 rounded-lg">
+            <div className="p-2 bg-teal-50 text-teal-600 rounded-lg">
               <Trophy size={24} />
             </div>
             <div>

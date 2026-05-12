@@ -41,7 +41,36 @@ export default function ProductDetail() {
 
       // 🌟 DEMO ÜRÜNLER İÇİN ÖZEL KONTROL
       if (productId.startsWith("demo-")) {
-        setProduct(demoProductsMap[productId] || null);
+        console.log("Loading demo product:", productId);
+        let found = demoProductsMap[productId];
+        
+        // Map'te bulunamadıysa (nadiren), tüm demo listelerinde manuel ara
+        if (!found) {
+           console.warn("Demo map missed item, searching arrays manually...");
+           const { 
+             demoBooks, demoEbooks, demoAudiobooks, demoGifts, 
+             demoOtherProducts, demoHandmade, demoNewArrivals, 
+             demoBestsellers, demoAwardWinning, demoWorldLiterature, 
+             demoMonthlySet, demoArt 
+           } = require("../../data/demoProducts");
+
+           const allArrays = [
+             ...(demoBooks || []), ...(demoEbooks || []), ...(demoAudiobooks || []), 
+             ...(demoGifts || []), ...(demoOtherProducts || []), ...(demoHandmade || []), 
+             ...(demoNewArrivals || []), ...(demoBestsellers || []), ...(demoAwardWinning || []), 
+             ...(demoWorldLiterature || []), ...(demoMonthlySet || []),
+             ...(demoArt?.painting || []), ...(demoArt?.sculpture || []), 
+             ...(demoArt?.music || []), ...(demoArt?.crafts || [])
+           ];
+           found = allArrays.find(p => p.id === productId);
+        }
+
+        if (found) {
+          setProduct(found);
+        } else {
+          console.error("Demo product not found anywhere:", productId);
+          setProduct(null);
+        }
         setLoading(false);
         return;
       }
@@ -483,7 +512,7 @@ export default function ProductDetail() {
 
                   <div className="space-y-8">
                     {reviewsList.map((review, idx) => (
-                      <div key={idx} className={`flex gap-6 border-b border-gray-50 pb-8 ${review.isNew ? "animate-in slide-in-from-left duration-500" : ""}`}>
+                      <div key={idx} className={`flex gap-6 border-b border-gray-50 pb-8 ${(review as any).isNew ? "animate-in slide-in-from-left duration-500" : ""}`}>
                         <div className="w-12 h-12 bg-blue-50 rounded flex items-center justify-center text-blue-700 font-bold">{review.user}</div>
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-1">
@@ -496,7 +525,7 @@ export default function ProductDetail() {
                             <span className="text-xs text-gray-400 font-bold">{review.date}</span>
                           </div>
                           <p className="text-sm text-gray-800 font-medium mb-3">
-                            {review.isNew ? review.comment : t(review.comment)}
+                            {(review as any).isNew ? review.comment : t(review.comment)}
                           </p>
                           <div className="flex gap-4">
                             <button className="text-xs font-bold text-gray-400 flex items-center gap-1 hover:text-blue-600 transition-colors">
