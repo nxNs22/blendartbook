@@ -9,7 +9,7 @@ import {
   Image as ImageIcon, PenTool, Monitor,
   VenetianMask, UserRound, Baby, Sparkles,
   BookOpen, Mic, Tablet, Palette, Paintbrush, Box, Music, Scissors,
-  Globe, Check
+  Globe, Check, Menu, X, HandHeart
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -19,8 +19,8 @@ import { supabase, getErrorMessage } from "../lib/supabaseClient";
 // --- VERİ YAPILARI ---
 
 const languageBooks = [
-  { nameKey: "books_in_english", flag: "🇬🇧", slug: "english", count: "2 156 890" },
   { nameKey: "books_in_turkish", flag: "🇹🇷", slug: "turkish", count: "284 730" },
+  { nameKey: "books_in_english", flag: "🇬🇧", slug: "english", count: "2 156 890" },
   { nameKey: "books_in_romanian", flag: "🇷🇴", slug: "romanian", count: "156 420" },
   { nameKey: "books_in_bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "89 340" },
 ];
@@ -45,7 +45,7 @@ const otherProductKeys = [
   { nameKey: "game_toy", icon: <Gamepad2 size={28} />, count: "83 931", color: "bg-orange-500/20 text-orange-400" },
   { nameKey: "video", icon: <Video size={28} />, count: "67 926", color: "bg-red-500/20 text-red-400" },
   { nameKey: "printed_items", icon: <ImageIcon size={28} />, count: "77 103", color: "bg-yellow-500/20 text-yellow-400" },
-  { nameKey: "stationery", icon: <PenTool size={28} />, count: "10 941", color: "bg-green-500/20 text-green-400" },
+  { nameKey: "stationery", icon: <PenTool size={28} />, count: "10 941", color: "bg-teal-500/20 text-teal-400" },
   { nameKey: "digital", icon: <Monitor size={28} />, count: "11 146", color: "bg-indigo-500/20 text-indigo-400" },
 ];
 
@@ -85,14 +85,15 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
 
   return (
     <div className="absolute left-0 z-50 w-full pt-2 duration-200 top-full animate-in fade-in">
-      {/* 🌟 MEGA MENÜ ÜST ÇİZGİSİ KIRMIZI OLDU */}
       <div className="bg-[#7F0A1A] border-t-2 border-[#E62E4D] shadow-2xl rounded-b-xl">
         <div className="px-6 py-10 mx-auto max-w-7xl">
           
           {content && content.data && (
             <>
-              <h2 className="mb-10 text-3xl font-bold text-center text-white md:text-5xl">{content.title}</h2>
-              <div className="grid max-w-2xl grid-cols-1 gap-6 mx-auto mb-8 md:grid-cols-3">
+              <h2 className="mb-12 text-4xl font-black text-center text-white md:text-7xl tracking-tight">
+                {content.title}
+              </h2>
+              <div className="flex flex-wrap justify-center max-w-5xl gap-x-12 gap-y-12 mx-auto mb-12">
                 {content.data.map((lang: LanguageBookItem) => {
                   const safeSlug = (lang.slug || "").toLowerCase();
                   return (
@@ -100,11 +101,17 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
                       key={lang.nameKey} 
                       href={`${content.basePath}/${safeSlug}`} 
                       onClick={onClose}
-                      className="flex flex-col items-center gap-3 transition-opacity group hover:opacity-80"
+                      className="flex flex-col items-center gap-3 transition-all group w-56"
                     >
-                      <div className="text-5xl transition-transform md:text-6xl drop-shadow-lg group-hover:scale-110">{lang.flag}</div>
-                      <span className="text-sm font-semibold text-white/80 group-hover:text-white">{t(lang.nameKey)}</span>
-                      <span className="text-sm text-white/50">{lang.count}</span>
+                      <div className="text-6xl transition-transform md:text-7xl drop-shadow-2xl group-hover:scale-110 mb-2">
+                        {lang.flag}
+                      </div>
+                      <span className="text-base font-bold text-white group-hover:text-[#E62E4D] transition-colors">
+                        {t(lang.nameKey)}
+                      </span>
+                      <span className="text-sm font-semibold text-white/40 tracking-wider">
+                        {lang.count}
+                      </span>
                     </Link>
                   );
                 })}
@@ -113,21 +120,24 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
           )}
 
           {type === "other_products" && (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-7">
-              {otherProductKeys.map((product) => (
-                <Link 
-                  key={product.nameKey} 
-                  href={`/other/${t(product.nameKey).toLowerCase().replace("/", "-")}`}
-                  onClick={onClose} 
-                  className="flex flex-col items-center p-4 transition-all rounded-xl hover:bg-white/5 group"
-                >
-                  <div className={`w-16 h-16 ${product.color} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform text-white`}>
-                    {product.icon}
-                  </div>
-                  <span className="text-white font-bold text-[12px] text-center mb-1">{t(product.nameKey)}</span>
-                  <span className="text-white/40 text-[10px] italic">{product.count}</span>
-                </Link>
-              ))}
+            <div className="flex flex-col items-center">
+              <h2 className="mb-8 text-3xl font-bold text-center text-white md:text-4xl">{t("other_products")}</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6 w-full max-w-5xl">
+                {otherProductKeys.map((product) => (
+                  <Link 
+                    key={product.nameKey} 
+                    href={`/other/${t(product.nameKey).toLowerCase().replace(/[\s\/]+/g, "-")}`}
+                    onClick={onClose} 
+                    className="flex flex-col items-center p-4 transition-all rounded-xl hover:bg-white/5 group"
+                  >
+                    <div className="flex items-center justify-center w-20 h-20 mb-4 text-white/80 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-[#E62E4D] group-hover:text-white group-hover:scale-110">
+                      {product.icon}
+                    </div>
+                    <span className="text-sm font-bold leading-tight text-center text-white">{t(product.nameKey)}</span>
+                    <span className="text-white/40 text-[10px] italic mt-1">{product.count}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
 
@@ -177,8 +187,8 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
              </div>
           )}
 
-          <div className="flex justify-center pt-6 mt-10 text-sm italic border-t border-white/10 text-white/80">
-            <Sparkles className="mr-2 text-[#E62E4D]" size={18} />
+          <div className="flex justify-center items-center pt-10 mt-12 text-base italic border-t border-white/5 text-white/60">
+            <Sparkles className="mr-3 text-[#E62E4D]" size={20} />
             {t("help_text")}
           </div>
         </div>
@@ -218,14 +228,12 @@ function LanguageSelector() {
 
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 w-52 bg-[#1a1a2e] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-[999] animate-in fade-in slide-in-from-top-2 duration-200">
-          {/* Header */}
           <div className="px-4 py-2.5 border-b border-white/10 bg-white/5">
             <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">
               🌐 Select Language
             </span>
           </div>
 
-          {/* Language options */}
           <div className="py-1">
             {LANGUAGES.map((lang) => {
               const isActive = language === lang.code;
@@ -262,6 +270,7 @@ function LanguageSelector() {
 
 export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const { user } = useAuth();
@@ -298,7 +307,6 @@ export default function Header() {
     fetchUserName();
   }, [user]);
 
-  // Nav items use internal keys for dropdown matching, labels are translated
   const navItems = [
     { label: t("books"), dropdownKey: "books", hasDropdown: true, icon: <BookOpen size={16} /> },
     { label: t("art"), dropdownKey: "art", hasDropdown: true, icon: <Palette size={16} /> }, 
@@ -334,10 +342,9 @@ export default function Header() {
   };
 
   return (
-    // 🌟 HEADER ARKA PLANI KIRMIZI (#C8102E) YAPILDI
-    <header className="sticky top-0 z-50 flex flex-col items-center w-full bg-[#C8102E] shadow-md">
+    <header className="sticky top-0 z-50 w-full min-w-full bg-[#C8102E] shadow-md">
       {/* 1. TOP BAR (bg-[#7F0A1A]) */}
-      <div className="w-full bg-[#7F0A1A] text-white/80 text-[11px] py-1.5 flex justify-center">
+      <div className="w-full min-w-full bg-[#7F0A1A] text-white/80 text-[11px] py-1.5 flex justify-center">
         <div className="flex items-center justify-between w-full px-4 max-w-7xl">
           <span className="transition-colors cursor-pointer hover:text-white">{t("check_order_status")}</span>
           <div className="flex items-center gap-4">
@@ -348,13 +355,23 @@ export default function Header() {
       </div>
 
       {/* 2. MAIN HEADER */}
-      <div className="flex items-center justify-between w-full gap-6 px-4 py-4 max-w-7xl lg:gap-12">
-        <Link href="/" className="flex flex-col items-center flex-shrink-0 group">
-          <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
-          <span className="text-white/80 text-[9px] tracking-[0.2em] uppercase font-bold">{t("be_whoever")}</span>
+      <div className="flex flex-wrap lg:flex-nowrap items-center justify-between w-full gap-y-4 lg:gap-x-12 px-4 py-4">
+        <div className="max-w-7xl mx-auto w-full flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-4 lg:gap-x-12">
+        
+        {/* 🌟 LOGO VE MARKA YAZISI BURADA GÜNCELLENDİ */}
+        <Link href="/" className="flex items-center flex-shrink-0 group order-1 gap-5">
+          <img 
+            src="/logo.png" 
+            alt="BlendArtBook Logo" 
+            className="hidden md:block w-22 h-22 object-contain group-hover:opacity-80 transition-opacity" 
+          />
+          <div className="flex flex-col items-center md:items-start">
+            <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
+            <span className="text-white/80 text-[9px] tracking-[0.2em] uppercase font-bold">{t("be_whoever")}</span>
+          </div>
         </Link>
 
-        <div className="relative flex items-center flex-1 max-w-2xl overflow-hidden bg-white rounded-lg shadow-inner">
+        <div className="relative flex items-center flex-1 max-w-2xl overflow-hidden bg-white rounded-lg shadow-inner order-3 lg:order-2 w-full lg:w-auto">
           <Search size={18} className="ml-4 text-gray-400" />
           <input 
             type="text" 
@@ -364,23 +381,22 @@ export default function Header() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleSearchKeyPress}
           />
-          {/* 🌟 ARAMA BUTONU RENGİ GÜNCELLENDİ (#009966) */}
           <button 
             onClick={handleSearch}
-            className="absolute right-0 px-6 text-sm font-bold text-white transition-colors h-11 bg-[#009966] hover:bg-[#008055]"
+            className="absolute right-0 px-4 lg:px-6 text-sm font-bold text-white transition-colors h-11 bg-[#5BCDE9] hover:bg-[#4BB8D4]"
           >
             {t("search")}
           </button>
         </div>
 
-        <div className="flex items-center flex-shrink-0 gap-5 text-white">
-          <Link href="/qa" className="transition-opacity cursor-pointer opacity-80 hover:opacity-100">
+        <div className="flex items-center flex-shrink-0 gap-3 lg:gap-5 text-white order-2 lg:order-3">
+          <Link href="/qa" className="transition-opacity cursor-pointer opacity-80 hover:opacity-100 hidden sm:block">
             <HelpCircle size={22} />
           </Link>
           
           <Link href={user ? "/account" : "/auth"} className="flex items-center gap-2 group">
             {user && userName ? (
-              <span className="text-sm font-bold capitalize transition-colors text-white/90 group-hover:text-white">
+              <span className="text-sm font-bold capitalize transition-colors text-white/90 group-hover:text-white hidden sm:inline">
                 {t("hi")}, {userName}
               </span>
             ) : (
@@ -391,10 +407,9 @@ export default function Header() {
             )}
           </Link>
           
-          {/* 🌟 SEPET BUTONU RENGİ GÜNCELLENDİ (#00C292) */}
           <Link 
             href="/cart" 
-            className="relative flex items-center bg-[#00C292] px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#00A67C] transition-all shadow-md text-white"
+            className="relative flex items-center bg-[#5BCDE9] px-3 lg:px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#38B2D0] transition-all shadow-md text-white"
           >
             <ShoppingCart size={18} />
             <span className="hidden ml-2 text-white md:inline-block">{t("cart")}</span>
@@ -405,12 +420,21 @@ export default function Header() {
               </span>
             )}
           </Link>
+          
+          {/* Mobile Menu Toggle */}
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-colors"
+          >
+            {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
 
+        </div>
         </div>
       </div>
 
-      {/* 3. NAVIGATION */}
-      <nav className="relative flex justify-center w-full border-t bg-black/10 border-white/5">
+      {/* 3. NAVIGATION (Desktop Only) */}
+      <nav className="relative hidden lg:flex justify-center w-full border-t bg-black/10 border-white/5">
         <div className="relative flex items-center w-full px-4 max-w-7xl" onMouseLeave={handleMouseLeave}>
           <ul className="flex items-center">
             <li className="px-4 py-3 text-white cursor-pointer hover:bg-white/10">
@@ -447,6 +471,45 @@ export default function Header() {
           )}
         </div>
       </nav>
+
+      {/* 4. MOBILE NAVIGATION DRAWER */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden w-full bg-[#7F0A1A] border-t border-white/10 animate-in slide-in-from-top duration-300">
+          <ul className="flex flex-col py-2">
+            <li className="border-b border-white/5">
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-6 py-4 text-white font-bold">
+                <Home size={20} /> {t("home")}
+              </Link>
+            </li>
+            {navItems.map((item) => (
+              <li key={item.dropdownKey} className="border-b border-white/5">
+                {item.hasDropdown ? (
+                  <div className="flex flex-col">
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === item.dropdownKey ? null : item.dropdownKey)}
+                      className="flex items-center justify-between w-full px-6 py-4 text-white font-bold"
+                    >
+                      <div className="flex items-center gap-3">{item.icon} {item.label}</div>
+                      <ChevronDown size={18} className={`transition-transform ${openDropdown === item.dropdownKey ? "rotate-180" : ""}`} />
+                    </button>
+                    {openDropdown === item.dropdownKey && (
+                      <div className="bg-black/20 py-2">
+                         <Link href={`/books`} onClick={() => setIsMobileMenuOpen(false)} className="block px-12 py-3 text-white/80 text-sm font-medium hover:text-white">
+                           {t("view_all")} {item.label}
+                         </Link>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link href={item.href || "#"} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-6 py-4 text-white font-bold">
+                    {item.icon} {item.label}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </header>
   );
 }
