@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import NewArrivals from "./components/NewArrivals";
 import MonthlySet from "./components/MonthlySet";
 import WorldLiterature from "./components/WorldLiterature";
+import AwardWinningBooks from "./components/AwardWinningBooks";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
         <NewArrivals/>
         <MonthlySet/>
         <WorldLiterature/>
+        <AwardWinningBooks/>
         <BestsellersSection /> 
         <CategoriesSection />
  

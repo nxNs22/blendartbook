@@ -1,24 +1,24 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { Search, Loader2, PenTool } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import { useState, useMemo, useEffect } from "react";
+import { Filter, ChevronDown, Loader2, PenTool } from "lucide-react";
 import { supabase, getErrorMessage } from "../lib/supabaseClient"; 
 import ProductCard from "../components/ProductCard";
+import { demoHandmade } from "../data/demoProducts";
 
 export default function HandmadePage() {
-  
-  // Eyalet Yönetimi (State)
+  const { t } = useLanguage();
+
+  // Eyalet Yönetimi
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Sol Sidebar Filtreleri
-  const [priceRange, setPriceRange] = useState({ from: 0, to: 300 }); 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [priceRange, setPriceRange] = useState(300);
 
-  // VERİ ÇEKME
+  // 🌟 VERİ ÇEKME
   useEffect(() => {
-    const fetchHandmadeProducts = async () => {
+    const fetchProducts = async () => {
       setLoading(true);
       try {
         const { data, error: dbError } = await supabase
@@ -35,36 +35,46 @@ export default function HandmadePage() {
       }
     };
 
-    fetchHandmadeProducts();
+    fetchProducts();
   }, []);
 
-  // Filtreleme Mantığı (Arama ve Fiyat)
+  // Filtreleme Mantığı
   const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      const priceMatch = product.price <= priceRange.to;
-      const searchMatch = product.title.toLowerCase().includes(searchQuery.toLowerCase());
-      return priceMatch && searchMatch;
+    // 1. Database ürünlerini filtrele
+    let filtered = products.filter(product => {
+      const priceMatch = product.price <= priceRange;
+      return priceMatch;
     });
-  }, [products, priceRange, searchQuery]);
+    
+    // 2. Eğer database boşsa demo ürünleri göster
+    if (filtered.length === 0 && !loading) {
+      filtered = demoHandmade.filter(product => {
+        const priceMatch = product.price <= priceRange;
+        return priceMatch;
+      });
+    }
+
+    return filtered;
+  }, [products, priceRange, loading]);
 
   return (
     <div className="bg-[#F9FBF9] min-h-screen pb-20">
-      {/* 🌟 HEADER AREA */}
-      <div className="bg-white border-b border-gray-100">
+      {/* HEADER AREA (Art Sayfası ile Uyumlu) */}
+      <div className="bg-white border-b border-gray-100 mb-8">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <nav className="text-[11px] text-gray-400 mb-4 flex items-center gap-2">
-            <span>Home</span> <span>/</span> <span className="text-gray-600 font-bold">Handmade</span>
+            <span>Home</span> <span>/</span> <span className="text-gray-600 font-bold">{t("handmade")}</span>
           </nav>
           
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center text-teal-600 border border-teal-100">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-600 border border-red-100 shadow-sm">
                <PenTool size={32} />
             </div>
             <div>
-              <h1 className="text-4xl md:text-5xl font-black text-[#1A2E35] tracking-tight flex items-baseline gap-4 italic uppercase">
-                HANDMADE
+              <h1 className="text-4xl md:text-5xl font-black text-[#1A2E35] tracking-tighter flex items-baseline gap-4 italic uppercase">
+                {t("handmade")}
                 <span className="text-sm font-normal text-gray-400 not-italic lowercase tracking-normal">
-                    {loading ? "..." : `${filteredProducts.length} items`}
+                    {loading ? "..." : `${filteredProducts.length} ${t("items_found")}`}
                 </span>
               </h1>
             </div>
@@ -72,51 +82,61 @@ export default function HandmadePage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row gap-10">
+      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-10">
         
-        {/* 🌟 SIDEBAR FILTERS */}
-        <aside className="w-full md:w-72 space-y-10">
-          <div className="relative">
-            <input 
-              type="text" 
-              placeholder="Search handmade items..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full py-2 px-4 bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
-            />
-            <Search className="absolute right-3 top-2.5 text-gray-300" size={16} />
-          </div>
+        {/* SOL TARAF: FİLTRELER */}
+        <aside className="w-full md:w-80 space-y-8 bg-white p-8 rounded-[32px] h-fit border border-gray-100 shadow-xl shadow-gray-200/50">
+          <div>
+            <h3 className="font-black text-sm mb-6 flex items-center gap-3 border-b pb-4 text-[#1A2E35] tracking-widest uppercase opacity-60">
+              <Filter size={16} /> {t("properties")}
+            </h3>
 
-          <section>
-            <h3 className="font-bold text-sm text-[#1A2E35] mb-4 border-b border-gray-100 pb-2">Price: up to €{priceRange.to}</h3>
-            <input 
-              type="range" 
-              min="0" 
-              max="300" 
-              value={priceRange.to}
-              onChange={(e) => setPriceRange({...priceRange, to: Number(e.target.value)})}
-              className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-500"
-            />
-            <div className="flex justify-between mt-2 text-[10px] text-gray-400 font-bold">
-              <span>€0</span>
-              <span>€300</span>
+            <div className="mb-8">
+              <label className="text-sm font-bold text-[#1A2E35] block mb-4">
+                {t("price_up_to")}€{priceRange}
+              </label>
+              <input 
+                type="range" 
+                min="0" 
+                max="300" 
+                value={priceRange}
+                onChange={(e) => setPriceRange(Number(e.target.value))}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#5BCDE9]"
+              />
+              <div className="flex justify-between mt-3 text-[10px] text-gray-400 font-black tracking-widest uppercase">
+                <span>€0</span>
+                <span>€300</span>
+              </div>
             </div>
-          </section>
+          </div>
         </aside>
 
-        {/* 🌟 PRODUCT GRID */}
+        {/* SAĞ TARAF: LİSTELEME */}
         <main className="flex-1">
+          <header className="flex justify-between items-center mb-8 bg-white p-8 rounded-[24px] shadow-sm border border-gray-100">
+            <div>
+              <h1 className="text-2xl font-black uppercase text-[#1A2E35] italic tracking-tighter">
+                {t("handmade")}
+              </h1>
+              <p className="text-[12px] text-gray-400 font-bold mt-1">
+                 {loading ? "..." : `${filteredProducts.length} ${t("items_found")}`}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-[13px] text-[#1A2E35] font-bold cursor-pointer hover:text-[#5BCDE9] transition-colors">
+              {t("sort_by_popularity")} <ChevronDown size={16} />
+            </div>
+          </header>
+
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-4">
-               <Loader2 className="animate-spin text-teal-500" size={48} />
-               <p className="text-gray-400 animate-pulse">Loading handcrafted items...</p>
+            <div className="flex justify-center py-20">
+              <Loader2 className="animate-spin text-[#5BCDE9]" size={48} />
             </div>
           ) : error ? (
-            <div className="bg-red-50 text-red-500 p-6 rounded-xl border border-red-100 text-center">
+            <div className="text-red-500 p-8 border border-red-100 rounded-3xl bg-red-50 font-bold text-center">
               {error}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -124,9 +144,9 @@ export default function HandmadePage() {
           )}
 
           {!loading && filteredProducts.length === 0 && (
-            <div className="text-center py-20 text-gray-400 border-2 border-dashed rounded-2xl bg-white">
-              <PenTool className="mx-auto mb-4 opacity-20" size={48} />
-              <p>No handmade items found matching your search.</p>
+            <div className="text-center py-24 text-gray-400 border-2 border-dashed border-gray-200 rounded-[40px] bg-white">
+              <PenTool className="mx-auto mb-6 opacity-10" size={64} />
+              <p className="text-lg font-bold">{t("no_products_found")}</p>
             </div>
           )}
         </main>

@@ -88,17 +88,15 @@ function PaymentForm({
     setProcessing(true);
     setErrorMessage(null);
 
-    // 1. Önce Siparişi Veritabanına "Pending" Olarak Kaydet
+    // 1. Save order to Supabase as "Pending"
     const orderCode = await onBeforePayment();
     if (!orderCode) {
-      setErrorMessage(
-        "Sipariş oluşturulurken veritabanında bir hata oluştu. Lütfen tekrar deneyin.",
-      );
+      setErrorMessage(t("order_save_error"));
       setProcessing(false);
       return;
     }
 
-    // 2. Stripe Ödemesini Gerçekleştir
+    // 2. Execute Stripe Payment
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -122,10 +120,10 @@ function PaymentForm({
       return;
     }
 
-    // 3. Ödeme başarılıysa Supabase'de durumu "Paid" yap
+    // 3. If payment successful, update status to "Paid" in Supabase
     await onPaymentSuccess(orderCode);
 
-    // 4. Başarılı sayfasına sipariş numarasıyla yönlendir
+    // 4. Redirect to success page with order code
     window.location.href = `/checkout/success?orderCode=${orderCode}`;
   };
 
@@ -157,7 +155,7 @@ function PaymentForm({
 export default function CheckoutPage() {
   const { cart } = useCart();
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [email, setEmail] = useState(() => user?.email ?? "");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -197,10 +195,10 @@ export default function CheckoutPage() {
   // --- SUPABASE SİPARİŞ KAYIT FONKSİYONU ---
   const createOrderInSupabase = async (): Promise<string | null> => {
     try {
-      // Rastgele Sipariş Kodu Üret (Örn: BLND-8X4M9Q)
+      // Generate random order code (Ex: BLND-8X4M9Q)
       const orderNumber = `BLND-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-      // 1. Ana Siparişi (orders) kaydet
+      // 1. Save main order (orders)
       const { data: orderData, error: orderError } = await supabase
         .from("orders")
         .insert({
@@ -208,7 +206,7 @@ export default function CheckoutPage() {
           customer_email: email.trim(),
           customer_name: fullName.trim(),
           customer_phone: phone.trim(),
-          shipping_country: country.trim(), // İleride adres detaylarını da ayrı sütuna ekleyebilirsin
+          shipping_country: country.trim(), // Shipping address details could be added to separate columns in the future
           total_amount: localTotal,
           discount_amount: localDiscount,
           status: "pending",
@@ -220,7 +218,7 @@ export default function CheckoutPage() {
 
       if (orderError) throw orderError;
 
-      // 2. Siparişteki Ürünleri (order_items) kaydet
+      // 2. Save order items (order_items)
       const orderItems = cart.map((item) => ({
         order_id: orderData.id,
         product_id: item.id,
@@ -239,7 +237,7 @@ export default function CheckoutPage() {
       return orderNumber;
     } catch (err: unknown) {
       console.error(
-        "Sipariş veritabanına kaydedilemedi:",
+        "Order could not be saved to database:",
         getErrorMessage(err),
       );
       return null;
@@ -270,9 +268,7 @@ export default function CheckoutPage() {
 
   const checkLegalConsent = () => {
     if (!legalAccepted) {
-      setIntentError(
-        "Please accept Distance Sales Agreement, Refund Policy and KVKK text.",
-      );
+      setIntentError(t("legal_consent_error"));
       setLegalError(true);
       const legalSection = document.getElementById("legal-consent");
       legalSection?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -285,7 +281,7 @@ export default function CheckoutPage() {
 
   const createPaymentIntent = async () => {
     if (!canInitPayment) {
-      setIntentError("Please add items to cart and enter your email.");
+      setIntentError(t("cart_email_error"));
       return;
     }
     if (!checkLegalConsent()) return;
@@ -330,19 +326,17 @@ export default function CheckoutPage() {
 
   const startRevolutCheckout = async () => {
     if (!canInitPayment) {
-      setIntentError("Please add items to cart and enter your email.");
+      setIntentError(t("cart_email_error"));
       return;
     }
     if (!checkLegalConsent()) return;
 
     setRevolutLoading(true);
     try {
-      // 1. Önce Siparişi Veritabanına Kaydet
+      // 1. Save order to Supabase
       const orderCode = await createOrderInSupabase();
       if (!orderCode) {
-        throw new Error(
-          "Veritabanına sipariş kaydedilemedi. Lütfen tekrar deneyin.",
-        );
+        throw new Error(t("order_save_error"));
       }
 
       // 2. Revolut API'sine bağlan
@@ -385,16 +379,16 @@ export default function CheckoutPage() {
 
   const handlePayOnDelivery = async () => {
     if (!canInitPayment) {
-      setIntentError("Please add items to cart and enter your email.");
+      setIntentError(t("cart_email_error"));
       return;
     }
     if (!checkLegalConsent()) return;
 
     setPodLoading(true);
-    // Kapıda ödeme seçildiğinde siparişi kaydet ve başarılı sayfasına at
+    // Save order and redirect to success page
     const orderCode = await createOrderInSupabase();
     if (!orderCode) {
-      setIntentError("Failed to save order. Please try again.");
+      setIntentError(t("order_save_error"));
       setPodLoading(false);
       return;
     }
@@ -408,18 +402,18 @@ export default function CheckoutPage() {
       <div className="max-w-7xl mx-auto px-4 py-10 md:py-14">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-[#2CB391] font-bold">
-              Secure Checkout
+            <p className="text-xs uppercase tracking-[0.2em] text-[#5BCDE9] font-bold">
+              {t("secure_checkout")}
             </p>
             <h1 className="text-3xl md:text-4xl font-black text-[#1A2E35] mt-1">
-              Delivery & Payment
+              {t("delivery_payment_title")}
             </h1>
           </div>
           <Link
             href="/cart"
             className="text-sm font-bold text-gray-500 hover:text-gray-700 inline-flex items-center gap-2"
           >
-            <ArrowLeft size={14} /> Back to cart
+            <ArrowLeft size={14} /> {t("back_to_cart")}
           </Link>
         </div>
 
@@ -439,7 +433,7 @@ export default function CheckoutPage() {
                     value={fullName}
                     onChange={(event) => setFullName(event.target.value)}
                     required
-                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#5BCDE9]"
                     placeholder="John Doe"
                   />
                 </div>
@@ -451,7 +445,7 @@ export default function CheckoutPage() {
                     type="text"
                     value={country}
                     onChange={(event) => setCountry(event.target.value)}
-                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#5BCDE9]"
                     placeholder="Turkey"
                   />
                 </div>
@@ -464,7 +458,7 @@ export default function CheckoutPage() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     required
-                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#5BCDE9]"
                     placeholder="customer@email.com"
                   />
                 </div>
@@ -476,7 +470,7 @@ export default function CheckoutPage() {
                     type="tel"
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
-                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#5BCDE9]"
                     placeholder="+90 555 000 0000"
                   />
                 </div>
@@ -488,7 +482,7 @@ export default function CheckoutPage() {
                     value={deliveryAddress}
                     onChange={(event) => setDeliveryAddress(event.target.value)}
                     required
-                    className="w-full min-h-[100px] rounded-lg border border-gray-200 p-3 text-sm outline-none focus:border-[#2CB391] resize-none"
+                    className="w-full min-h-[100px] rounded-lg border border-gray-200 p-3 text-sm outline-none focus:border-[#5BCDE9] resize-none"
                     placeholder="Street name, building number, apartment..."
                   />
                 </div>
@@ -501,7 +495,7 @@ export default function CheckoutPage() {
                     value={city}
                     onChange={(event) => setCity(event.target.value)}
                     required
-                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#5BCDE9]"
                     placeholder="City"
                   />
                 </div>
@@ -514,7 +508,7 @@ export default function CheckoutPage() {
                     value={zipCode}
                     onChange={(event) => setZipCode(event.target.value)}
                     required
-                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#5BCDE9]"
                     placeholder="12345"
                   />
                 </div>
@@ -523,12 +517,12 @@ export default function CheckoutPage() {
 
             <section className="rounded-2xl border border-gray-200 bg-white p-6">
               <h2 className="font-bold text-lg text-[#1A2E35] mb-4 inline-flex items-center gap-2">
-                <CreditCard size={18} /> Payment method
+                <CreditCard size={18} /> {t("payment_method")}
               </h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold uppercase text-gray-600 mb-2">
-                    Promo code / voucher (optional)
+                    {t("promo_voucher_optional")}
                   </label>
                   <input
                     type="text"
@@ -536,11 +530,11 @@ export default function CheckoutPage() {
                     onChange={(event) =>
                       setPromoCode(event.target.value.toUpperCase())
                     }
-                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#2CB391]"
+                    className="w-full h-11 rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#5BCDE9]"
                     placeholder="GIFT10"
                   />
                   <p className="text-xs text-gray-500 mt-2">
-                    No code? Leave this empty and continue.
+                    {t("promo_empty_continue")}
                   </p>
                 </div>
 
@@ -550,7 +544,7 @@ export default function CheckoutPage() {
                     checked={saveCard}
                     onChange={(event) => setSaveCard(event.target.checked)}
                   />
-                  Save this card for future payments
+                  {t("save_card_future")}
                 </label>
 
                 <div
@@ -572,45 +566,44 @@ export default function CheckoutPage() {
                       className="mt-1"
                     />
                     <span>
-                      I accept{" "}
+                      {t("i_accept")}{" "}
                       <Link
                         href="/legal/mesafeli-satis-sozlesmesi"
-                        className="text-[#2CB391] font-semibold hover:underline"
+                        className="text-[#5BCDE9] font-semibold hover:underline"
                       >
-                        Distance Sales Agreement
+                        {t("distance_sales_agreement")}
                       </Link>
                       ,{" "}
                       <Link
                         href="/legal/iade-iptal-kosullari"
-                        className="text-[#2CB391] font-semibold hover:underline"
+                        className="text-[#5BCDE9] font-semibold hover:underline"
                       >
-                        Refund & Cancellation
+                        {t("refund_cancellation")}
                       </Link>{" "}
-                      and{" "}
+                      {t("and_conjunction")}{" "}
                       <Link
                         href="/legal/kvkk-aydinlatma-metni"
-                        className="text-[#2CB391] font-semibold hover:underline"
+                        className="text-[#5BCDE9] font-semibold hover:underline"
                       >
-                        KVKK Privacy Notice
+                        {t("kvkk_notice")}
                       </Link>
                       .
                     </span>
                   </label>
                 </div>
 
-                <button
+                  <button
                   type="button"
                   onClick={startRevolutCheckout}
                   disabled={revolutLoading || !canInitPayment}
                   className="w-full h-12 rounded-lg bg-white border border-[#1A2E35] text-[#1A2E35] hover:bg-gray-50 font-bold disabled:opacity-60"
                 >
                   {revolutLoading
-                    ? "Redirecting to Revolut..."
-                    : "Pay with Revolut"}
+                    ? t("redirecting_revolut")
+                    : t("pay_with_revolut")}
                 </button>
                 <p className="text-xs text-gray-500">
-                  Revolut hosted checkout page for real card payments and wallet
-                  methods.
+                  {t("revolut_instruction")}
                 </p>
 
                 <button
@@ -619,23 +612,20 @@ export default function CheckoutPage() {
                   disabled={
                     loadingIntent || !canInitPayment || !stripeConfigured
                   }
-                  className="w-full h-12 rounded-lg bg-[#2CB391] hover:bg-[#249278] text-white font-bold disabled:opacity-60"
+                  className="w-full h-12 rounded-lg bg-[#5BCDE9] hover:bg-[#38B2D0] text-white font-bold disabled:opacity-60"
                 >
                   {loadingIntent
-                    ? "Preparing secure payment..."
-                    : "Open card details form"}
+                    ? t("preparing_payment")
+                    : t("open_card_form")}
                 </button>
                 {!intentData?.clientSecret && stripeConfigured && (
                   <p className="text-xs text-gray-500">
-                    Click “Open card details form” to enter card number, expiry
-                    date, and CVV.
+                    {t("card_form_click_instruction")}
                   </p>
                 )}
                 {!stripeConfigured && (
                   <p className="text-xs text-amber-700 font-semibold">
-                    Online card payment is not configured yet. Add
-                    `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY`
-                    to enable it.
+                    {t("stripe_not_configured")}
                   </p>
                 )}
                 {!stripeConfigured && (
@@ -643,11 +633,11 @@ export default function CheckoutPage() {
                     type="button"
                     onClick={handlePayOnDelivery}
                     disabled={podLoading || !canInitPayment}
-                    className="w-full h-12 rounded-lg border border-[#2CB391] text-[#2CB391] font-bold inline-flex items-center justify-center hover:bg-[#E8F5F1] disabled:opacity-60"
+                    className="w-full h-12 rounded-lg border border-[#5BCDE9] text-[#5BCDE9] font-bold inline-flex items-center justify-center hover:bg-[#E0F7FA] disabled:opacity-60"
                   >
                     {podLoading
-                      ? "Saving order..."
-                      : "Continue with Pay on delivery"}
+                      ? t("saving_order")
+                      : t("continue_pod")}
                   </button>
                 )}
 
@@ -662,7 +652,10 @@ export default function CheckoutPage() {
                 <div className="mt-6 border-t pt-6">
                   <Elements
                     stripe={stripePromise}
-                    options={{ clientSecret: intentData.clientSecret }}
+                    options={{ 
+                      clientSecret: intentData.clientSecret,
+                      locale: language 
+                    }}
                   >
                     <PaymentForm
                       customerEmail={email.trim()}
@@ -689,7 +682,7 @@ export default function CheckoutPage() {
 
               <div className="space-y-2 text-sm max-h-60 overflow-y-auto pr-1">
                 {cart.length === 0 && (
-                  <p className="text-gray-500">No items in cart yet.</p>
+                  <p className="text-gray-500">{t("no_items_cart")}</p>
                 )}
                 {cart.map((item) => (
                   <div key={item.id} className="flex justify-between gap-3">
@@ -705,15 +698,15 @@ export default function CheckoutPage() {
 
               <div className="mt-5 pt-4 border-t space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Subtotal</span>
+                  <span>{t("subtotal_label")}</span>
                   <span>{localSubtotal.toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between text-sm text-teal-700">
-                  <span>Discount</span>
+                  <span>{t("discount_label")}</span>
                   <span>-{localDiscount.toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between text-xl font-black text-[#1A2E35] pt-1">
-                  <span>Total</span>
+                  <span>{t("total_price_label")}</span>
                   <span>{localTotal.toFixed(2)} €</span>
                 </div>
               </div>
@@ -721,20 +714,20 @@ export default function CheckoutPage() {
               <div className="mt-6 pt-4 border-t">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-bold text-sm text-gray-700">
-                    Saved cards for this email
+                    {t("saved_cards_email")}
                   </h3>
                   <button
                     type="button"
                     onClick={fetchSavedCards}
-                    className="text-xs font-bold text-[#2CB391] hover:underline"
+                    className="text-xs font-bold text-[#5BCDE9] hover:underline"
                   >
-                    Refresh
+                    {t("refresh_btn")}
                   </button>
                 </div>
                 {cardsLoading ? (
-                  <p className="text-xs text-gray-500">Loading cards...</p>
+                  <p className="text-xs text-gray-500">{t("loading_cards")}</p>
                 ) : savedCards.length === 0 ? (
-                  <p className="text-xs text-gray-500">No saved cards yet.</p>
+                  <p className="text-xs text-gray-500">{t("no_saved_cards")}</p>
                 ) : (
                   <ul className="space-y-2">
                     {savedCards.map((card) => (

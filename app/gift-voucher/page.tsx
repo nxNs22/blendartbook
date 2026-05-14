@@ -162,7 +162,7 @@ export default function GiftVoucherPage() {
           )}
 
           <div className="mt-8 pt-6 border-t border-gray-100">
-            <Link href="/cart" className="text-sm font-bold text-[#2CB391] hover:underline">
+            <Link href="/cart" className="text-sm font-bold text-[#5BCDE9] hover:underline">
               Go to cart and continue checkout
             </Link>
           </div>

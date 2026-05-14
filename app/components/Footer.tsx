@@ -1,11 +1,12 @@
 "use client";
+import Link from "next/link";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Footer() {
   const { t } = useLanguage();
   return (
-    // 🌟 ARKA PLAN RENGİ teal-700 OLARAK GÜNCELLENDİ
-    <footer className="bg-teal-700 text-white" id="footer">
+    // 🌟 ARKA PLAN RENGİ ÖZEL MAVİ (#5BCDE9) OLARAK GÜNCELLENDİ
+    <footer className="bg-[#5BCDE9] text-white" id="footer">
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 pt-16 pb-10">
         {/* Tagline */}
@@ -24,28 +25,28 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5">
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/info/shopping"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("all_about_shopping")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/info/delivery-payment"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("delivery_payment")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/info/terms-conditions"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("terms_conditions")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -57,28 +58,28 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5">
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/about/who-we-are"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("who_we_are")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/about/contacts"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("contacts")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/info/sustainability"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("books_sustainability")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -90,28 +91,28 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5">
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/info/loyalty"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("loyalty_programme")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/account"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("order_status")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/info/returns"
                   className="text-teal-100 hover:text-white text-sm transition-colors duration-200"
                 >
                   {t("returns_complaints")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -209,13 +210,13 @@ export default function Footer() {
           {/* Legal links */}
           <div className="flex items-center gap-4 text-xs text-white/60">
             <a href="#" className="hover:text-white transition-colors">
-              Cookies
+              {t("cookies")}
             </a>
             <a href="#" className="hover:text-white transition-colors">
-              Privacy
+              {t("privacy")}
             </a>
             <a href="#" className="hover:text-white transition-colors">
-              Accessibility
+              {t("accessibility")}
             </a>
           </div>
         </div>

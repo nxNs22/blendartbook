@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { ChevronLeft, ChevronRight, Loader2, TrendingUp, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import { useCart } from "../context/CartContext"; 
+
+import { demoBestsellers } from "../data/demoProducts";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -73,6 +75,14 @@ export default function BestsellersSection() {
     fetchBooks();
   }, []);
 
+  // 🌟 FALLBACK: Eğer veritabanında az kitap varsa, demo kitaplar ekler
+  const displayBooks = useMemo(() => {
+    if (loading) return [];
+    if (books.length >= 12) return books;
+    
+    return [...books, ...demoBestsellers.slice(0, 12 - books.length)];
+  }, [books, loading]);
+
   const scroll = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return;
     const scrollAmount = carouselRef.current.clientWidth;
@@ -111,8 +121,8 @@ export default function BestsellersSection() {
     carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  if (!loading && books.length === 0) return null;
-  const gridAlignment = books.length < 5 ? "justify-center" : "justify-start";
+  if (!loading && displayBooks.length === 0) return null;
+  const gridAlignment = displayBooks.length < 6 ? "justify-center" : "justify-start";
 
   return (
     <section className="py-16 bg-gray-50 border-b border-gray-100" id="bestsellers-section">
@@ -120,15 +130,15 @@ export default function BestsellersSection() {
         
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-white shadow-sm text-teal-600 rounded-lg">
+            <div className="p-2 bg-teal-50 text-teal-600 rounded-lg">
               <TrendingUp size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">{t("bestsellers")}</h2>
-              <p className="text-teal-600/80 mt-1 text-sm font-medium">{t("most_loved_books")}</p>
+              <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">{t("bestsellers")}</h2>
+              <p className="text-gray-500 mt-1 text-sm font-medium">{t("most_loved_books")}</p>
             </div>
           </div>
-          {!loading && books.length > 4 && (
+          {!loading && displayBooks.length > 6 && (
             <div className="flex items-center gap-2">
               <button onClick={() => scroll('left')} className="p-2 rounded-full bg-white shadow-sm text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronLeft size={24} /></button>
               <button onClick={() => scroll('right')} className="p-2 rounded-full bg-white shadow-sm text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronRight size={24} /></button>
@@ -150,7 +160,7 @@ export default function BestsellersSection() {
               onMouseMove={handleMouseMove}
               className={`flex gap-4 md:gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-4 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
             >
-              {books.map((book) => (
+              {displayBooks.map((book) => (
                 <div key={book.id} className="flex-none w-[calc(50%-8px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-20px)] snap-start select-none">
                   {/* Tıklamaların linkleri tetiklemesi için isDragging kontrolü burada da yapılıyor */}
                   <div
@@ -167,11 +177,15 @@ export default function BestsellersSection() {
                     <div className="relative aspect-[3/4] bg-gray-50 overflow-hidden">
                       {/* LİNK: Artık kartın içini doğrudan kapsıyor */}
                       <Link href={`/product/${book.id}`} className="block w-full h-full">
-                        {book.image_url ? (
-                          <img src={book.image_url} alt={book.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" draggable="false" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300">📚</div>
-                        )}
+                        <img 
+                          src={book.image_url || "/images/default-book.png"} 
+                          alt={book.title} 
+                          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" 
+                          draggable="false" 
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/images/default-book.png";
+                          }}
+                        />
                       </Link>
 
                       <div className={`absolute inset-0 z-10 bg-teal-900/60 flex items-center justify-center gap-2 transition-opacity duration-300 pointer-events-none ${hoveredBook === book.id ? "opacity-100" : "opacity-0"}`}>

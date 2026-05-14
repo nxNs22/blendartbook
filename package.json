@@ -17,6 +17,7 @@
         "@stripe/stripe-js": "^9.4.0",
         "@supabase/supabase-js": "2.103.3",
         "antd": "5.23.0",
+        "dotenv": "^17.4.2",
         "iyzipay": "^2.0.67",
         "lucide-react": "0.378.0",
         "next": "14.2.15",
@@ -27,6 +28,7 @@
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4.2.4",
+        "@types/dotenv": "^6.1.1",
         "@types/node": "20.12.7",
         "@types/react": "18.3.1",
         "@types/react-dom": "18.3.0",

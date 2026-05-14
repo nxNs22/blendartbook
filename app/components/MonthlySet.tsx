@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { ChevronLeft, ChevronRight, Loader2, CalendarHeart } from "lucide-react";
 import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import ProductCard from "./ProductCard";
+
+import { demoMonthlySet } from "../data/demoProducts";
 
 export default function MonthlySet() {
   const { t } = useLanguage();
@@ -45,6 +47,14 @@ export default function MonthlySet() {
     fetchMonthlySet();
   }, []);
 
+  // 🌟 FALLBACK: Eğer veritabanında az kitap varsa, demo kitaplar ekler
+  const displayProducts = useMemo(() => {
+    if (loading) return [];
+    if (products.length >= 12) return products;
+    
+    return [...products, ...demoMonthlySet.slice(0, 12 - products.length)];
+  }, [products, loading]);
+
   const scroll = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return;
     const scrollAmount = carouselRef.current.clientWidth;
@@ -80,23 +90,23 @@ export default function MonthlySet() {
     carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  if (!loading && products.length === 0) return null;
-  const gridAlignment = products.length < 5 ? "justify-center" : "justify-start";
+  if (!loading && displayProducts.length === 0) return null;
+  const gridAlignment = displayProducts.length < 6 ? "justify-center" : "justify-start";
 
   return (
     <section className="py-16 bg-teal-50/30 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-white shadow-sm text-pink-500 rounded-lg">
+            <div className="p-2 bg-teal-50 text-teal-600 rounded-lg">
               <CalendarHeart size={24} />
             </div>
             <div>
-              <h2 className="text-2xl md:text-3xl font-black text-teal-900 uppercase tracking-tight">{t("book_set_of_month")}</h2>
-              <p className="text-teal-600/80 mt-1 text-sm font-medium">{t("carefully_selected")}</p>
+              <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase tracking-tight">{t("book_set_of_month")}</h2>
+              <p className="text-gray-500 mt-1 text-sm font-medium">{t("carefully_selected")}</p>
             </div>
           </div>
-          {!loading && products.length > 4 && (
+          {!loading && displayProducts.length > 6 && (
             <div className="flex items-center gap-2">
               <button onClick={() => scroll('left')} className="p-2 rounded-full bg-white shadow-sm text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronLeft size={24} /></button>
               <button onClick={() => scroll('right')} className="p-2 rounded-full bg-white shadow-sm text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronRight size={24} /></button>
@@ -113,7 +123,7 @@ export default function MonthlySet() {
               onMouseDown={handleMouseDown} onMouseLeave={handleMouseLeave} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}
               className={`flex gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden pb-8 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
             >
-              {products.map((product) => (
+              {displayProducts.map((product) => (
                 <div key={product.id} className="flex-none w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-20px)] snap-start select-none">
                   {/* 🌟 DÜZELTME BURADA: h-full eklendi, böylece kartlar her zaman aynı boyda uzar */}
                   <div className={`h-full ${isDragging ? "pointer-events-none" : ""}`}>

@@ -187,7 +187,7 @@ export default function AccountPage() {
   if (authLoading || loading) {
     return (
       <div className="min-h-[60vh] flex justify-center items-center">
-        <Loader2 className="animate-spin text-[#2CB391]" size={40} />
+        <Loader2 className="animate-spin text-[#5BCDE9]" size={40} />
       </div>
     );
   }
@@ -244,7 +244,7 @@ export default function AccountPage() {
           // PROFILE TAB
           <>
             <h2 className="text-2xl font-bold text-[#1A2E35] mb-6 flex items-center gap-2">
-              <MapPin className="text-[#2CB391]" />{" "}
+              <MapPin className="text-[#5BCDE9]" />{" "}
               {t("shipping_contact_details")}
             </h2>
 
@@ -271,7 +271,7 @@ export default function AccountPage() {
                     onChange={(e) =>
                       setProfile({ ...profile, full_name: e.target.value })
                     }
-                    className="w-full h-12 px-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#2CB391] focus:ring-1 focus:ring-[#2CB391] bg-gray-50 focus:bg-white"
+                    className="w-full h-12 px-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#5BCDE9] focus:ring-1 focus:ring-[#5BCDE9] bg-gray-50 focus:bg-white"
                     placeholder={t("john_doe")}
                   />
                 </div>
@@ -285,7 +285,7 @@ export default function AccountPage() {
                     onChange={(e) =>
                       setProfile({ ...profile, phone: e.target.value })
                     }
-                    className="w-full h-12 px-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#2CB391] focus:ring-1 focus:ring-[#2CB391] bg-gray-50 focus:bg-white"
+                    className="w-full h-12 px-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#5BCDE9] focus:ring-1 focus:ring-[#5BCDE9] bg-gray-50 focus:bg-white"
                     placeholder="+1 234 567 8900"
                   />
                 </div>
@@ -301,7 +301,7 @@ export default function AccountPage() {
                     setProfile({ ...profile, address: e.target.value })
                   }
                   rows={4}
-                  className="w-full p-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#2CB391] focus:ring-1 focus:ring-[#2CB391] bg-gray-50 focus:bg-white resize-none"
+                  className="w-full p-4 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#5BCDE9] focus:ring-1 focus:ring-[#5BCDE9] bg-gray-50 focus:bg-white resize-none"
                   placeholder="123 Library Street, Apt 4B, Book City, BK 12345"
                 />
               </div>
@@ -309,7 +309,7 @@ export default function AccountPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-[#2CB391] hover:bg-[#249278] text-white px-8 h-12 rounded-lg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                className="bg-[#5BCDE9] hover:bg-[#38B2D0] text-white px-8 h-12 rounded-lg font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {saving ? (
                   <Loader2 className="animate-spin" size={18} />
@@ -324,12 +324,12 @@ export default function AccountPage() {
           // ORDERS TAB
           <>
             <h2 className="text-2xl font-bold text-[#1A2E35] mb-6 flex items-center gap-2">
-              <Package className="text-[#2CB391]" /> {t("my_orders")}
+              <Package className="text-[#5BCDE9]" /> {t("my_orders")}
             </h2>
 
             {ordersLoading ? (
               <div className="flex justify-center py-12">
-                <Loader2 className="animate-spin text-[#2CB391]" size={32} />
+                <Loader2 className="animate-spin text-[#5BCDE9]" size={32} />
               </div>
             ) : orders.length === 0 ? (
               <div className="text-center py-12">
@@ -421,7 +421,7 @@ export default function AccountPage() {
                             <span className="font-bold text-gray-800">
                               {t("total") || "Total"}
                             </span>
-                            <span className="font-bold text-lg text-[#2CB391]">
+                            <span className="font-bold text-lg text-[#5BCDE9]">
                               {order.total_amount.toFixed(2)} €
                             </span>
                           </div>

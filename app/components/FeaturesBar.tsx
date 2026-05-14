@@ -47,23 +47,23 @@ export default function FeaturesBar() {
     },
   ];
   return (
-    <section className="bg-gradient-to-b from-teal-50 to-white py-10 border-b border-teal-100" id="features-section">
+    <section className="bg-gradient-to-b from-[#5BCDE9]/5 to-white py-10 border-b border-[#5BCDE9]/10" id="features-section">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {features.map((feature, i) => (
             <div
               key={i}
               className="flex items-center gap-3 group hover-lift p-4 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300 cursor-pointer"
               id={`feature-${i}`}
             >
-              <div className="text-teal-600 group-hover:text-teal-700 transition-colors flex-shrink-0 group-hover:animate-float">
+              <div className="text-[#5BCDE9] group-hover:text-[#4BB8D4] transition-colors flex-shrink-0 group-hover:animate-float">
                 {feature.icon}
               </div>
               <div>
-                <h3 className="font-heading font-bold text-teal-900 text-sm md:text-base">
+                <h3 className="font-heading font-bold text-[#1A2E35] text-sm md:text-base">
                   {feature.title}
                 </h3>
-                <p className="text-teal-600 text-xs md:text-sm">
+                <p className="text-[#5BCDE9] text-xs md:text-sm">
                   {feature.description}
                 </p>
               </div>

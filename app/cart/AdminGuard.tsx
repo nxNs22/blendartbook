@@ -54,7 +54,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   if (authLoading || checking) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-gray-50">
-        <Loader2 className="animate-spin text-[#2CB391]" size={48} />
+        <Loader2 className="animate-spin text-[#5BCDE9]" size={48} />
       </div>
     );
   }
