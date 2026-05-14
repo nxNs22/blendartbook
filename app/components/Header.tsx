@@ -343,7 +343,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full min-w-full bg-[#C8102E] shadow-md">
-      {/* 1. TOP BAR (bg-[#7F0A1A]) */}
+      {/* 1. TOP BAR */}
       <div className="w-full min-w-full bg-[#7F0A1A] text-white/80 text-[11px] py-1.5 flex justify-center">
         <div className="flex items-center justify-between w-full px-4 max-w-7xl">
           <span className="transition-colors cursor-pointer hover:text-white">{t("check_order_status")}</span>
@@ -354,82 +354,108 @@ export default function Header() {
         </div>
       </div>
 
-      {/* 2. MAIN HEADER */}
-      <div className="flex flex-wrap lg:flex-nowrap items-center justify-between w-full gap-y-4 lg:gap-x-12 px-4 py-4">
-        <div className="max-w-7xl mx-auto w-full flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-4 lg:gap-x-12">
-        
-        {/* 🌟 LOGO VE MARKA YAZISI BURADA GÜNCELLENDİ */}
-        <Link href="/" className="flex items-center flex-shrink-0 group order-1 gap-5">
-          <img 
-            src="/logo.png" 
-            alt="BlendArtBook Logo" 
-            className="hidden md:block w-22 h-22 object-contain group-hover:opacity-80 transition-opacity" 
-          />
-          <div className="flex flex-col items-center md:items-start">
-            <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
-            <span className="text-white/80 text-[9px] tracking-[0.2em] uppercase font-bold">{t("be_whoever")}</span>
-          </div>
-        </Link>
-
-        <div className="relative flex items-center flex-1 max-w-2xl overflow-hidden bg-white rounded-lg shadow-inner order-3 lg:order-2 w-full lg:w-auto">
-          <Search size={18} className="ml-4 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder={t("search_placeholder")} 
-            className="w-full pl-3 pr-24 text-sm text-gray-800 h-11 focus:outline-none" 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleSearchKeyPress}
-          />
-          <button 
-            onClick={handleSearch}
-            className="absolute right-0 px-4 lg:px-6 text-sm font-bold text-white transition-colors h-11 bg-[#5BCDE9] hover:bg-[#4BB8D4]"
-          >
-            {t("search")}
-          </button>
-        </div>
-
-        <div className="flex items-center flex-shrink-0 gap-3 lg:gap-5 text-white order-2 lg:order-3">
-          <Link href="/qa" className="transition-opacity cursor-pointer opacity-80 hover:opacity-100 hidden sm:block">
-            <HelpCircle size={22} />
-          </Link>
+      {/* 2. MAIN HEADER (Tamamen Mobile-First ve Esnek Yapı) */}
+      <div className="w-full px-4 py-3 max-w-7xl mx-auto">
+        <div className="flex flex-col gap-y-3 lg:flex-row lg:items-center lg:justify-between lg:gap-x-12">
           
-          <Link href={user ? "/account" : "/auth"} className="flex items-center gap-2 group">
-            {user && userName ? (
-              <span className="text-sm font-bold capitalize transition-colors text-white/90 group-hover:text-white hidden sm:inline">
-                {t("hi")}, {userName}
-              </span>
-            ) : (
-              <User 
-                size={22} 
-                className={`cursor-pointer transition-opacity ${user ? "opacity-100 text-white" : "opacity-80 group-hover:opacity-100"}`} 
-              />
-            )}
-          </Link>
-          
-          <Link 
-            href="/cart" 
-            className="relative flex items-center bg-[#5BCDE9] px-3 lg:px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#38B2D0] transition-all shadow-md text-white"
-          >
-            <ShoppingCart size={18} />
-            <span className="hidden ml-2 text-white md:inline-block">{t("cart")}</span>
+          {/* Üst Satır (Mobil) / Sol Kısım (Desktop): Logo ve Sağ İkonlar */}
+          <div className="flex items-center justify-between w-full lg:w-auto">
             
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white">
-                {cartCount}
-              </span>
-            )}
-          </Link>
-          
-          {/* Mobile Menu Toggle */}
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-colors"
-          >
-            {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
-          </button>
+            {/* 🌟 LOGO VE MARKA YAZISI */}
+            <Link href="/" className="flex items-center flex-shrink-0 group gap-3 md:gap-5">
+              <img 
+                src="/logo.png" 
+                alt="BlendArtBook Logo" 
+                className="w-12 h-12 md:w-20 md:h-20 object-contain group-hover:opacity-80 transition-opacity" 
+              />
+              <div className="flex flex-col items-start">
+                <span className="text-xl md:text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
+                <span className="text-white/80 text-[8px] md:text-[9px] tracking-[0.2em] uppercase font-bold">{t("be_whoever")}</span>
+              </div>
+            </Link>
 
-        </div>
+            {/* Sağ Taraf İkonları (Sadece Mobilde Görünür) */}
+            <div className="flex items-center gap-3 text-white lg:hidden">
+              <Link href={user ? "/account" : "/auth"} className="flex items-center gap-1 group">
+                <User size={24} className="opacity-80 group-hover:opacity-100" />
+              </Link>
+              
+              <Link 
+                href="/cart" 
+                className="relative flex items-center bg-[#5BCDE9] p-2 rounded-lg font-bold text-sm hover:bg-[#38B2D0] transition-all shadow-md text-white"
+              >
+                <ShoppingCart size={20} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-[#C8102E]">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+              
+              <button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-1.5 text-white hover:bg-white/10 rounded-lg transition-colors"
+              >
+                {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Alt Satır (Mobil) / Orta Kısım (Desktop): Arama Çubuğu */}
+          <div className="flex-1 w-full lg:max-w-2xl lg:mx-auto">
+            <div className="relative flex items-center w-full overflow-hidden bg-white rounded-lg shadow-inner">
+              <Search size={18} className="ml-4 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder={t("search_placeholder")} 
+                className="w-full pl-3 pr-20 md:pr-24 text-sm text-gray-800 h-11 focus:outline-none" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleSearchKeyPress}
+              />
+              <button 
+                onClick={handleSearch}
+                className="absolute right-0 px-4 md:px-6 text-sm font-bold text-white transition-colors h-11 bg-[#5BCDE9] hover:bg-[#4BB8D4]"
+              >
+                {t("search")}
+              </button>
+            </div>
+          </div>
+
+          {/* Sağ Taraf İkonları (Sadece Desktop'ta Görünür) */}
+          <div className="hidden lg:flex items-center flex-shrink-0 gap-5 text-white">
+            <Link href="/qa" className="transition-opacity cursor-pointer opacity-80 hover:opacity-100">
+              <HelpCircle size={22} />
+            </Link>
+            
+            <Link href={user ? "/account" : "/auth"} className="flex items-center gap-2 group">
+              {user && userName ? (
+                <span className="text-sm font-bold capitalize transition-colors text-white/90 group-hover:text-white">
+                  {t("hi")}, {userName}
+                </span>
+              ) : (
+                <User 
+                  size={22} 
+                  className={`cursor-pointer transition-opacity ${user ? "opacity-100 text-white" : "opacity-80 group-hover:opacity-100"}`} 
+                />
+              )}
+            </Link>
+            
+            <Link 
+              href="/cart" 
+              className="relative flex items-center bg-[#5BCDE9] px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#38B2D0] transition-all shadow-md text-white"
+            >
+              <ShoppingCart size={18} />
+              <span className="ml-2 text-white">{t("cart")}</span>
+              
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          </div>
+
         </div>
       </div>
 
