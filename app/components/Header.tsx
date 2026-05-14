@@ -85,7 +85,6 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
 
   return (
     <div className="absolute left-0 z-50 w-full pt-2 duration-200 top-full animate-in fade-in">
-      {/* 🌟 MEGA MENÜ ÜST ÇİZGİSİ KIRMIZI OLDU */}
       <div className="bg-[#7F0A1A] border-t-2 border-[#E62E4D] shadow-2xl rounded-b-xl">
         <div className="px-6 py-10 mx-auto max-w-7xl">
           
@@ -229,14 +228,12 @@ function LanguageSelector() {
 
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 w-52 bg-[#1a1a2e] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-[999] animate-in fade-in slide-in-from-top-2 duration-200">
-          {/* Header */}
           <div className="px-4 py-2.5 border-b border-white/10 bg-white/5">
             <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">
               🌐 Select Language
             </span>
           </div>
 
-          {/* Language options */}
           <div className="py-1">
             {LANGUAGES.map((lang) => {
               const isActive = language === lang.code;
@@ -310,7 +307,6 @@ export default function Header() {
     fetchUserName();
   }, [user]);
 
-  // Nav items use internal keys for dropdown matching, labels are translated
   const navItems = [
     { label: t("books"), dropdownKey: "books", hasDropdown: true, icon: <BookOpen size={16} /> },
     { label: t("art"), dropdownKey: "art", hasDropdown: true, icon: <Palette size={16} /> }, 
@@ -346,7 +342,6 @@ export default function Header() {
   };
 
   return (
-    // 🌟 HEADER ARKA PLANI KIRMIZI (#C8102E) YAPILDI
     <header className="sticky top-0 z-50 w-full min-w-full bg-[#C8102E] shadow-md">
       {/* 1. TOP BAR (bg-[#7F0A1A]) */}
       <div className="w-full min-w-full bg-[#7F0A1A] text-white/80 text-[11px] py-1.5 flex justify-center">
@@ -362,9 +357,18 @@ export default function Header() {
       {/* 2. MAIN HEADER */}
       <div className="flex flex-wrap lg:flex-nowrap items-center justify-between w-full gap-y-4 lg:gap-x-12 px-4 py-4">
         <div className="max-w-7xl mx-auto w-full flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-4 lg:gap-x-12">
-        <Link href="/" className="flex flex-col items-center flex-shrink-0 group order-1">
-          <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
-          <span className="text-white/80 text-[9px] tracking-[0.2em] uppercase font-bold">{t("be_whoever")}</span>
+        
+        {/* 🌟 LOGO VE MARKA YAZISI BURADA GÜNCELLENDİ */}
+        <Link href="/" className="flex items-center flex-shrink-0 group order-1 gap-5">
+          <img 
+            src="/logo.png" 
+            alt="BlendArtBook Logo" 
+            className="hidden md:block w-22 h-22 object-contain group-hover:opacity-80 transition-opacity" 
+          />
+          <div className="flex flex-col items-center md:items-start">
+            <span className="text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
+            <span className="text-white/80 text-[9px] tracking-[0.2em] uppercase font-bold">{t("be_whoever")}</span>
+          </div>
         </Link>
 
         <div className="relative flex items-center flex-1 max-w-2xl overflow-hidden bg-white rounded-lg shadow-inner order-3 lg:order-2 w-full lg:w-auto">
@@ -403,7 +407,6 @@ export default function Header() {
             )}
           </Link>
           
-          {/* 🌟 SEPET BUTONU RENGİ GÜNCELLENDİ (#00C292) */}
           <Link 
             href="/cart" 
             className="relative flex items-center bg-[#5BCDE9] px-3 lg:px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer hover:bg-[#38B2D0] transition-all shadow-md text-white"
@@ -491,7 +494,6 @@ export default function Header() {
                     </button>
                     {openDropdown === item.dropdownKey && (
                       <div className="bg-black/20 py-2">
-                         {/* Simplified mobile version of dropdown items could be added here */}
                          <Link href={`/books`} onClick={() => setIsMobileMenuOpen(false)} className="block px-12 py-3 text-white/80 text-sm font-medium hover:text-white">
                            {t("view_all")} {item.label}
                          </Link>
