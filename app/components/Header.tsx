@@ -19,24 +19,24 @@ import { supabase, getErrorMessage } from "../lib/supabaseClient";
 // --- VERİ YAPILARI ---
 
 const languageBooks = [
-  { nameKey: "books_in_turkish", flag: "🇹🇷", slug: "turkish", count: "284 730" },
-  { nameKey: "books_in_english", flag: "🇬🇧", slug: "english", count: "2 156 890" },
-  { nameKey: "books_in_romanian", flag: "🇷🇴", slug: "romanian", count: "156 420" },
-  { nameKey: "books_in_bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "89 340" },
+  { nameKey: "books_in_turkish", flag: "/turkiye.png", slug: "turkish", count: "284 730" },
+  { nameKey: "books_in_english", flag: "/eng.png", slug: "english", count: "2 156 890" },
+  { nameKey: "books_in_romanian", flag: "/romanya.png", slug: "romanian", count: "156 420" },
+  { nameKey: "books_in_bulgarian", flag: "/bulgaristan.png", slug: "bulgarian", count: "89 340" },
 ];
 
 const ebookLanguages = [
-  { nameKey: "ebooks_in_turkish", flag: "🇹🇷", slug: "turkish", count: "45 200" },
-  { nameKey: "ebooks_in_english", flag: "🇬🇧", slug: "english", count: "890 400" },
-  { nameKey: "ebooks_in_romanian", flag: "🇷🇴", slug: "romanian", count: "156 420" },
-  { nameKey: "ebooks_in_bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "89 340" }
+  { nameKey: "ebooks_in_turkish", flag: "/turkiye.png", slug: "turkish", count: "45 200" },
+  { nameKey: "ebooks_in_english", flag: "/eng.png", slug: "english", count: "890 400" },
+  { nameKey: "ebooks_in_romanian", flag: "/romanya.png", slug: "romanian", count: "156 420" },
+  { nameKey: "ebooks_in_bulgarian", flag: "/bulgaristan.png", slug: "bulgarian", count: "89 340" }
 ];
 
 const audiobookLanguages = [
-  { nameKey: "audiobooks_in_turkish", flag: "🇹🇷", slug: "turkish", count: "8 400" },
-  { nameKey: "audiobooks_in_english", flag: "🇬🇧", slug: "english", count: "210 000" },
-  { nameKey: "audiobooks_in_romanian", flag: "🇷🇴", slug: "romanian", count: "8 400" },
-  { nameKey: "audiobooks_in_bulgarian", flag: "🇧🇬", slug: "bulgarian", count: "8 400" }
+  { nameKey: "audiobooks_in_turkish", flag: "/turkiye.png", slug: "turkish", count: "8 400" },
+  { nameKey: "audiobooks_in_english", flag: "/eng.png", slug: "english", count: "210 000" },
+  { nameKey: "audiobooks_in_romanian", flag: "/romanya.png", slug: "romanian", count: "8 400" },
+  { nameKey: "audiobooks_in_bulgarian", flag: "/bulgaristan.png", slug: "bulgarian", count: "8 400" }
 ];
 
 const otherProductKeys = [
@@ -103,8 +103,13 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
                       onClick={onClose}
                       className="flex flex-col items-center gap-3 transition-all group w-56"
                     >
-                      <div className="text-6xl transition-transform md:text-7xl drop-shadow-2xl group-hover:scale-110 mb-2">
-                        {lang.flag}
+                      {/* 🌟 EMOJİ YERİNE PNG RESİMLERİ BURAYA EKLENDİ */}
+                      <div className="transition-transform drop-shadow-2xl group-hover:scale-110 mb-2 flex items-center justify-center h-16 md:h-20">
+                        <img 
+                          src={lang.flag} 
+                          alt={lang.slug} 
+                          className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-md rounded-sm"
+                        />
                       </div>
                       <span className="text-base font-bold text-white group-hover:text-[#E62E4D] transition-colors">
                         {t(lang.nameKey)}
@@ -250,6 +255,7 @@ function LanguageSelector() {
                       : "text-white/70 hover:bg-white/5 hover:text-white"
                   }`}
                 >
+                  {/* Dilersen buradaki emojileri de Context içinden resimle değiştirebilirsin */}
                   <span className="text-xl leading-none">{lang.flag}</span>
                   <div className="flex flex-col flex-1 min-w-0">
                     <span className="text-sm font-semibold truncate">{lang.name}</span>
