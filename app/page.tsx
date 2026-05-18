@@ -2,7 +2,6 @@ import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
 import FeaturesBar from "./components/FeaturesBar";
 import BestsellersSection from "./components/BestsellersSection";
-import CategoriesSection from "./components/CategoriesSection";
 import PromoBanner from "./components/PromoBanner";
 import Footer from "./components/Footer";
 import NewArrivals from "./components/NewArrivals";
