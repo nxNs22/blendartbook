@@ -120,7 +120,7 @@ function PaymentForm({
       return;
     }
 
-    // 3. If payment successful, update status to "Paid" in Supabase
+    // 3. If payment successful, update status to "Paid" in Supabase AND SEND EMAIL
     await onPaymentSuccess(orderCode);
 
     // 4. Redirect to success page with order code
@@ -206,7 +206,7 @@ export default function CheckoutPage() {
           customer_email: email.trim(),
           customer_name: fullName.trim(),
           customer_phone: phone.trim(),
-          shipping_country: country.trim(), // Shipping address details could be added to separate columns in the future
+          shipping_country: country.trim(), 
           total_amount: localTotal,
           discount_amount: localDiscount,
           status: "pending",
@@ -218,10 +218,16 @@ export default function CheckoutPage() {
 
       if (orderError) throw orderError;
 
+      // 🌟 UUID HATA DÜZELTMESİ: Gelen ID geçerli bir UUID değilse null kaydet
+      const isValidUUID = (id: string) => {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        return uuidRegex.test(id);
+      };
+
       // 2. Save order items (order_items)
       const orderItems = cart.map((item) => ({
         order_id: orderData.id,
-        product_id: item.id,
+        product_id: isValidUUID(String(item.id)) ? item.id : null,
         product_title: item.title,
         quantity: item.quantity,
         price_at_purchase:
@@ -333,13 +339,11 @@ export default function CheckoutPage() {
 
     setRevolutLoading(true);
     try {
-      // 1. Save order to Supabase
       const orderCode = await createOrderInSupabase();
       if (!orderCode) {
         throw new Error(t("order_save_error"));
       }
 
-      // 2. Revolut API'sine bağlan
       const payloadCart = cart.map((item) => ({
         id: item.id,
         title: item.title,
@@ -385,12 +389,32 @@ export default function CheckoutPage() {
     if (!checkLegalConsent()) return;
 
     setPodLoading(true);
-    // Save order and redirect to success page
     const orderCode = await createOrderInSupabase();
     if (!orderCode) {
       setIntentError(t("order_save_error"));
       setPodLoading(false);
       return;
+    }
+
+    // Pay On Delivery Mail Gönderimi 🚀
+    try {
+      await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: fullName.trim() || "Valued Customer",
+          customerEmail: email.trim(),
+          orderNumber: orderCode,
+          totalAmount: localTotal,
+          items: cart.map((item) => ({
+            title: item.title,
+            quantity: item.quantity,
+            price: typeof item.price === "number" ? item.price : parsePrice(item.price),
+          })),
+        }),
+      });
+    } catch (mailError) {
+      console.error("Mail trigger failed:", mailError);
     }
 
     window.location.href = `/checkout/success?orderCode=${orderCode}`;
@@ -662,10 +686,32 @@ export default function CheckoutPage() {
                       customerName={fullName.trim()}
                       onBeforePayment={createOrderInSupabase}
                       onPaymentSuccess={async (orderCode) => {
+                        // 1. Veritabanını güncelle
                         await supabase
                           .from("orders")
                           .update({ payment_status: "paid" })
                           .eq("order_number", orderCode);
+                          
+                        // 2. MÜŞTERİYE E-POSTA GÖNDER 🚀
+                        try {
+                          await fetch("/api/send-email", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              customerName: fullName.trim() || "Valued Customer",
+                              customerEmail: email.trim(),
+                              orderNumber: orderCode,
+                              totalAmount: localTotal,
+                              items: cart.map((item) => ({
+                                title: item.title,
+                                quantity: item.quantity,
+                                price: typeof item.price === "number" ? item.price : parsePrice(item.price),
+                              })),
+                            }),
+                          });
+                        } catch (mailError) {
+                          console.error("Mail trigger failed:", mailError);
+                        }
                       }}
                     />
                   </Elements>

@@ -24,8 +24,6 @@ export default function Home() {
         <WorldLiterature/>
         <AwardWinningBooks/>
         <BestsellersSection /> 
-
- 
         <FeaturesBar />
       </main>
 

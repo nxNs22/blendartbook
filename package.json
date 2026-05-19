@@ -9,6 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@react-email/render": "^2.0.8",
         "@refinedev/antd": "6.0.3",
         "@refinedev/core": "5.0.12",
         "@refinedev/nextjs-router": "7.0.5",
@@ -21,6 +22,7 @@
         "iyzipay": "^2.0.67",
         "lucide-react": "0.378.0",
         "next": "14.2.15",
+        "nodemailer": "^8.0.7",
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "stripe": "^22.1.0",
@@ -30,6 +32,7 @@
         "@tailwindcss/postcss": "^4.2.4",
         "@types/dotenv": "^6.1.1",
         "@types/node": "20.12.7",
+        "@types/nodemailer": "^8.0.0",
         "@types/react": "18.3.1",
         "@types/react-dom": "18.3.0",
         "autoprefixer": "10.4.19",
