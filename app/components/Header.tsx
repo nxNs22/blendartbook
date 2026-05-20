@@ -316,7 +316,7 @@ export default function Header() {
   const navItems = [
     { label: t("books"), dropdownKey: "books", hasDropdown: true, icon: <BookOpen size={16} /> },
     { label: t("art"), dropdownKey: "art", hasDropdown: true, icon: <Palette size={16} /> }, 
-    { label: t("handmade"), dropdownKey: "handmade", hasDropdown: false, href: "/handmade", icon: <img src="/images/1000_F_335296840_0XdaMlAnQASHckfoR7AKWUMBZ9AcszQi.png" alt="handmade" className="w-4 h-4 rounded-sm object-contain" style={{ filter: "invert(1) brightness(2)", mixBlendMode: "screen" }} /> }, 
+    { label: t("handmade"), dropdownKey: "handmade", hasDropdown: false, href: "/handmade", icon: <img src="/images/1000_F_335296840_0XdaMlAnQASHckfoR7AKWUMBZ9AcszQi.png" alt="handmade" className="w-5 h-5 object-contain" style={{ filter: "invert(1) brightness(2)", mixBlendMode: "screen" }} /> }, 
     { label: t("ebooks"), dropdownKey: "ebooks", hasDropdown: true, icon: <Tablet size={16} /> },
     { label: t("audiobooks"), dropdownKey: "audiobooks", hasDropdown: true, icon: <Mic size={16} /> },
     { label: t("other_products"), dropdownKey: "other_products", hasDropdown: true, icon: <Gamepad2 size={16} /> },

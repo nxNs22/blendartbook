@@ -2,7 +2,7 @@
 
 import { useLanguage } from "../context/LanguageContext";
 import { useState, useMemo, useEffect } from "react";
-import { Filter, ChevronDown, Loader2, PenTool } from "lucide-react";
+import { Filter, ChevronDown, Loader2 } from "lucide-react";
 import { supabase, getErrorMessage } from "../lib/supabaseClient"; 
 import ProductCard from "../components/ProductCard";
 import { demoHandmade } from "../data/demoProducts";
@@ -67,8 +67,8 @@ export default function HandmadePage() {
           </nav>
           
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-600 border border-red-100 shadow-sm">
-               <PenTool size={32} />
+            <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-sm overflow-hidden">
+               <img src="/images/1000_F_335296840_0XdaMlAnQASHckfoR7AKWUMBZ9AcszQi.png" alt="handmade" className="w-full h-full object-cover" />
             </div>
             <div>
               <h1 className="text-4xl md:text-5xl font-black text-[#1A2E35] tracking-tighter flex items-baseline gap-4 italic uppercase">
@@ -145,7 +145,7 @@ export default function HandmadePage() {
 
           {!loading && filteredProducts.length === 0 && (
             <div className="text-center py-24 text-gray-400 border-2 border-dashed border-gray-200 rounded-[40px] bg-white">
-              <PenTool className="mx-auto mb-6 opacity-10" size={64} />
+              <img src="/images/1000_F_335296840_0XdaMlAnQASHckfoR7AKWUMBZ9AcszQi.png" alt="handmade" className="mx-auto mb-6 opacity-10 w-16 h-16 object-contain" />
               <p className="text-lg font-bold">{t("no_products_found")}</p>
             </div>
           )}
