@@ -22,21 +22,21 @@ const languageBooks = [
   { nameKey: "books_in_turkish", flag: "/turkiye.png", slug: "turkish", count: "284 730" },
   { nameKey: "books_in_english", flag: "/eng.png", slug: "english", count: "2 156 890" },
   { nameKey: "books_in_romanian", flag: "/romanya.png", slug: "romanian", count: "156 420" },
-  { nameKey: "books_in_bulgarian", flag: "/bulgaristan.png", slug: "bulgarian", count: "89 340" },
+  { nameKey: "books_in_bulgarian", flag: "/Flag_map_of_Bulgaria.svg.svg", slug: "bulgarian", count: "89 340" },
 ];
 
 const ebookLanguages = [
   { nameKey: "ebooks_in_turkish", flag: "/turkiye.png", slug: "turkish", count: "45 200" },
   { nameKey: "ebooks_in_english", flag: "/eng.png", slug: "english", count: "890 400" },
   { nameKey: "ebooks_in_romanian", flag: "/romanya.png", slug: "romanian", count: "156 420" },
-  { nameKey: "ebooks_in_bulgarian", flag: "/bulgaristan.png", slug: "bulgarian", count: "89 340" }
+  { nameKey: "ebooks_in_bulgarian", flag: "/Flag_map_of_Bulgaria.svg.svg", slug: "bulgarian", count: "89 340" }
 ];
 
 const audiobookLanguages = [
   { nameKey: "audiobooks_in_turkish", flag: "/turkiye.png", slug: "turkish", count: "8 400" },
   { nameKey: "audiobooks_in_english", flag: "/eng.png", slug: "english", count: "210 000" },
   { nameKey: "audiobooks_in_romanian", flag: "/romanya.png", slug: "romanian", count: "8 400" },
-  { nameKey: "audiobooks_in_bulgarian", flag: "/bulgaristan.png", slug: "bulgarian", count: "8 400" }
+  { nameKey: "audiobooks_in_bulgarian", flag: "/Flag_map_of_Bulgaria.svg.svg", slug: "bulgarian", count: "8 400" }
 ];
 
 const otherProductKeys = [
@@ -61,7 +61,7 @@ const artCategoryKeys = [
   { nameKey: "painting", href: "/art/painting", icon: <Paintbrush size={24} /> },
   { nameKey: "sculpture", href: "/art/sculpture", icon: <Box size={24} /> },
   { nameKey: "music", href: "/art/music", icon: <Music size={24} /> },
-  { nameKey: "crafts", href: "/art/crafts", icon: <Scissors size={24} /> },
+  { nameKey: "handmade", href: "/handmade", icon: <HandHeart size={24} /> },
 ];
 
 type LanguageBookItem = {
@@ -90,10 +90,10 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
           
           {content && content.data && (
             <>
-              <h2 className="mb-12 text-4xl font-black text-center text-white md:text-7xl tracking-tight">
+              <h2 className="mb-12 text-4xl font-black tracking-tight text-center text-white md:text-7xl">
                 {content.title}
               </h2>
-              <div className="flex flex-wrap justify-center max-w-5xl gap-x-12 gap-y-12 mx-auto mb-12">
+              <div className="flex flex-wrap justify-center max-w-5xl mx-auto mb-12 gap-x-12 gap-y-12">
                 {content.data.map((lang: LanguageBookItem) => {
                   const safeSlug = (lang.slug || "").toLowerCase();
                   return (
@@ -101,20 +101,20 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
                       key={lang.nameKey} 
                       href={`${content.basePath}/${safeSlug}`} 
                       onClick={onClose}
-                      className="flex flex-col items-center gap-3 transition-all group w-56"
+                      className="flex flex-col items-center w-56 gap-3 transition-all group"
                     >
                       {/* 🌟 EMOJİ YERİNE PNG RESİMLERİ BURAYA EKLENDİ */}
-                      <div className="transition-transform drop-shadow-2xl group-hover:scale-110 mb-2 flex items-center justify-center h-16 md:h-20">
+                      <div className="flex items-center justify-center h-16 mb-2 transition-transform drop-shadow-2xl group-hover:scale-110 md:h-20">
                         <img 
                           src={lang.flag} 
                           alt={lang.slug} 
-                          className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-md rounded-sm"
+                          className="object-contain w-16 h-16 rounded-sm md:w-20 md:h-20 drop-shadow-md"
                         />
                       </div>
                       <span className="text-base font-bold text-white group-hover:text-[#E62E4D] transition-colors">
                         {t(lang.nameKey)}
                       </span>
-                      <span className="text-sm font-semibold text-white/40 tracking-wider">
+                      <span className="text-sm font-semibold tracking-wider text-white/40">
                         {lang.count}
                       </span>
                     </Link>
@@ -127,7 +127,7 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
           {type === "other_products" && (
             <div className="flex flex-col items-center">
               <h2 className="mb-8 text-3xl font-bold text-center text-white md:text-4xl">{t("other_products")}</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6 w-full max-w-5xl">
+              <div className="grid w-full max-w-5xl grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-7">
                 {otherProductKeys.map((product) => (
                   <Link 
                     key={product.nameKey} 
@@ -150,7 +150,7 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
             <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-start">
               <div className="grid flex-1 grid-cols-2 gap-6 md:grid-cols-5">
                 {giftCategoryKeys.map((item) => (
-                  <Link key={item.nameKey} href={item.href} onClick={onClose} className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all">
+                  <Link key={item.nameKey} href={item.href} onClick={onClose} className="flex flex-col items-center p-4 transition-all rounded-xl hover:bg-white/5 group">
                     <div className="flex items-center justify-center w-20 h-20 mb-4 text-white/80 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-[#E62E4D] group-hover:text-white group-hover:scale-110">
                       {item.icon}
                     </div>
@@ -172,13 +172,13 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
           {type === "art" && (
              <div className="flex flex-col items-center">
                <h2 className="mb-8 text-3xl font-bold text-center text-white md:text-4xl">{t("art_title")}</h2>
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-3xl">
+               <div className="grid w-full max-w-3xl grid-cols-2 gap-8 md:grid-cols-4">
                  {artCategoryKeys.map((sub) => (
                    <Link 
                      key={sub.nameKey} 
                      href={sub.href} 
                      onClick={onClose}
-                     className="flex flex-col items-center p-4 rounded-xl hover:bg-white/5 group transition-all"
+                     className="flex flex-col items-center p-4 transition-all rounded-xl hover:bg-white/5 group"
                    >
                      <div className="flex items-center justify-center w-20 h-20 mb-4 text-white/80 transition-all rounded-full shadow-lg bg-white/10 group-hover:bg-[#E62E4D] group-hover:text-white group-hover:scale-110">
                        {sub.icon}
@@ -192,7 +192,7 @@ function DropdownPanel({ type, onClose }: { type: string; onClose: () => void })
              </div>
           )}
 
-          <div className="flex justify-center items-center pt-10 mt-12 text-base italic border-t border-white/5 text-white/60">
+          <div className="flex items-center justify-center pt-10 mt-12 text-base italic border-t border-white/5 text-white/60">
             <Sparkles className="mr-3 text-[#E62E4D]" size={20} />
             {t("help_text")}
           </div>
@@ -226,7 +226,7 @@ function LanguageSelector() {
         aria-label="Select language"
         id="language-selector"
       >
-        <Globe size={13} className="opacity-70 group-hover:opacity-100 transition-opacity" />
+        <Globe size={13} className="transition-opacity opacity-70 group-hover:opacity-100" />
         <span className="text-[11px]">{currentLanguageOption.code.toUpperCase()}</span>
         <ChevronDown size={11} className={`transition-transform duration-300 opacity-60 ${isOpen ? "rotate-180" : ""}`} />
       </button>
@@ -316,7 +316,6 @@ export default function Header() {
   const navItems = [
     { label: t("books"), dropdownKey: "books", hasDropdown: true, icon: <BookOpen size={16} /> },
     { label: t("art"), dropdownKey: "art", hasDropdown: true, icon: <Palette size={16} /> }, 
-    { label: t("handmade"), dropdownKey: "handmade", hasDropdown: false, href: "/handmade", icon: <img src="/images/1000_F_335296840_0XdaMlAnQASHckfoR7AKWUMBZ9AcszQi.png" alt="handmade" className="w-5 h-5 object-contain" style={{ filter: "invert(1) brightness(2)", mixBlendMode: "screen" }} /> }, 
     { label: t("ebooks"), dropdownKey: "ebooks", hasDropdown: true, icon: <Tablet size={16} /> },
     { label: t("audiobooks"), dropdownKey: "audiobooks", hasDropdown: true, icon: <Mic size={16} /> },
     { label: t("other_products"), dropdownKey: "other_products", hasDropdown: true, icon: <Gamepad2 size={16} /> },
@@ -361,21 +360,21 @@ export default function Header() {
       </div>
 
       {/* 2. MAIN HEADER (Tamamen Mobile-First ve Esnek Yapı) */}
-      <div className="w-full px-4 py-3 max-w-7xl mx-auto">
+      <div className="w-full px-4 py-3 mx-auto max-w-7xl">
         <div className="flex flex-col gap-y-3 lg:flex-row lg:items-center lg:justify-between lg:gap-x-12">
           
           {/* Üst Satır (Mobil) / Sol Kısım (Desktop): Logo ve Sağ İkonlar */}
           <div className="flex items-center justify-between w-full lg:w-auto">
             
             {/* 🌟 LOGO VE MARKA YAZISI */}
-            <Link href="/" className="flex items-center flex-shrink-0 group gap-3 md:gap-5">
+            <Link href="/" className="flex items-center flex-shrink-0 gap-3 group md:gap-5">
               <img 
                 src="/logo.png" 
                 alt="BlendArtBook Logo" 
-                className="w-12 h-12 md:w-20 md:h-20 object-contain group-hover:opacity-80 transition-opacity" 
+                className="object-contain w-12 h-12 transition-opacity md:w-20 md:h-20 group-hover:opacity-80" 
               />
               <div className="flex flex-col items-start">
-                <span className="text-xl md:text-2xl italic font-black leading-none tracking-tighter text-white group-hover:opacity-80">blendartbook</span>          
+                <span className="text-xl italic font-black leading-none tracking-tighter text-white md:text-2xl group-hover:opacity-80">blendartbook</span>          
                 <span className="text-white/80 text-[8px] md:text-[9px] tracking-[0.2em] uppercase font-bold">{t("be_whoever")}</span>
               </div>
             </Link>
@@ -414,7 +413,7 @@ export default function Header() {
               <input 
                 type="text" 
                 placeholder={t("search_placeholder")} 
-                className="w-full pl-3 pr-20 md:pr-24 text-sm text-gray-800 h-11 focus:outline-none" 
+                className="w-full pl-3 pr-20 text-sm text-gray-800 md:pr-24 h-11 focus:outline-none" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleSearchKeyPress}
@@ -429,7 +428,7 @@ export default function Header() {
           </div>
 
           {/* Sağ Taraf İkonları (Sadece Desktop'ta Görünür) */}
-          <div className="hidden lg:flex items-center flex-shrink-0 gap-5 text-white">
+          <div className="items-center flex-shrink-0 hidden gap-5 text-white lg:flex">
             <Link href="/qa" className="transition-opacity cursor-pointer opacity-80 hover:opacity-100">
               <HelpCircle size={22} />
             </Link>
@@ -466,7 +465,7 @@ export default function Header() {
       </div>
 
       {/* 3. NAVIGATION (Desktop Only) */}
-      <nav className="relative hidden lg:flex justify-center w-full border-t bg-black/10 border-white/5">
+      <nav className="relative justify-center hidden w-full border-t lg:flex bg-black/10 border-white/5">
         <div className="relative flex items-center w-full px-4 max-w-7xl" onMouseLeave={handleMouseLeave}>
           <ul className="flex items-center">
             <li className="px-4 py-3 text-white cursor-pointer hover:bg-white/10">
@@ -509,7 +508,7 @@ export default function Header() {
         <div className="lg:hidden w-full bg-[#7F0A1A] border-t border-white/10 animate-in slide-in-from-top duration-300">
           <ul className="flex flex-col py-2">
             <li className="border-b border-white/5">
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-6 py-4 text-white font-bold">
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-6 py-4 font-bold text-white">
                 <Home size={20} /> {t("home")}
               </Link>
             </li>
@@ -519,21 +518,21 @@ export default function Header() {
                   <div className="flex flex-col">
                     <button 
                       onClick={() => setOpenDropdown(openDropdown === item.dropdownKey ? null : item.dropdownKey)}
-                      className="flex items-center justify-between w-full px-6 py-4 text-white font-bold"
+                      className="flex items-center justify-between w-full px-6 py-4 font-bold text-white"
                     >
                       <div className="flex items-center gap-3">{item.icon} {item.label}</div>
                       <ChevronDown size={18} className={`transition-transform ${openDropdown === item.dropdownKey ? "rotate-180" : ""}`} />
                     </button>
                     {openDropdown === item.dropdownKey && (
-                      <div className="bg-black/20 py-2">
-                         <Link href={`/books`} onClick={() => setIsMobileMenuOpen(false)} className="block px-12 py-3 text-white/80 text-sm font-medium hover:text-white">
+                      <div className="py-2 bg-black/20">
+                         <Link href={`/books`} onClick={() => setIsMobileMenuOpen(false)} className="block px-12 py-3 text-sm font-medium text-white/80 hover:text-white">
                            {t("view_all")} {item.label}
                          </Link>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <Link href={item.href || "#"} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-6 py-4 text-white font-bold">
+                  <Link href={item.href || "#"} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-6 py-4 font-bold text-white">
                     {item.icon} {item.label}
                   </Link>
                 )}
