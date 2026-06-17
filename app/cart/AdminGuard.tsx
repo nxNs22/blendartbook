@@ -24,17 +24,17 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
       }
 
       try {
-        // Kullanıcının rolünü veritabanından çek
+        // Kullanıcının admin olup olmadığını veritabanından çek
         const { data, error } = await supabase
           .from("profiles")
-          .select("role")
+          .select("is_admin")
           .eq("id", user.id)
           .limit(1);
 
         if (error) throw error;
 
-        // Rol "admin" ise içeri al, değilse ana sayfaya at
-        if (data && data.length > 0 && data[0].role === "admin") {
+        // is_admin true ise içeri al, değilse ana sayfaya at
+        if (data && data.length > 0 && data[0].is_admin === true) {
           setIsAuthorized(true);
         } else {
           router.replace("/");

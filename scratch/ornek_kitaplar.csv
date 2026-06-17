@@ -1,0 +1,11 @@
+title,price,stock,image_url,sub_category_id,author,page_count,language
+Suç ve Ceza,89.90,50,https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Fyodor_Dostoevsky_1876.jpg/220px-Fyodor_Dostoevsky_1876.jpg,1,Fyodor Dostoyevski,700,Turkish
+Sefiller,120.00,30,https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Victor_Hugo_by_Étienne_Carjat_1876_-_full.jpg/220px-Victor_Hugo_by_Étienne_Carjat_1876_-_full.jpg,1,Victor Hugo,1500,Turkish
+Küçük Prens,45.00,100,https://upload.wikimedia.org/wikipedia/en/thumb/4/4f/Little_Prince_1943_poster.jpg/220px-Little_Prince_1943_poster.jpg,1,Antoine de Saint-Exupéry,96,Turkish
+1984,95.00,75,https://upload.wikimedia.org/wikipedia/en/c/c3/1984first.jpg,2,George Orwell,328,English
+Hayvan Çiftliği,65.00,80,https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Animal_Farm_-_1st_edition.jpg/220px-Animal_Farm_-_1st_edition.jpg,1,George Orwell,112,Turkish
+Dönüşüm,55.00,60,https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Noto_Emoji_v2.034_1f41b.svg/120px-Noto_Emoji_v2.034_1f41b.svg.png,1,Franz Kafka,96,Turkish
+Brave New World,85.00,40,https://upload.wikimedia.org/wikipedia/en/6/62/BraveNewWorld_FirstEdition.jpg,2,Aldous Huxley,311,English
+Simyacı,75.00,90,https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/TheAlchemist.jpg/220px-TheAlchemist.jpg,1,Paulo Coelho,197,Turkish
+Uçurtma Avcısı,98.00,55,https://upload.wikimedia.org/wikipedia/en/thumb/5/57/TheKiteRunner.jpg/220px-TheKiteRunner.jpg,1,Khaled Hosseini,372,Turkish
+Yüzyıllık Yalnızlık,110.00,35,https://upload.wikimedia.org/wikipedia/en/thumb/8/87/100yearsofloneliness.jpg/220px-100yearsofloneliness.jpg,1,Gabriel García Márquez,417,Turkish

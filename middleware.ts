@@ -27,7 +27,7 @@ export function middleware(request: NextRequest) {
     default-src 'self';
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://static.iyzipay.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' blob: data: https://*.supabase.co https://images.unsplash.com https://*.iyzipay.com;
+    img-src 'self' blob: data: https:;
     font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';

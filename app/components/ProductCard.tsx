@@ -80,9 +80,16 @@ export default function ProductCard({ product }: { product: any }) {
         </div>
 
         <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-          <span className="text-[22px] font-black text-[#5BCDE9] tracking-tighter">
-            {Number(product.price || 0).toFixed(2)} €
-          </span>
+          <div className="flex flex-col">
+            {product.details?.original_price && Number(product.details.original_price) > product.price && (
+              <span className="text-[12px] font-bold text-gray-400 line-through">
+                {Number(product.details.original_price).toFixed(2)} €
+              </span>
+            )}
+            <span className="text-[22px] font-black text-[#5BCDE9] tracking-tighter leading-none">
+              {Number(product.price || 0).toFixed(2)} €
+            </span>
+          </div>
           <button 
             onClick={handleAddToCart}
             className="text-[#5BCDE9] hover:text-[#4AB9D6] transition-colors p-1"

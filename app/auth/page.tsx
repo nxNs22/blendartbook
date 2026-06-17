@@ -103,6 +103,7 @@ export default function AuthPage() {
           email,
           password,
           options: {
+            emailRedirectTo: typeof window === "undefined" ? undefined : `${window.location.origin}/auth`,
             data: {
               full_name: fullName, // Supabase'e ekstra verileri gönderiyoruz
               phone: phone,

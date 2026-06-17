@@ -233,13 +233,17 @@ export default function ProductDetail() {
             {/* Fiyat Kutusu */}
             <div className="flex items-center mb-10">
               <div className="flex items-center bg-[#F8FAFC] rounded-2xl border border-gray-100 shadow-sm overflow-hidden min-w-[340px]">
-                <div className="px-8 py-5 text-gray-400 line-through text-lg font-bold">
-                  {(product.price * 1.6).toFixed(2)} €
-                </div>
-                <div className="px-4 py-1.5 bg-[#5BCDE9]/10 text-[#5BCDE9] text-[10px] font-black uppercase tracking-tighter rounded-full mx-2">
-                  {t("in_basket")}
-                </div>
-                <div className="flex-1 px-10 py-5 bg-white text-[#5BCDE9] text-3xl font-black border-l border-gray-100">
+                {product.details?.original_price && Number(product.details.original_price) > product.price && (
+                  <>
+                    <div className="px-8 py-5 text-gray-400 line-through text-lg font-bold">
+                      {Number(product.details.original_price).toFixed(2)} €
+                    </div>
+                    <div className="px-4 py-1.5 bg-[#5BCDE9]/10 text-[#5BCDE9] text-[10px] font-black uppercase tracking-tighter rounded-full mx-2">
+                      {t("in_basket")}
+                    </div>
+                  </>
+                )}
+                <div className={`flex-1 px-10 py-5 bg-white text-[#5BCDE9] text-3xl font-black ${product.details?.original_price ? 'border-l border-gray-100' : ''}`}>
                   {product.price?.toFixed(2)} €
                 </div>
               </div>
