@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
-
+function addSecurityHeaders(response: NextResponse) {
   // 🛡️ SECURITY HEADERS
   
   // 1. Prevent Clickjacking
@@ -40,6 +38,39 @@ export function middleware(request: NextRequest) {
   response.headers.set('Content-Security-Policy', cspHeader);
 
   return response;
+}
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const appSurface = process.env.NEXT_PUBLIC_APP_SURFACE;
+  const isPublicFile = /\.[^/]+$/.test(pathname);
+
+  if (!isPublicFile && appSurface === "admin") {
+    const isAdminPath = pathname === "/admin" || pathname.startsWith("/admin/");
+    const isAuthPath = pathname === "/auth" || pathname.startsWith("/auth/");
+
+    if (pathname === "/") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin";
+      return addSecurityHeaders(NextResponse.redirect(url));
+    }
+
+    if (!isAdminPath && !isAuthPath) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin";
+      url.search = "";
+      return addSecurityHeaders(NextResponse.redirect(url));
+    }
+  }
+
+  if (!isPublicFile && appSurface === "store" && (pathname === "/admin" || pathname.startsWith("/admin/"))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    url.search = "";
+    return addSecurityHeaders(NextResponse.redirect(url));
+  }
+
+  return addSecurityHeaders(NextResponse.next());
 }
 
 // Specify which paths this middleware should run on

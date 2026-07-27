@@ -7,9 +7,14 @@ import Footer from "./components/Footer";
 import AIChatWidget from "./components/AIChatWidget";
 import "./globals.css";
 
+const appSurface = process.env.NEXT_PUBLIC_APP_SURFACE;
+
 export const metadata: Metadata = {
-  title: "BlendArtBook | Premium Online Bookstore",
-  description: "Discover a world of literature, art, and handmade books at BlendArtBook. Secure shopping with worldwide delivery.",
+  title: appSurface === "admin" ? "BlendArtBook Admin" : "BlendArtBook | Premium Online Bookstore",
+  description:
+    appSurface === "admin"
+      ? "Manage BlendArtBook store operations from a dedicated admin panel."
+      : "Discover a world of literature, art, and handmade books at BlendArtBook. Secure shopping with worldwide delivery.",
   metadataBase: new URL('https://blendartbook.com'),
   alternates: {
     canonical: '/',
@@ -31,6 +36,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  if (appSurface === "admin") {
+    return (
+      <html lang="en">
+        <body className="antialiased" suppressHydrationWarning>
+          <LanguageProvider>
+            <AuthProvider>
+              <CartProvider>
+                <main className="min-h-screen w-full">
+                  {children}
+                </main>
+              </CartProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en">
       <body className="antialiased" suppressHydrationWarning>

@@ -11,6 +11,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [checking, setChecking] = useState(true);
+  const isAdminSurface = process.env.NEXT_PUBLIC_APP_SURFACE === "admin";
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -37,10 +38,18 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
         if (data && data.length > 0 && data[0].is_admin === true) {
           setIsAuthorized(true);
         } else {
+          if (isAdminSurface) {
+            setIsAuthorized(false);
+            return;
+          }
           router.replace("/");
         }
       } catch (error) {
         console.error("Admin check failed:", error);
+        if (isAdminSurface) {
+          setIsAuthorized(false);
+          return;
+        }
         router.replace("/");
       } finally {
         setChecking(false);
@@ -48,7 +57,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     };
 
     checkAdmin();
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, isAdminSurface]);
 
   // Kontrol edilirken ekranda bir yüklenme animasyonu göster
   if (authLoading || checking) {
@@ -60,7 +69,29 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   }
 
   // Yetkili değilse hiçbir şey render etme (zaten yönlendiriliyor)
-  if (!isAuthorized) return null;
+  if (!isAuthorized) {
+    if (isAdminSurface) {
+      return (
+        <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 px-6">
+          <div className="max-w-md rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
+            <h1 className="text-2xl font-bold text-[#1A2E35]">Access denied</h1>
+            <p className="mt-3 text-sm text-gray-600">
+              This account does not have admin access for BlendArtBook.
+            </p>
+            <button
+              type="button"
+              onClick={() => router.replace("/auth")}
+              className="mt-6 rounded-md bg-[#1A2E35] px-5 py-2 text-sm font-semibold text-white hover:bg-black"
+            >
+              Sign in with another account
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  }
 
   // Yetkiliyse admin panelini göster
   return <>{children}</>;
