@@ -19,16 +19,7 @@ interface Book {
 }
 
 // Local kitap verisi (fallback)
-const LOCAL_BOOKS: Book[] = [
-  { id: 1, title: "Miras", author: "Berdinazar Hudaynazarow", price: 15.50, language: "turkmen", category: "Roman", image: "https://via.placeholder.com/150x220" },
-  { id: 2, title: "İnce Memed", author: "Yaşar Kemal", price: 12.90, language: "turkish", category: "Roman", image: "https://via.placeholder.com/150x220" },
-  { id: 3, title: "The Great Gatsby", author: "F. Scott Fitzgerald", price: 18.00, language: "english", category: "Roman", image: "https://via.placeholder.com/150x220" },
-  { id: 4, title: "Yatır", author: "Turkmen Author", price: 10.00, language: "turkmen", category: "Tarih", image: "https://via.placeholder.com/150x220" },
-  { id: 5, title: "1984", author: "George Orwell", price: 16.99, language: "english", category: "Bilim Kurgu", image: "https://via.placeholder.com/150x220" },
-  { id: 6, title: "Proud Turkmen", author: "Turkmen Author", price: 14.50, language: "turkmen", category: "Tarih", image: "https://via.placeholder.com/150x220" },
-  { id: 7, title: "Dune", author: "Frank Herbert", price: 19.99, language: "english", category: "Bilim Kurgu", image: "https://via.placeholder.com/150x220" },
-  { id: 8, title: "The Hobbit", author: "J.R.R. Tolkien", price: 17.50, language: "english", category: "Fantastik", image: "https://via.placeholder.com/150x220" },
-];
+const LOCAL_BOOKS: Book[] = [];
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
@@ -65,48 +56,38 @@ function SearchPageContent() {
 
         // Önce Supabase'den ara
         try {
-          let queryBuilder = supabase.from("books").select("*");
+          let productsResults: any[] = [];
 
           if (filterType === "title") {
-            queryBuilder = queryBuilder.ilike("title", `%${query}%`);
+            const { data: pData } = await supabase.from("products").select("*").ilike("title", `%${query}%`).lte("price", priceRange);
+            productsResults = pData || [];
           } else if (filterType === "author") {
-            queryBuilder = queryBuilder.ilike("author", `%${query}%`);
+            const { data: pData } = await supabase.from("products").select("*").ilike("details->>author", `%${query}%`).lte("price", priceRange);
+            productsResults = pData || [];
           } else if (filterType === "genre") {
-            queryBuilder = queryBuilder.ilike("genre", `%${query}%`);
+            const { data: pData } = await supabase.from("products").select("*").or(`category.ilike.%${query}%,subcategory.ilike.%${query}%,details->>genre.ilike.%${query}%`).lte("price", priceRange);
+            productsResults = pData || [];
           } else {
             // Tümü: title, author ve genre'de ara
-            const { data: data1 } = await supabase
-              .from("books")
-              .select("*")
-              .ilike("title", `%${query}%`);
+            const { data: p1 } = await supabase.from("products").select("*").ilike("title", `%${query}%`).lte("price", priceRange);
+            const { data: p2 } = await supabase.from("products").select("*").ilike("details->>author", `%${query}%`).lte("price", priceRange);
+            const { data: p3 } = await supabase.from("products").select("*").or(`category.ilike.%${query}%,subcategory.ilike.%${query}%,details->>genre.ilike.%${query}%`).lte("price", priceRange);
 
-            const { data: data2 } = await supabase
-              .from("books")
-              .select("*")
-              .ilike("author", `%${query}%`);
-
-            const { data: data3 } = await supabase
-              .from("books")
-              .select("*")
-              .ilike("genre", `%${query}%`);
-
-            allResults = [
-              ...(data1 || []),
-              ...(data2 || []),
-              ...(data3 || []),
-            ];
-
-            // Tekrarlananları kaldır
-            allResults = Array.from(
-              new Map(allResults.map((item) => [item.id, item])).values()
-            );
+            productsResults = [...(p1 || []), ...(p2 || []), ...(p3 || [])];
           }
 
-          if (filterType !== "all") {
-            const { data, error: dbError } = await queryBuilder.lte("price", priceRange);
-            if (dbError) throw dbError;
-            allResults = data || [];
-          }
+          // Map products to standard UI structure
+          const formattedProducts = productsResults.map(p => ({
+            ...p,
+            author: p.details?.author || "General Product"
+          }));
+
+          allResults = formattedProducts;
+
+          // Tekrarlananları kaldır
+          allResults = Array.from(
+            new Map(allResults.map((item) => [item.id, item])).values()
+          );
         } catch (supabaseError) {
           console.log("Supabase search başarısız, local veri kullanılıyor:", supabaseError);
         }

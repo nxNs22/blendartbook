@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import { ChevronLeft, ChevronRight, Loader2, Globe } from "lucide-react";
-import { supabase, getErrorMessage } from "../lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient";
 import ProductCard from "./ProductCard";
-
-import { demoWorldLiterature } from "../data/demoProducts";
 
 export default function WorldLiterature() {
   const { t } = useLanguage();
@@ -24,19 +22,15 @@ export default function WorldLiterature() {
       setLoading(true);
       try {
         const { data, error } = await supabase
-          .from("collection_products")
-          .select("products ( * )")
-          .eq('collection_id', 4) 
-          .order('created_at', { ascending: false });
+          .from("products")
+          .select("*")
+          .eq("category", "book")
+          .order('title', { ascending: true })
+          .limit(10);
 
         if (error) throw error;
 
-        const cleanProducts = data?.map((item: any) => {
-          const p = Array.isArray(item.products) ? item.products[0] : item.products;
-          return p;
-        }).filter(Boolean) || [];
-
-        setProducts(cleanProducts);
+        setProducts(data || []);
       } catch (err: unknown) {
         console.error("World Lit Error:", err);
       } finally {
@@ -46,14 +40,6 @@ export default function WorldLiterature() {
 
     fetchWorldLiterature();
   }, []);
-
-  // 🌟 FALLBACK: Eğer veritabanında az kitap varsa, demo kitaplar ekler
-  const displayProducts = useMemo(() => {
-    if (loading) return [];
-    if (products.length >= 12) return products;
-    
-    return [...products, ...demoWorldLiterature.slice(0, 12 - products.length)];
-  }, [products, loading]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return;
@@ -90,8 +76,8 @@ export default function WorldLiterature() {
     carouselRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  if (!loading && displayProducts.length === 0) return null;
-  const gridAlignment = displayProducts.length < 6 ? "justify-center" : "justify-start";
+  if (!loading && products.length === 0) return null;
+  const gridAlignment = products.length < 6 ? "justify-center" : "justify-start";
 
   return (
     <section className="py-16 bg-white">
@@ -106,7 +92,7 @@ export default function WorldLiterature() {
               <p className="text-gray-500 mt-1 text-sm">{t("timeless_classics")}</p>
             </div>
           </div>
-          {!loading && displayProducts.length > 6 && (
+          {!loading && products.length > 6 && (
             <div className="flex items-center gap-2">
               <button onClick={() => scroll('left')} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronLeft size={24} /></button>
               <button onClick={() => scroll('right')} className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-teal-600 hover:text-white transition-colors"><ChevronRight size={24} /></button>
@@ -121,11 +107,11 @@ export default function WorldLiterature() {
             <div 
               ref={carouselRef}
               onMouseDown={handleMouseDown} onMouseLeave={handleMouseLeave} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}
-              className={`flex gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden pb-8 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
+              className={`flex items-stretch gap-6 ${gridAlignment} overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 ${isDragging ? 'cursor-grabbing active:cursor-grabbing' : 'cursor-grab'}`}
             >
-              {displayProducts.map((product) => (
-                <div key={product.id} className="flex-none w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-20px)] snap-start select-none">
-                  <div className={isDragging ? "pointer-events-none" : ""}>
+              {products.map((product) => (
+                <div key={product.id} className="flex-none flex w-[calc(60%-12px)] sm:w-[calc(40%-16px)] md:w-[calc(33.333%-16px)] lg:w-[calc(16.666%-20px)] snap-start select-none">
+                  <div className={`w-full h-full ${isDragging ? "pointer-events-none" : ""}`}>
                     <ProductCard product={product} />
                   </div>
                 </div>

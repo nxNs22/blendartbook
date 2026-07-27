@@ -6,8 +6,16 @@ import { useState, useEffect, useMemo } from "react";
 import { Filter, ChevronDown, Loader2, Package } from "lucide-react";
 import { supabase, getErrorMessage } from "../../lib/supabaseClient"; 
 import ProductCard from "../../components/ProductCard";
+import CategoryChips from "../../components/CategoryChips";
+import FilterSidebar from "../../components/FilterSidebar";
+import ListControls from "../../components/ListControls";
+import { useSidebarFilters } from "../../hooks/useSidebarFilters";
 
-import { demoOtherProducts } from "../../data/demoProducts";
+const OTHER_CATEGORIES = [
+  "Stationery", "Calendars", "Diaries", "Games", "Toys", 
+  "Puzzles", "Digital", "Accessories", "Home Decor", "Electronics"
+];
+
 
 export default function OtherProductsPage() {
   const { t } = useLanguage();
@@ -20,7 +28,24 @@ export default function OtherProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [priceRange, setPriceRange] = useState(200);
+  
+  const {
+    priceRange, setPriceRange,
+    selectedBindings, setSelectedBindings,
+    selectedAvailabilities, setSelectedAvailabilities,
+    selectedTags, setSelectedTags,
+    dateRange, setDateRange,
+    sortOption, setSortOption,
+    currentPage, setCurrentPage,
+    itemsPerPage,
+    filterProducts,
+    sortProducts,
+    paginateProducts,
+    normalizeText
+  } = useSidebarFilters();
+
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // 🌟 VERİ ÇEKME (FETCH): YALNIZCA Kategori 4'ü Çekiyoruz
   useEffect(() => {
@@ -30,7 +55,7 @@ export default function OtherProductsPage() {
         const { data, error: dbError } = await supabase
           .from('products')
           .select('*')
-          .eq('category_id', 4); // 🌟 Sadece Other Products (4) gelsin
+          .eq('category', 'other'); // Other Products
 
         if (dbError) throw dbError;
         setProducts(data || []);
@@ -44,30 +69,57 @@ export default function OtherProductsPage() {
     fetchProducts();
   }, []);
 
+  const getOtherKeywords = (category: string): string[] => {
+    const cat = category.toLowerCase();
+    if (cat === "stationery") return ["kırtasiye", "kalem", "defter", "ayraç", "divit", "mürekkep", "yazı", "stationery"];
+    if (cat === "calendars") return ["takvim", "calendar"];
+    if (cat === "diaries") return ["ajanda", "günlük", "diary"];
+    if (cat === "games") return ["oyun", "game"];
+    if (cat === "toys") return ["oyuncak", "toy"];
+    if (cat === "puzzles") return ["puzzle", "yapboz"];
+    if (cat === "digital") return ["dijital", "e-reader", "kılıf", "digital"];
+    if (cat === "accessories") return ["aksesuar", "kılıf", "ayraç", "gözlük", "lamba", "organizer", "mum", "poster", "accessories"];
+    if (cat === "home decor") return ["dekor", "lamba", "organizer", "mum", "poster", "raf", "decor"];
+    if (cat === "electronics") return ["elektronik", "lamba", "gözlük", "electronics"];
+    return [cat];
+  };
+
   // Filtreleme Mantığı: Fiyat ve Alt Kategori (URL'den gelen)
   const filteredProducts = useMemo(() => {
     const urlCategory = decodedCategory.toLowerCase();
 
-    // 1. Önce database ürünlerini filtrele
+    // 1. Database ürünlerini filtrele
     let filtered = products.filter(product => {
-      const dbSubcategory = (product.details?.subcategory || product.details?.type || "").toLowerCase();
-      const categoryMatch = urlCategory === "all" || dbSubcategory === urlCategory;
-      const priceMatch = product.price <= priceRange;
-      return categoryMatch && priceMatch;
+      const dbCategory = (product.details?.category || "all").toLowerCase();
+      const categoryMatch = decodedCategory === "all" || dbCategory === decodedCategory;
+      
+      const searchMatch = normalizeText(product.title).includes(normalizeText(searchQuery));
+
+      const keywords = selectedCategory ? getOtherKeywords(selectedCategory) : [];
+      const normalizedTitle = normalizeText(product.title);
+      const normalizedMaterial = normalizeText(product.details?.material || "");
+      const normalizedGenre = normalizeText(Array.isArray(product.details?.genre) ? product.details.genre.join(" ") : (product.details?.genre || ""));
+      const normalizedCat = normalizeText(product.category || "");
+
+      const chipMatch = !selectedCategory || keywords.some(keyword => {
+        const normKw = normalizeText(keyword);
+        return normalizedTitle.includes(normKw) || 
+               normalizedMaterial.includes(normKw) ||
+               normalizedGenre.includes(normKw) ||
+               normalizedCat.includes(normKw);
+      });
+
+      return categoryMatch && searchMatch && chipMatch;
     });
 
-    // 2. Eğer database'de bu kategori için ürün yoksa demo ürünleri kullan
-    if (filtered.length === 0 && !loading) {
-      filtered = demoOtherProducts.filter(product => {
-        const dbSubcategory = (product.details?.subcategory || product.details?.type || "").toLowerCase();
-        const categoryMatch = urlCategory === "all" || dbSubcategory === urlCategory;
-        const priceMatch = product.price <= priceRange;
-        return categoryMatch && priceMatch;
-      });
-    }
+    // 2. Sidebar filtrelerini ve sıralamayı uygula
+    return sortProducts(filterProducts(filtered));
+  }, [products, decodedCategory, priceRange, selectedBindings, selectedAvailabilities, selectedTags, dateRange, selectedCategory, searchQuery, filterProducts, sortProducts, normalizeText]);
 
-    return filtered;
-  }, [products, priceRange, decodedCategory, loading]);
+  // Sayfalama
+  const paginatedProducts = useMemo(() => {
+    return paginateProducts(filteredProducts);
+  }, [filteredProducts, paginateProducts]);
 
   const displayTitle = decodedCategory === "all" 
     ? t("other_products") || "Other Products"
@@ -95,77 +147,67 @@ export default function OtherProductsPage() {
               </h1>
             </div>
           </div>
+          <CategoryChips 
+            categories={OTHER_CATEGORIES}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+          />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-10">
-        
-        {/* SOL TARAF: FİLTRELER */}
-        <aside className="w-full md:w-80 space-y-8 bg-white p-8 rounded-[32px] h-fit border border-gray-100 shadow-xl shadow-gray-200/50">
-          <div>
-            <h3 className="font-black text-sm mb-6 flex items-center gap-3 border-b pb-4 text-[#1A2E35] tracking-widest uppercase opacity-60">
-              <Filter size={16} /> {t("properties")}
-            </h3>
+      <div className="bg-white">
+        <div className="max-w-[1400px] mx-auto px-6 py-8">
+          
+          <ListControls 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            totalItems={filteredProducts.length}
+            sortOption={sortOption}
+            setSortOption={setSortOption}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+          />
 
-            <div className="mb-8">
-              <label className="text-sm font-bold text-[#1A2E35] block mb-4">
-                {t("price_up_to")}€{priceRange}
-              </label>
-              <input 
-                type="range" 
-                min="0" 
-                max="500" 
-                value={priceRange}
-                onChange={(e) => setPriceRange(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#5BCDE9]"
-              />
-              <div className="flex justify-between mt-3 text-[10px] text-gray-400 font-black tracking-widest uppercase">
-                <span>€0</span>
-                <span>€500</span>
-              </div>
-            </div>
+          <div className="flex flex-col md:flex-row gap-10">
+            
+            <FilterSidebar 
+              products={products}
+              priceRange={priceRange} setPriceRange={setPriceRange}
+              selectedBindings={selectedBindings} setSelectedBindings={setSelectedBindings}
+              selectedAvailabilities={selectedAvailabilities} setSelectedAvailabilities={setSelectedAvailabilities}
+              selectedTags={selectedTags} setSelectedTags={setSelectedTags}
+              dateRange={dateRange} setDateRange={setDateRange}
+            />
+
+            <main className="flex-1">
+              {loading ? (
+                <div className="flex justify-center py-20">
+                  <Loader2 className="animate-spin text-[#00C49F]" size={48} />
+                </div>
+              ) : error ? (
+                <div className="text-red-500 p-8 border border-red-100 rounded-3xl bg-red-50 font-bold text-center">
+                  {error}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 w-full">
+                  {paginatedProducts.length > 0 ? (
+                    paginatedProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))
+                  ) : null}
+                </div>
+              )}
+
+              {!loading && filteredProducts.length === 0 && (
+                <div className="text-center py-24 text-gray-400 border-2 border-dashed border-gray-200 rounded-[40px] bg-white">
+                  <Package className="mx-auto mb-6 opacity-10" size={64} />
+                  <p className="text-lg font-bold">{t("no_products_found") || "No products found"}</p>
+                </div>
+              )}
+            </main>
           </div>
-        </aside>
-
-        {/* SAĞ TARAF: LİSTELEME */}
-        <main className="flex-1">
-          <header className="flex justify-between items-center mb-8 bg-white p-8 rounded-[24px] shadow-sm border border-gray-100">
-            <div>
-              <h1 className="text-2xl font-black uppercase text-[#1A2E35] italic tracking-tighter">
-                {displayTitle}
-              </h1>
-              <p className="text-[12px] text-gray-400 font-bold mt-1">
-                 {loading ? "..." : `${filteredProducts.length} ${t("items_found")}`}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 text-[13px] text-[#1A2E35] font-bold cursor-pointer hover:text-[#5BCDE9] transition-colors">
-              {t("sort_by_popularity")} <ChevronDown size={16} />
-            </div>
-          </header>
-
-          {loading ? (
-            <div className="flex justify-center py-20">
-              <Loader2 className="animate-spin text-[#5BCDE9]" size={48} />
-            </div>
-          ) : error ? (
-            <div className="text-red-500 p-8 border border-red-100 rounded-3xl bg-red-50 font-bold text-center">
-              {error}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
-
-          {!loading && filteredProducts.length === 0 && (
-            <div className="text-center py-24 text-gray-400 border-2 border-dashed border-gray-200 rounded-[40px] bg-white">
-              <Package className="mx-auto mb-6 opacity-10" size={64} />
-              <p className="text-lg font-bold">{t("no_products_found") || "No products found"}</p>
-            </div>
-          )}
-        </main>
+        </div>
       </div>
     </div>
   );

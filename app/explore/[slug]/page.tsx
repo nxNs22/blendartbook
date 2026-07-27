@@ -39,28 +39,18 @@ export default function ExploreDynamicPage({ params }: { params: { slug: string 
       setDebugError(null);
       try {
         if (slug === "all-products") {
-          const { data: booksData } = await supabase.from("books").select("*");
           const { data: productsData } = await supabase.from("products").select("*");
-
-          const formattedBooks = (booksData || []).map((b) => ({
-            id: b.id,
-            title: b.title,
-            price: Number(b.price) || 0,
-            image_url: b.image_url,
-            subtitle: b.author || "Unknown Author",
-            tag: b.genre || "Book"
-          }));
 
           const formattedProducts = (productsData || []).map((p) => ({
             id: p.id,
             title: p.title,
             price: Number(p.price) || 0,
             image_url: p.image_url,
-            subtitle: "General Product",
-            tag: "Product"
+            subtitle: p.category === "book" ? (p.details?.author || "Unknown Author") : "General Product",
+            tag: p.category === "book" ? (Array.isArray(p.details?.genre) ? p.details.genre.join(", ") : (p.details?.genre || "Book")) : "Product"
           }));
 
-          setItems([...formattedBooks, ...formattedProducts]);
+          setItems(formattedProducts);
 
         } else if (slug === "categories") {
           const { data: categoriesData, error } = await supabase.from("categories").select("name");
@@ -68,22 +58,13 @@ export default function ExploreDynamicPage({ params }: { params: { slug: string 
           setItems(categoriesData || []);
 
         } else if (slug === "authors") {
-          // 🛡️ ÇİFT TARAFLI GÜVENLİ YAZAR ÇEKİMİ
           let allAuthors: string[] = [];
 
-          // 1. Önce books tablosuna bakıyoruz
-          const { data: booksData, error: booksError } = await supabase.from("books").select("author");
-          if (!booksError && booksData) {
-            allAuthors = [...allAuthors, ...booksData.map(b => b.author)];
-          }
-
-          // 2. Belki yazarlar products tablosunda details (json) içindedir diye oraya da bakıyoruz
           const { data: productsData, error: productsError } = await supabase.from("products").select("details");
           if (!productsError && productsData) {
-            allAuthors = [...allAuthors, ...productsData.map(p => p.details?.author)];
+            allAuthors = productsData.map(p => p.details?.author);
           }
 
-          // 3. String olmayanları (null, object vb.) çökme yapmaması için güvenle siliyoruz
           const validAuthors = allAuthors
             .map(a => typeof a === 'string' ? a.trim() : "")
             .filter(a => a.length > 0);
@@ -92,16 +73,30 @@ export default function ExploreDynamicPage({ params }: { params: { slug: string 
           setItems(uniqueAuthors);
 
         } else if (slug === "magazines" || slug === "catalogs") {
-          const { data: booksData, error } = await supabase.from("books").select("*").ilike("genre", `%${slug}%`);
+          const { data: booksData, error } = await supabase
+            .from("products")
+            .select("*")
+            .eq("category", "book");
           if (error) throw error;
 
-          const formattedItems = (booksData || []).map((b) => ({
+          const filteredBooks = (booksData || []).filter(b => {
+            const genre = b.details?.genre;
+            if (Array.isArray(genre)) {
+              return genre.some(g => g.toLowerCase().includes(slug.toLowerCase()));
+            }
+            if (typeof genre === 'string') {
+              return genre.toLowerCase().includes(slug.toLowerCase());
+            }
+            return false;
+          });
+
+          const formattedItems = filteredBooks.map((b) => ({
             id: b.id,
             title: b.title,
             price: Number(b.price) || 0,
             image_url: b.image_url,
-            subtitle: b.author || "",
-            tag: b.genre || "Reading"
+            subtitle: b.details?.author || "",
+            tag: Array.isArray(b.details?.genre) ? b.details.genre.join(", ") : (b.details?.genre || "Reading")
           }));
           
           setItems(formattedItems);

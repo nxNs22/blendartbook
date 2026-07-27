@@ -6,7 +6,6 @@ import { supabase } from "../../lib/supabaseClient";
 import { useCart } from "../../context/CartContext";
 import { ArrowLeft, ShoppingCart, Star, Loader2, BookOpen, Heart, Share2, Tag, ChevronLeft, ChevronRight, Truck, ShieldCheck, Info, Trophy } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
-import { demoProductsMap } from "../../data/demoProducts";
 
 export default function ProductDetail() {
   const params = useParams();
@@ -39,48 +38,12 @@ export default function ProductDetail() {
     const fetchProductDetails = async () => {
       if (!productId) return;
 
-      // 🌟 DEMO ÜRÜNLER İÇİN ÖZEL KONTROL
-      if (productId.startsWith("demo-")) {
-        console.log("Loading demo product:", productId);
-        let found = demoProductsMap[productId];
-        
-        // Map'te bulunamadıysa (nadiren), tüm demo listelerinde manuel ara
-        if (!found) {
-           console.warn("Demo map missed item, searching arrays manually...");
-           const { 
-             demoBooks, demoEbooks, demoAudiobooks, demoGifts, 
-             demoOtherProducts, demoHandmade, demoNewArrivals, 
-             demoBestsellers, demoAwardWinning, demoWorldLiterature, 
-             demoMonthlySet, demoArt 
-           } = require("../../data/demoProducts");
-
-           const allArrays = [
-             ...(demoBooks || []), ...(demoEbooks || []), ...(demoAudiobooks || []), 
-             ...(demoGifts || []), ...(demoOtherProducts || []), ...(demoHandmade || []), 
-             ...(demoNewArrivals || []), ...(demoBestsellers || []), ...(demoAwardWinning || []), 
-             ...(demoWorldLiterature || []), ...(demoMonthlySet || []),
-             ...(demoArt?.painting || []), ...(demoArt?.sculpture || []), 
-             ...(demoArt?.music || []), ...(demoArt?.crafts || [])
-           ];
-           found = allArrays.find(p => p.id === productId);
-        }
-
-        if (found) {
-          setProduct(found);
-        } else {
-          console.error("Demo product not found anywhere:", productId);
-          setProduct(null);
-        }
-        setLoading(false);
-        return;
-      }
-
       try {
         const { data, error } = await supabase
           .from("products")
           .select("*")
           .eq("id", productId)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
         setProduct(data);
@@ -161,6 +124,7 @@ export default function ProductDetail() {
                 src={product.image_url || "/images/default-book.png"}
                 alt={product.title}
                 className="w-full h-full object-contain p-4"
+                referrerPolicy="no-referrer"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "/images/default-book.png";
                 }}
@@ -182,6 +146,7 @@ export default function ProductDetail() {
                   src={product.image_url || "/images/default-book.png"} 
                   className="w-full h-full object-contain" 
                   alt="thumb" 
+                  referrerPolicy="no-referrer"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "/images/default-book.png";
                   }}
@@ -258,6 +223,7 @@ export default function ProductDetail() {
                      src={product.image_url || "/images/default-book.png"} 
                      className="w-full h-full object-contain" 
                      alt="format" 
+                     referrerPolicy="no-referrer"
                      onError={(e) => {
                        (e.target as HTMLImageElement).src = "/images/default-book.png";
                      }}

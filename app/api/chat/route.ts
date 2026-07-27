@@ -66,8 +66,9 @@ async function getBookInventoryContext(): Promise<string> {
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const { data: books, error } = await supabase
-      .from("books")
-      .select("title, author, genre, price, stock")
+      .from("products")
+      .select("title, details, price, stock")
+      .eq("category", "book")
       .limit(20)
       .order("created_at", { ascending: false });
 
@@ -78,7 +79,7 @@ async function getBookInventoryContext(): Promise<string> {
     const bookList = books
       .map(
         (b) =>
-          `- "${b.title}" by ${b.author} (Genre: ${b.genre || "General"}, Price: ${b.price} €, Stock: ${b.stock})`
+          `- "${b.title}" by ${b.details?.author || "Unknown"} (Genre: ${b.details?.genre || "General"}, Price: ${b.price} €, Stock: ${b.stock})`
       )
       .join("\n");
 

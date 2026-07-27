@@ -23,7 +23,7 @@ export default function ArtPage() {
         const { data, error: dbError } = await supabase
           .from('products')
           .select('*')
-          .eq('category_id', 6); // Art ID
+          .eq('category', 'art'); // Art
 
         if (dbError) throw dbError;
         setProducts(data || []);
