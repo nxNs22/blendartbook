@@ -5,6 +5,7 @@ import { LanguageProvider } from "./context/LanguageContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import AIChatWidget from "./components/AIChatWidget";
+import AuthRecoveryRedirect from "./components/AuthRecoveryRedirect";
 import "./globals.css";
 
 const appSurface = process.env.NEXT_PUBLIC_APP_SURFACE;
@@ -40,6 +41,7 @@ export default function RootLayout({
     return (
       <html lang="en">
         <body className="antialiased" suppressHydrationWarning>
+          <AuthRecoveryRedirect />
           <LanguageProvider>
             <AuthProvider>
               <CartProvider>
@@ -57,6 +59,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased" suppressHydrationWarning>
+        <AuthRecoveryRedirect />
         <LanguageProvider>
           <AuthProvider>
             <CartProvider>

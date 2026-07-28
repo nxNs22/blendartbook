@@ -7,6 +7,13 @@ import { supabase, getErrorMessage } from "../lib/supabaseClient";
 import { Mail, Lock, ArrowRight, Loader2, CheckCircle2, UserPlus, User, Phone, ArrowLeft } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
+const getAuthRedirectOrigin = () => {
+  const configuredOrigin = process.env.NEXT_PUBLIC_AUTH_REDIRECT_ORIGIN?.replace(/\/$/, "");
+  if (configuredOrigin) return configuredOrigin;
+
+  return typeof window === "undefined" ? undefined : window.location.origin;
+};
+
 export default function AuthPage() {
   const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true); // Toggle state
@@ -78,8 +85,8 @@ export default function AuthPage() {
 
       if (isForgotPassword) {
         const trimmedEmail = email.trim();
-        const redirectTo =
-          typeof window === "undefined" ? undefined : `${window.location.origin}/auth/update-password`;
+        const redirectOrigin = getAuthRedirectOrigin();
+        const redirectTo = redirectOrigin ? `${redirectOrigin}/auth/update-password` : undefined;
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
           redirectTo,
         });
@@ -103,7 +110,9 @@ export default function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: typeof window === "undefined" ? undefined : `${window.location.origin}/auth`,
+            emailRedirectTo: getAuthRedirectOrigin()
+              ? `${getAuthRedirectOrigin()}/auth`
+              : undefined,
             data: {
               full_name: fullName, // Supabase'e ekstra verileri gönderiyoruz
               phone: phone,
