@@ -87,10 +87,13 @@ export default function AuthPage() {
         const trimmedEmail = email.trim();
         const redirectOrigin = getAuthRedirectOrigin();
         const redirectTo = redirectOrigin ? `${redirectOrigin}/auth/update-password` : undefined;
-        const { error: resetError } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
-          redirectTo,
+        const res = await fetch("/api/auth/reset-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: trimmedEmail, redirectTo }),
         });
-        if (resetError) throw resetError;
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to send reset email");
         setResetEmailSent(true);
         return;
       }
