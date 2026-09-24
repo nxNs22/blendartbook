@@ -32,7 +32,7 @@ function addSecurityHeaders(response: NextResponse) {
     form-action 'self';
     frame-ancestors 'none';
     frame-src 'self' https://js.stripe.com https://*.iyzipay.com;
-    connect-src 'self' https://*.supabase.co https://api.stripe.com https://*.iyzipay.com;
+    connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://*.iyzipay.com;
   `.replace(/\s{2,}/g, ' ').trim();
 
   response.headers.set('Content-Security-Policy', cspHeader);
