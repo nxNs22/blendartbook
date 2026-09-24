@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,25 +16,49 @@ export async function POST(request: NextRequest) {
 
     if (!supabaseUrl || !supabaseAnonKey) {
       return NextResponse.json(
-        { error: "Server configuration error" },
+        { error: `Server config error: URL=${!!supabaseUrl}, KEY=${!!supabaseAnonKey}` },
         { status: 500 }
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo,
+    // Use raw fetch instead of Supabase client to avoid any client-side issues
+    const recoverUrl = `${supabaseUrl}/auth/v1/recover`;
+    
+    const response = await fetch(recoverUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": supabaseAnonKey,
+        "Authorization": `Bearer ${supabaseAnonKey}`,
+      },
+      body: JSON.stringify({
+        email: email.trim(),
+        gotrue_meta_security: {},
+        ...(redirectTo ? { redirectTo } : {}),
+      }),
     });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (!response.ok) {
+      const errorData = await response.text();
+      return NextResponse.json(
+        { error: `Supabase returned ${response.status}: ${errorData}` },
+        { status: response.status }
+      );
     }
 
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
-    const message =
-      err instanceof Error ? err.message : "An unexpected error occurred";
-    return NextResponse.json({ error: message }, { status: 500 });
+    // Capture as much detail as possible
+    const message = err instanceof Error 
+      ? `${err.name}: ${err.message}` 
+      : "An unexpected error occurred";
+    const cause = err instanceof Error && err.cause 
+      ? String(err.cause) 
+      : "no cause";
+    
+    return NextResponse.json(
+      { error: message, cause, supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || "NOT_SET" },
+      { status: 500 }
+    );
   }
 }

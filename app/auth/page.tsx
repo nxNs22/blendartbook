@@ -93,7 +93,7 @@ export default function AuthPage() {
           body: JSON.stringify({ email: trimmedEmail, redirectTo }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to send reset email");
+        if (!res.ok) throw new Error(data.error + (data.cause ? ` | cause: ${data.cause}` : "") + (data.supabaseUrl ? ` | url: ${data.supabaseUrl}` : ""));
         setResetEmailSent(true);
         return;
       }
